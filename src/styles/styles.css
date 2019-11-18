@@ -21,7 +21,18 @@ body, input {
   height: '69vh';
 }
 
-@media screen and (max-width: 767px) {
+@media screen and (max-height: 600px) {
+  #pageHeader {
+    visibility: hidden;
+    clear: both;
+    float: left;
+    margin: 10px auto 5px 20px;
+    width: 28%;
+    display: none;
+  }
+}
+
+@media screen and (max-height: 412px) {
   #searchBox {
     visibility: hidden;
     clear: both;
@@ -38,9 +49,6 @@ body, input {
     width: 28%;
     display: none;
   }
-}
-
-@media screen and (max-width: 412px) {
   #footer {
     visibility: hidden;
     clear: both;
