@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import '../styles/styles.css';
 import 'tachyons';
 
-export default class Home extends Component {
+export default class Work extends Component {
   state = {
   }
 
@@ -10,7 +10,7 @@ export default class Home extends Component {
     return (
       <div>
         <div className='tc'>
-          <h1 className='f1'>Home</h1>
+          <h1 className='f1'>Work</h1>
         </div>
       </div>
     )

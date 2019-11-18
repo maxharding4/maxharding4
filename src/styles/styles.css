@@ -14,3 +14,39 @@ body, input {
   font-family: 'Jura', sans-serif;
   color: #f6fffe;
 }
+
+#scroll {
+  overflow-y: 'scroll';
+  border: '1px solid black';
+  height: '69vh';
+}
+
+@media screen and (max-width: 767px) {
+  #searchBox {
+    visibility: hidden;
+    clear: both;
+    float: left;
+    margin: 10px auto 5px 20px;
+    width: 28%;
+    display: none;
+  }
+  #pageHeader {
+    visibility: hidden;
+    clear: both;
+    float: left;
+    margin: 10px auto 5px 20px;
+    width: 28%;
+    display: none;
+  }
+}
+
+@media screen and (max-width: 412px) {
+  #footer {
+    visibility: hidden;
+    clear: both;
+    float: left;
+    margin: 10px auto 5px 20px;
+    width: 28%;
+    display: none;
+  }
+}

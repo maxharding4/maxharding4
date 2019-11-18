@@ -34,14 +34,16 @@ export default class Travel extends Component {
     })
     return (
       <div>
-        <div id='tc'>
-        <h1 className='f1'>Travel Album</h1>
-        <SearchBox searchChange={this.onSearchChange} />
-        <Scroll>
-          <ErrorBoundry>
-            <CardList countries={filteredCountries} />
-          </ErrorBoundry>
-        </Scroll>
+        <div className='tc'>
+          <h1 className='f1' id='pageHeader'>Travel Album</h1>
+          <div className='pa2' id='searchBox'>
+            <SearchBox searchChange={this.onSearchChange} />
+          </div>
+          <Scroll>
+            <ErrorBoundry>
+              <CardList countries={filteredCountries} />
+            </ErrorBoundry>
+          </Scroll>
         </div>
       </div>
     )
