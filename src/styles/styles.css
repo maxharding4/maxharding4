@@ -10,6 +10,17 @@ h2 {
   color: #f6fffe;
 }
 
+h3 {
+  font-family: 'Jura', sans-serif;
+  font-weight: 100;
+  color: #f6fffe;
+}
+
+h4 {
+  font-family: 'Jura', sans-serif;
+  color: #f6fffe;
+}
+
 body, input {
   font-family: 'Jura', sans-serif;
   color: #f6fffe;
@@ -19,6 +30,31 @@ body, input {
   overflow-y: 'scroll';
   border: '1px solid black';
   height: '69vh';
+}
+
+#footer {
+  position: sticky;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  color: #f6fffe;
+  text-align: center;
+  border: 1px;
+  border-style: solid;
+  border-color: #f6fffe;
+  padding: 5px;
+}
+
+#navbar button {
+  background-color: Transparent;
+  background-repeat:no-repeat;
+  cursor:pointer;
+  overflow: hidden;  
+}
+
+#navbar button:hover {
+  border-color: #FFD700;
+  color: #FFD700;
 }
 
 @media screen and (max-height: 600px) {

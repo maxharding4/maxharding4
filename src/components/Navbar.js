@@ -5,16 +5,16 @@ const Navbar = () => {
   return (
     <div className='pa2 ba' id='navbar'>
       <Link to="/">
-        <a className='ba f6 f5-l link bg-animate white-80 hover-bg-gray dib pa3 ph4-l'>home</a>
+        <button className='ba f6 f5-l link bg-animate white-80 hover-bg-gray dib pa3 ph4-l'>home</button>
       </Link>
       <Link to="/work">
-        <a className='ba f6 f5-l link bg-animate white-80 hover-bg-gray dib pa3 ph4-l'>work</a>
+        <button className='ba f6 f5-l link bg-animate white-80 hover-bg-gray dib pa3 ph4-l'>work</button>
       </Link>
       <Link to="/travel">
-        <a className='ba f6 f5-l link bg-animate white-80 hover-bg-gray dib pa3 ph4-l'>travel</a>
+        <button className='ba f6 f5-l link bg-animate white-80 hover-bg-gray dib pa3 ph4-l'>travel</button>
       </Link>
       <Link to="/info">
-        <a className='ba f6 f5-l link bg-animate white-80 hover-bg-gray dib pa3 ph4-l'>info</a>
+        <button className='ba f6 f5-l link bg-animate white-80 hover-bg-gray dib pa3 ph4-l'>info</button>
       </Link>
     </div>
   );

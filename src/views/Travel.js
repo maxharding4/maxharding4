@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
-import CardList from '../components/CardList';
-import SearchBox from '../components/Searchbox';
+import { Route, BrowserRouter } from 'react-router-dom';
+import CountryList from '../components/lists/travel/CountryList';
+import CountrySearchBox from '../components/searchBox/CountrySearchBox';
 import Scroll from '../components/Scroll';
 import ErrorBoundry from '../components/ErrorBoundry';
-import { countries } from '../countries';
+import { countries } from '../data/countries';
 import '../styles/styles.css';
 import 'tachyons';
 
@@ -35,15 +36,17 @@ export default class Travel extends Component {
     return (
       <div>
         <div className='tc'>
-          <h1 className='f1' id='pageHeader'>Travel Album</h1>
-          <div className='pa2' id='searchBox'>
-            <SearchBox searchChange={this.onSearchChange} />
-          </div>
-          <Scroll>
-            <ErrorBoundry>
-              <CardList countries={filteredCountries} />
-            </ErrorBoundry>
-          </Scroll>
+          <BrowserRouter>
+            <h1 className='f1' id='pageHeader'>Travel Album</h1>
+            <div className='pa2' id='searchBox'>
+              <CountrySearchBox searchChange={this.onSearchChange} />
+            </div>
+            <Scroll>
+              <ErrorBoundry>
+                <CountryList countries={filteredCountries} />
+              </ErrorBoundry>
+            </Scroll>
+          </BrowserRouter>
         </div>
       </div>
     )

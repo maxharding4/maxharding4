@@ -1,14 +1,15 @@
 {
-  "name": "robofriends",
-  "homepage": "https://maxharding4.github.io/maxharding4",
+  "name": "maxharding4.com",
+  "homepage": "https://maxharding4.s3.eu-west-2.amazonaws.com/",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
     "gh-pages": "^2.1.1",
-    "react": "^16.11.0",
-    "react-dom": "^16.11.0",
+    "react": "^16.12.0",
+    "react-dom": "^16.12.0",
+    "react-responsive-modal": "^4.0.1",
     "react-router-dom": "^5.1.2",
-    "react-scripts": "3.2.0",
+    "react-scripts": "^3.3.0",
     "tachyons": "^4.11.1"
   },
   "scripts": {
