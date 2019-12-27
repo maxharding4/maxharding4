@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Route, BrowserRouter } from 'react-router-dom';
 import PictureList from '../../../../components/lists/travel/PictureList';
+import PictureSearchBox from '../../../../components/searchBox/PictureSearchBox';
 import Scroll from '../../../../components/Scroll';
 import ErrorBoundry from '../../../../components/ErrorBoundry';
 import { photos } from '../../../../data/canada/ottawa';
@@ -37,6 +38,9 @@ export default class Ottawa extends Component {
       <div>
         <div className='tc'>
           <h1 className='f1' id='pageHeader'>Ottawa, Canada</h1>
+          <div className='pa2' id='searchBox'>
+            <PictureSearchBox searchChange={this.onSearchChange} />
+          </div>
           <Scroll>
             <ErrorBoundry>
               <PictureList photos={filteredPhotos}/>

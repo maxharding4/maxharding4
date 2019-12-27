@@ -87,46 +87,10 @@ export const photos = [
     id: 15,
     country: 'canada',
     location: 'drumheller',
-    name: 'Royal Tyrrell Museum'
-  },
-  {
-    id: 16,
-    country: 'canada',
-    location: 'drumheller',
-    name: 'Royal Tyrrell Museum'
-  },
-  {
-    id: 17,
-    country: 'canada',
-    location: 'drumheller',
-    name: 'Royal Tyrrell Museum'
-  },
-  {
-    id: 18,
-    country: 'canada',
-    location: 'drumheller',
-    name: 'Royal Tyrrell Museum'
-  },
-  {
-    id: 19,
-    country: 'canada',
-    location: 'drumheller',
-    name: 'Royal Tyrrell Museum'
-  },
-  {
-    id: 20,
-    country: 'canada',
-    location: 'drumheller',
-    name: 'Royal Tyrrell Museum'
-  },
-  {
-    id: 21,
-    country: 'canada',
-    location: 'drumheller',
     name: 'drumhellerheller Badlands'
   },
   {
-    id: 22,
+    id: 16,
     country: 'canada',
     location: 'drumheller',
     name: 'drumhellerheller Badlands'
