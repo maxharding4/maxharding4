@@ -113,5 +113,70 @@ export const photos = [
     location: 'icefields',
     name: 'Icefields Parkway'
   },
-
+  {
+    id: 20,
+    country: 'canada',
+    location: 'icefields',
+    name: 'Bow Lake'
+  },
+  {
+    id: 21,
+    country: 'canada',
+    location: 'icefields',
+    name: 'Bow Lake'
+  },
+  {
+    id: 22,
+    country: 'canada',
+    location: 'icefields',
+    name: 'Bow Lake'
+  },
+  {
+    id: 23,
+    country: 'canada',
+    location: 'icefields',
+    name: 'Bow Lake'
+  },
+  {
+    id: 24,
+    country: 'canada',
+    location: 'icefields',
+    name: 'Bow Lake'
+  },
+  {
+    id: 25,
+    country: 'canada',
+    location: 'icefields',
+    name: 'Bow Lake'
+  },
+  {
+    id: 26,
+    country: 'canada',
+    location: 'icefields',
+    name: 'Bow Lake'
+  },
+  {
+    id: 27,
+    country: 'canada',
+    location: 'icefields',
+    name: 'Bow Lake'
+  },
+  {
+    id: 28,
+    country: 'canada',
+    location: 'icefields',
+    name: 'Bow Lake'
+  },
+  {
+    id: 29,
+    country: 'canada',
+    location: 'icefields',
+    name: 'Bow Lake'
+  },
+  {
+    id: 30,
+    country: 'canada',
+    location: 'icefields',
+    name: 'Bow Lake'
+  },
 ]

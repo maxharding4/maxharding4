@@ -10,10 +10,13 @@ import Pantanal from '../views/travel/country/brazil/Pantanal';
 import Canada from '../views/travel/country/Canada';
 import Banff from '../views/travel/country/canada/banff';
 import Bowen from '../views/travel/country/canada/bowen';
+import Drumheller from '../views/travel/country/canada/drumheller';
 import Duffey from '../views/travel/country/canada/duffey';
 import Icefields from '../views/travel/country/canada/icefields';
 import Jasper from '../views/travel/country/canada/jasper';
 import Joffre from '../views/travel/country/canada/joffre';
+import Louise from '../views/travel/country/canada/louise';
+import Moraine from '../views/travel/country/canada/moraine';
 import Ottawa from '../views/travel/country/canada/ottawa';
 import Squamish from '../views/travel/country/canada/squamish';
 import Yellowhead from '../views/travel/country/canada/yellowhead';
@@ -51,12 +54,14 @@ class App extends Component {
           <Route exact path='/travel/canada' render={() => (
             <Canada />
           )} />
-
           <Route exact path='/travel/canada/banff' render={() => (
             <Banff />
           )} />
           <Route exact path='/travel/canada/bowen' render={() => (
             <Bowen />
+          )} />
+          <Route exact path='/travel/canada/drumheller' render={() => (
+            <Drumheller />
           )} />
           <Route exact path='/travel/canada/duffey' render={() => (
             <Duffey />
@@ -69,6 +74,12 @@ class App extends Component {
           )} />
           <Route exact path='/travel/canada/joffre' render={() => (
             <Joffre />
+          )} />
+          <Route exact path='/travel/canada/louise' render={() => (
+            <Louise />
+          )} />
+          <Route exact path='/travel/canada/moraine' render={() => (
+            <Moraine />
           )} />
           <Route exact path='/travel/canada/ottawa' render={() => (
             <Ottawa />
