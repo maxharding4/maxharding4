@@ -20,6 +20,7 @@ import Moraine from '../views/travel/country/canada/moraine';
 import Ottawa from '../views/travel/country/canada/ottawa';
 import Squamish from '../views/travel/country/canada/squamish';
 import Yellowhead from '../views/travel/country/canada/yellowhead';
+import Info from '../views/Info';
 import '../styles/styles.css';
 
 class App extends Component {
@@ -42,6 +43,11 @@ class App extends Component {
             <Route exact path='/travel' render={() => (
               <div>
                 <Travel />
+              </div>
+            )} />
+            <Route exact path='/info' render={() => (
+              <div>
+                <Info />
               </div>
             )} />
           </div>
