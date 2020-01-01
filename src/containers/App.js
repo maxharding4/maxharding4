@@ -30,73 +30,26 @@ class App extends Component {
         <BrowserRouter>
           <Navbar />
           <div>
-            <Route exact path='/' render={() => (
-              <div>
-                <Home />
-              </div>
-            )} />
-            <Route exact path='/work' render={() => (
-              <div>
-                <Work />
-              </div>
-            )} />
-            <Route exact path='/travel' render={() => (
-              <div>
-                <Travel />
-              </div>
-            )} />
-            <Route exact path='/info' render={() => (
-              <div>
-                <Info />
-              </div>
-            )} />
+            <Route exact path='/' render={() => (<Home />)} />
+            <Route exact path='/work' render={() => (<Work />)} />
+            <Route exact path='/travel' render={() => (<Travel />)} />
+            <Route exact path='/info' render={() => (<Info />)} />
           </div>
-          <Route exact path='/travel/brazil' render={() => (
-            <Brazil />
-          )} />
-          <Route exact path='/travel/brazil/pantanal' render={() => (
-            <Pantanal />
-          )} />
-          <Route exact path='/travel/canada' render={() => (
-            <Canada />
-          )} />
-          <Route exact path='/travel/canada/banff' render={() => (
-            <Banff />
-          )} />
-          <Route exact path='/travel/canada/bowen' render={() => (
-            <Bowen />
-          )} />
-          <Route exact path='/travel/canada/drumheller' render={() => (
-            <Drumheller />
-          )} />
-          <Route exact path='/travel/canada/duffey' render={() => (
-            <Duffey />
-          )} />
-          <Route exact path='/travel/canada/icefields' render={() => (
-            <Icefields />
-          )} />
-          <Route exact path='/travel/canada/jasper' render={() => (
-            <Jasper />
-          )} />
-          <Route exact path='/travel/canada/joffre' render={() => (
-            <Joffre />
-          )} />
-          <Route exact path='/travel/canada/louise' render={() => (
-            <Louise />
-          )} />
-          <Route exact path='/travel/canada/moraine' render={() => (
-            <Moraine />
-          )} />
-          <Route exact path='/travel/canada/ottawa' render={() => (
-            <Ottawa />
-          )} />
-          <Route exact path='/travel/canada/squamish' render={() => (
-            <Squamish />
-          )} />
-          <Route exact path='/travel/canada/yellowhead' render={() => (
-            <Yellowhead />
-          )} />
-
+          <Route exact path='/travel/brazil' render={() => (<Brazil />)} />
+          <Route exact path='/travel/brazil/pantanal' render={() => (<Pantanal />)} />
+          <Route exact path='/travel/canada' render={() => (<Canada />)} />
+          <Route exact path='/travel/canada/banff' render={() => (<Banff />)} />
+          <Route exact path='/travel/canada/bowen' render={() => (<Bowen />)} />
+          <Route exact path='/travel/canada/drumheller' render={() => (<Drumheller />)} />
+          <Route exact path='/travel/canada/duffey' render={() => (<Duffey />)} />
+          <Route exact path='/travel/canada/icefields' render={() => (<Icefields />)} />
+          <Route exact path='/travel/canada/jasper' render={() => (<Jasper />)} />
+          <Route exact path='/travel/canada/joffre' render={() => (<Joffre />)} />
+          <Route exact path='/travel/canada/louise' render={() => (<Louise />)} />
+          <Route exact path='/travel/canada/moraine' render={() => (<Moraine />)} />
+          <Route exact path='/travel/canada/ottawa' render={() => (<Ottawa />)} />
+          <Route exact path='/travel/canada/squamish' render={() => (<Squamish />)} />
+          <Route exact path='/travel/canada/yellowhead' render={() => (<Yellowhead />)} />
         </BrowserRouter>
         <div>
           <Footer />
