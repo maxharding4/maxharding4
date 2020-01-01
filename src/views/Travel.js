@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Route, BrowserRouter } from 'react-router-dom';
+import { BrowserRouter } from 'react-router-dom';
 import CountryList from '../components/lists/travel/CountryList';
 import CountrySearchBox from '../components/searchBox/CountrySearchBox';
 import Scroll from '../components/Scroll';

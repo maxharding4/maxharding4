@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import { Route, BrowserRouter } from 'react-router-dom';
 import Scroll from '../components/Scroll';
 import ErrorBoundry from '../components/ErrorBoundry';
 import WorkList from '../components/lists/WorkList';

@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import { Route, BrowserRouter } from 'react-router-dom';
 import PictureList from '../../../../components/lists/travel/PictureList';
 import PictureSearchBox from '../../../../components/searchBox/PictureSearchBox';
 import Scroll from '../../../../components/Scroll';

@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import { Route, BrowserRouter } from 'react-router-dom';
 import PictureList from '../../../../components/lists/travel/PictureList';
 import Scroll from '../../../../components/Scroll';
 import ErrorBoundry from '../../../../components/ErrorBoundry';
