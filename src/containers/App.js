@@ -7,10 +7,10 @@ import Travel from '../views/Travel';
 import Footer from '../components/Footer';
 
 import Austria from '../views/travel/country/Austria';
-import Vienna from '../views/travel/country/austria/Vienna';
+import Vienna from '../views/travel/country/austria/vienna';
 import Brazil from '../views/travel/country/Brazil';
-import Iguazu from '../views/travel/country/brazil/Iguazu';
-import Pantanal from '../views/travel/country/brazil/Pantanal';
+import Iguazu from '../views/travel/country/brazil/iguazu';
+import Pantanal from '../views/travel/country/brazil/pantanal';
 import Canada from '../views/travel/country/Canada';
 import Banff from '../views/travel/country/canada/banff';
 import Bowen from '../views/travel/country/canada/bowen';
@@ -24,6 +24,15 @@ import Moraine from '../views/travel/country/canada/moraine';
 import Ottawa from '../views/travel/country/canada/ottawa';
 import Squamish from '../views/travel/country/canada/squamish';
 import Yellowhead from '../views/travel/country/canada/yellowhead';
+import Cuba from '../views/travel/country/Cuba';
+import Havana from '../views/travel/country/cuba/havana';
+import Veradero from '../views/travel/country/cuba/veradero';
+import England from '../views/travel/country/England';
+import Lympne from '../views/travel/country/england/lympne';
+import Margate from '../views/travel/country/england/margate';
+import York from '../views/travel/country/england/york';
+import Lithuania from '../views/travel/country/Lithuania';
+import Vilnius from '../views/travel/country/lithuania/vilnius';
 import Info from '../views/Info';
 import '../styles/styles.css';
 
@@ -57,6 +66,15 @@ class App extends Component {
           <Route exact path='/travel/canada/ottawa' render={() => (<Ottawa />)} />
           <Route exact path='/travel/canada/squamish' render={() => (<Squamish />)} />
           <Route exact path='/travel/canada/yellowhead' render={() => (<Yellowhead />)} />
+          <Route exact path='/travel/cuba' render={() => (<Cuba />)} />
+          <Route exact path='/travel/cuba/havana' render={() => (<Havana />)} />
+          <Route exact path='/travel/cuba/veradero' render={() => (<Veradero />)} />
+          <Route exact path='/travel/england' render={() => (<England />)} />
+          <Route exact path='/travel/england/lympne' render={() => (<Lympne />)} />
+          <Route exact path='/travel/england/margate' render={() => (<Margate />)} />
+          <Route exact path='/travel/england/york' render={() => (<York />)} />
+          <Route exact path='/travel/lithuania' render={() => (<Lithuania />)} />
+          <Route exact path='/travel/lithuania/vilnius' render={() => (<Vilnius />)} />
         </BrowserRouter>
         <div>
           <Footer />
