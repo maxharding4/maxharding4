@@ -5,6 +5,9 @@ import Home from '../views/Home';
 import Work from '../views/Work';
 import Travel from '../views/Travel';
 import Footer from '../components/Footer';
+
+import Austria from '../views/travel/country/Austria';
+import Vienna from '../views/travel/country/austria/Vienna';
 import Brazil from '../views/travel/country/Brazil';
 import Pantanal from '../views/travel/country/brazil/Pantanal';
 import Canada from '../views/travel/country/Canada';
@@ -35,6 +38,8 @@ class App extends Component {
             <Route exact path='/travel' render={() => (<Travel />)} />
             <Route exact path='/info' render={() => (<Info />)} />
           </div>
+          <Route exact path='/travel/austria' render={() => (<Austria />)} />
+          <Route exact path='/travel/austria/vienna' render={() => (<Vienna />)} />
           <Route exact path='/travel/brazil' render={() => (<Brazil />)} />
           <Route exact path='/travel/brazil/pantanal' render={() => (<Pantanal />)} />
           <Route exact path='/travel/canada' render={() => (<Canada />)} />
