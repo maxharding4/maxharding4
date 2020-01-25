@@ -31,6 +31,8 @@ import England from '../views/travel/country/England';
 import Lympne from '../views/travel/country/england/lympne';
 import Margate from '../views/travel/country/england/margate';
 import York from '../views/travel/country/england/york';
+import Estonia from '../views/travel/country/Estonia';
+import Tallinn from '../views/travel/country/estonia/tallinn';
 import Lithuania from '../views/travel/country/Lithuania';
 import Vilnius from '../views/travel/country/lithuania/vilnius';
 import Info from '../views/Info';
@@ -73,6 +75,8 @@ class App extends Component {
           <Route exact path='/travel/england/lympne' render={() => (<Lympne />)} />
           <Route exact path='/travel/england/margate' render={() => (<Margate />)} />
           <Route exact path='/travel/england/york' render={() => (<York />)} />
+          <Route exact path='/travel/estonia' render={() => (<Estonia />)} />
+          <Route exact path='/travel/estonia/tallinn' render={() => (<Tallinn />)} />
           <Route exact path='/travel/lithuania' render={() => (<Lithuania />)} />
           <Route exact path='/travel/lithuania/vilnius' render={() => (<Vilnius />)} />
         </BrowserRouter>
