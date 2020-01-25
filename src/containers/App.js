@@ -33,6 +33,8 @@ import Margate from '../views/travel/country/england/margate';
 import York from '../views/travel/country/england/york';
 import Estonia from '../views/travel/country/Estonia';
 import Tallinn from '../views/travel/country/estonia/tallinn';
+import Finland from '../views/travel/country/Finland';
+import Helsinki from '../views/travel/country/finland/helsinki';
 import Lithuania from '../views/travel/country/Lithuania';
 import Vilnius from '../views/travel/country/lithuania/vilnius';
 import Info from '../views/Info';
@@ -77,6 +79,8 @@ class App extends Component {
           <Route exact path='/travel/england/york' render={() => (<York />)} />
           <Route exact path='/travel/estonia' render={() => (<Estonia />)} />
           <Route exact path='/travel/estonia/tallinn' render={() => (<Tallinn />)} />
+          <Route exact path='/travel/finland' render={() => (<Finland />)} />
+          <Route exact path='/travel/finland/helsinki' render={() => (<Helsinki />)} />
           <Route exact path='/travel/lithuania' render={() => (<Lithuania />)} />
           <Route exact path='/travel/lithuania/vilnius' render={() => (<Vilnius />)} />
         </BrowserRouter>
