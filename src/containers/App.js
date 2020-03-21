@@ -35,6 +35,13 @@ import Estonia from '../views/travel/country/Estonia';
 import Tallinn from '../views/travel/country/estonia/tallinn';
 import Finland from '../views/travel/country/Finland';
 import Helsinki from '../views/travel/country/finland/helsinki';
+import France from '../views/travel/country/France';
+import Bethune from '../views/travel/country/france/bethune';
+import Dijon from '../views/travel/country/france/dijon';
+import Marseille from '../views/travel/country/france/marseille';
+import Ireland from '../views/travel/country/Ireland';
+import Dublin from '../views/travel/country/ireland/dublin';
+import Galway from '../views/travel/country/ireland/galway';
 import Lithuania from '../views/travel/country/Lithuania';
 import Vilnius from '../views/travel/country/lithuania/vilnius';
 import Info from '../views/Info';
@@ -81,6 +88,13 @@ class App extends Component {
           <Route exact path='/travel/estonia/tallinn' render={() => (<Tallinn />)} />
           <Route exact path='/travel/finland' render={() => (<Finland />)} />
           <Route exact path='/travel/finland/helsinki' render={() => (<Helsinki />)} />
+          <Route exact path='/travel/france' render={() => (<France />)} />
+          <Route exact path='/travel/france/bethune' render={() => (<Bethune />)} />
+          <Route exact path='/travel/france/dijon' render={() => (<Dijon />)} />
+          <Route exact path='/travel/france/marseille' render={() => (<Marseille />)} />
+          <Route exact path='/travel/ireland' render={() => (<Ireland />)} />
+          <Route exact path='/travel/ireland/dublin' render={() => (<Dublin />)} />
+          <Route exact path='/travel/ireland/galway' render={() => (<Galway />)} />
           <Route exact path='/travel/lithuania' render={() => (<Lithuania />)} />
           <Route exact path='/travel/lithuania/vilnius' render={() => (<Vilnius />)} />
         </BrowserRouter>
