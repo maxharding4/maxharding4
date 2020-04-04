@@ -1,13 +1,14 @@
 import React, { Component } from 'react';
 import PictureList from '../../../../components/lists/travel/PictureList';
+import PictureSearchBox from '../../../../components/searchBox/PictureSearchBox';
 import Scroll from '../../../../components/Scroll';
 import ErrorBoundry from '../../../../components/ErrorBoundry';
-import { photos } from '../../../../data/canada/bowen';
+import { photos } from '../../../../data/maldives/helengeli';
 
 import '../../../../styles/styles.css';
 import 'tachyons';
 
-export default class Bowen extends Component {
+export default class Helengeli extends Component {
   state = {
   }
 
@@ -35,7 +36,10 @@ export default class Bowen extends Component {
     return (
       <div>
         <div className='tc'>
-          <h1 className='f1' id='pageHeader'>Bowen Island, Canada</h1>
+          <h1 className='f1' id='pageHeader'>Helengeli, Maldives</h1>
+          <div className='pa2' id='searchBox'>
+            <PictureSearchBox searchChange={this.onSearchChange} />
+          </div>
           <Scroll>
             <ErrorBoundry>
               <PictureList photos={filteredPhotos}/>

@@ -11,19 +11,7 @@ import Vienna from '../views/travel/country/austria/vienna';
 import Brazil from '../views/travel/country/Brazil';
 import Iguazu from '../views/travel/country/brazil/iguazu';
 import Pantanal from '../views/travel/country/brazil/pantanal';
-import Canada from '../views/travel/country/Canada';
-import Banff from '../views/travel/country/canada/banff';
-import Bowen from '../views/travel/country/canada/bowen';
-import Drumheller from '../views/travel/country/canada/drumheller';
-import Duffey from '../views/travel/country/canada/duffey';
-import Icefields from '../views/travel/country/canada/icefields';
-import Jasper from '../views/travel/country/canada/jasper';
-import Joffre from '../views/travel/country/canada/joffre';
-import Louise from '../views/travel/country/canada/louise';
-import Moraine from '../views/travel/country/canada/moraine';
-import Ottawa from '../views/travel/country/canada/ottawa';
-import Squamish from '../views/travel/country/canada/squamish';
-import Yellowhead from '../views/travel/country/canada/yellowhead';
+import { Canada, Banff, Bowen, Drumheller, Duffey, Icefields, Jasper, Joffre, Louise, Moraine, Ottawa, Squamish, Yellowhead } from '../views/travel/country/canada/';
 import Cuba from '../views/travel/country/Cuba';
 import Havana from '../views/travel/country/cuba/havana';
 import Veradero from '../views/travel/country/cuba/veradero';
@@ -42,14 +30,9 @@ import Marseille from '../views/travel/country/france/marseille';
 import Ireland from '../views/travel/country/Ireland';
 import Dublin from '../views/travel/country/ireland/dublin';
 import Galway from '../views/travel/country/ireland/galway';
-import Italy from '../views/travel/country/Italy';
-import LakeComo from '../views/travel/country/italy/como';
-import Florence from '../views/travel/country/italy/florence';
-import Monza from '../views/travel/country/italy/monza';
-import Pisa from '../views/travel/country/italy/pisa';
-import Rome from '../views/travel/country/italy/rome';
-import Trieste from '../views/travel/country/italy/trieste';
-import Turin from '../views/travel/country/italy/turin';
+import { Italy, LakeComo, Florence, Monza, Pisa, Rome, Trieste, Turin } from '../views/travel/country/italy/';
+import Maldives from '../views/travel/country/Maldives';
+import Helengeli from '../views/travel/country/maldives/helengeli';
 import Lithuania from '../views/travel/country/Lithuania';
 import Vilnius from '../views/travel/country/lithuania/vilnius';
 import Info from '../views/Info';
@@ -113,6 +96,8 @@ class App extends Component {
           <Route exact path='/travel/italy/turin' render={() => (<Turin />)} />
           <Route exact path='/travel/lithuania' render={() => (<Lithuania />)} />
           <Route exact path='/travel/lithuania/vilnius' render={() => (<Vilnius />)} />
+          <Route exact path='/travel/maldives' render={() => (<Maldives />)} />
+          <Route exact path='/travel/maldives/helengeli' render={() => (<Helengeli />)} />
         </BrowserRouter>
         <div>
           <Footer />
