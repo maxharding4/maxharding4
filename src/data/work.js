@@ -21,6 +21,15 @@ export const employment = [
     logo: 'ciq.png',
     position: 'QA Engineer',
     from: '2018',
-    to: 'Present'
+    to: '2020'
   },
+  {
+    id: 3,
+    name: 'Bulb',
+    logo: 'bulb.jpg',
+    position: 'QA',
+    from: '2020',
+    to: 'Present'
+  }
+
 ]

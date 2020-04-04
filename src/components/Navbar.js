@@ -7,13 +7,13 @@ const Navbar = () => {
       <Link to="/">
         <button className='ba f6 f5-l link bg-animate white-80 hover-bg-gray dib pa3 ph4-l'>home</button>
       </Link>
-      <Link to="/work">
+      <Link to="">
         <button className='ba f6 f5-l link bg-animate white-80 hover-bg-gray dib pa3 ph4-l'>work</button>
       </Link>
       <Link to="/travel">
         <button className='ba f6 f5-l link bg-animate white-80 hover-bg-gray dib pa3 ph4-l'>travel</button>
       </Link>
-      <Link to="/info">
+      <Link to="">
         <button className='ba f6 f5-l link bg-animate white-80 hover-bg-gray dib pa3 ph4-l'>info</button>
       </Link>
     </div>
