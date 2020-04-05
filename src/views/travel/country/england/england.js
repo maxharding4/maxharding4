@@ -1,13 +1,13 @@
 import React, { Component } from 'react';
-import LocationList from '../../../components/lists/travel/LocationList';
-import LocationSearchBox from '../../../components/searchBox/LocationSearchBox';
-import Scroll from '../../../components/Scroll';
-import ErrorBoundry from '../../../components/ErrorBoundry';
-import { locations } from '../../../data/austria/austria';
-import '../../../styles/styles.css';
+import LocationList from '../../../../components/lists/travel/LocationList';
+import LocationSearchBox from '../../../../components/searchBox/LocationSearchBox';
+import Scroll from '../../../../components/Scroll';
+import ErrorBoundry from '../../../../components/ErrorBoundry';
+import { locations } from '../../../../data/england/england';
+import '../../../../styles/styles.css';
 import 'tachyons';
 
-export default class Austria extends Component {
+export default class England extends Component {
   state = {
   }
 
@@ -35,7 +35,7 @@ export default class Austria extends Component {
     return (
       <div>
         <div className='tc'>
-          <h1 className='f1' id='pageHeader'>Austria</h1>
+          <h1 className='f1' id='pageHeader'>England</h1>
           <div className='pa2' id='searchBox'>
             <LocationSearchBox searchChange={this.onSearchChange} />
           </div>
