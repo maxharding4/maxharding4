@@ -1,4 +1,6 @@
 version: 2.1
+orbs:
+  snyk: snyk/snyk@0.0.8
 jobs:
   build:
     docker:
@@ -21,5 +23,10 @@ jobs:
           paths:
             - node_modules
           key: v1-dependencies-{{ checksum "package.json" }}
+
+      - snyk/scan:
+          fail-on-issues: false
+          monitor-on-build: false
+          severity-threshold: high
 
       - run: yarn build
