@@ -20,7 +20,7 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "cypress:run": "cypress run --record --key d9b4f3b2-d146-4a45-a28e-0b83a7eaf937",
+    "cypress:run": "cypress run --record --key=${CYPRESS_RECORD_KEY}",
     "ci:cypress-run": "start-server-and-test start http://localhost:3000 cypress:run"
   },
   "eslintConfig": {
