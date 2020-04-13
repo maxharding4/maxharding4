@@ -1,6 +1,4 @@
 import React, { Component } from 'react';
-import Scroll from '../components/Scroll';
-import ErrorBoundry from '../components/ErrorBoundry';
 import '../styles/styles.css';
 import 'tachyons';
 
