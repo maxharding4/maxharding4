@@ -1,5 +1,5 @@
-import Maldives from './maldives';
-import Helengeli from './helengeli';
+import Maldives from './maldives.js';
+import Helengeli from './helengeli.js';
 
 export {
   Maldives,

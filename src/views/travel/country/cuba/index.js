@@ -1,6 +1,6 @@
-import Cuba from './cuba';
-import Havana from './havana';
-import Veradero from './veradero';
+import Cuba from './cuba.js';
+import Havana from './havana.js';
+import Veradero from './veradero.js';
 
 export {
   Cuba,

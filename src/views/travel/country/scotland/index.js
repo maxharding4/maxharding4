@@ -1,5 +1,5 @@
-import Scotland from './scotland';
-import Edinburgh from './edinburgh';
+import Scotland from './scotland.js';
+import Edinburgh from './edinburgh.js';
 
 export {
   Scotland,

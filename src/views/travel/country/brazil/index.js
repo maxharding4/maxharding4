@@ -1,6 +1,6 @@
-import Brazil from './brazil';
-import Iguazu from './iguazu';
-import Pantanal from './pantanal';
+import Brazil from './brazil.js';
+import Iguazu from './iguazu.js';
+import Pantanal from './pantanal.js';
 
 export {
   Brazil,

@@ -1,4 +1,4 @@
-import Austria from './austria';
+import Austria from './austria.js';
 import Vienna from './vienna.js';
 
 export {
