@@ -18,6 +18,8 @@ import { Ireland, Dublin, Galway } from '../views/travel/country/ireland/';
 import { Italy, LakeComo, Florence, Monza, Pisa, Rome, Trieste, Turin } from '../views/travel/country/italy/';
 import { Lithuania, Vilnius } from '../views/travel/country/lithuania/';
 import { Maldives, Helengeli } from '../views/travel/country/maldives/';
+import { Montenegro, Budva } from '../views/travel/country/montenegro/';
+import { Scotland, Edinburgh } from '../views/travel/country/scotland';
 import Info from '../views/Info';
 import '../styles/styles.css';
 
@@ -81,6 +83,10 @@ class App extends Component {
           <Route exact path='/travel/lithuania/vilnius' render={() => (<Vilnius />)} />
           <Route exact path='/travel/maldives' render={() => (<Maldives />)} />
           <Route exact path='/travel/maldives/helengeli' render={() => (<Helengeli />)} />
+          <Route exact path='/travel/montenegro' render={() => (<Montenegro />)} />
+          <Route exact path='/travel/montenegro/budva' render={() => (<Budva />)} />
+          <Route exact path='/travel/scotland' render={() => (<Scotland />)} />
+          <Route exact path='/travel/scotland/edinburgh' render={() => (<Edinburgh />)} />
         </BrowserRouter>
         <div>
           <Footer />
