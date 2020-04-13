@@ -1,7 +1,4 @@
 import React, { Component } from 'react';
-import Scroll from '../components/Scroll';
-import ErrorBoundry from '../components/ErrorBoundry';
-import WorkList from '../components/lists/WorkList';
 import { employment } from '../data/work';
 import '../styles/styles.css';
 import 'tachyons';
@@ -23,10 +20,6 @@ export default class Work extends Component {
   }
 
   render() {
-    const { employment, searchfield } = this.state;
-    const filteredEmployment = employment.filter(employment => {
-      return employment.name.toLowerCase().includes(searchfield.toLowerCase());
-    })
     return (
       <div>
         <div className='tc'>
