@@ -31,11 +31,6 @@ export default class Work extends Component {
       <div>
         <div className='tc'>
           <h1 className='f1'>Work</h1>
-          <Scroll>
-            <ErrorBoundry>
-              <WorkList employment={filteredEmployment} />
-            </ErrorBoundry>
-          </Scroll>
         </div>
       </div>
     )
