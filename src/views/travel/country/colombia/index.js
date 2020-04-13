@@ -1,9 +1,9 @@
-import Colombia from './colombia.js';
-import Bogota from './bogota.js';
-import Cartagena from './cartagena.js';
-import Medellin from './medellin.js';
-import Palomino from './palomino.js';
-import Quindio from './quindio.js';
+import Colombia from './colombia';
+import Bogota from './bogota';
+import Cartagena from './cartagena';
+import Medellin from './medellin';
+import Palomino from './palomino';
+import Quindio from './quindio';
 
 export {
   Colombia,

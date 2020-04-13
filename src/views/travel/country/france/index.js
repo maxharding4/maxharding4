@@ -1,7 +1,7 @@
-import France from './france.js';
-import Bethune from './bethune.js';
-import Dijon from './dijon.js';
-import Marseille from './marseille.js';
+import France from './france';
+import Bethune from './bethune';
+import Dijon from './dijon';
+import Marseille from './marseille';
 
 export {
   France,

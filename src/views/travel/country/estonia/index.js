@@ -1,5 +1,5 @@
-import Estonia from './estonia.js';
-import Tallinn from './tallinn.js';
+import Estonia from './estonia';
+import Tallinn from './tallinn';
 
 export {
   Estonia,

@@ -1,5 +1,5 @@
-import Finland from './finland.js';
-import Helsinki from './helsinki.js';
+import Finland from './finland';
+import Helsinki from './helsinki';
 
 export {
   Finland,

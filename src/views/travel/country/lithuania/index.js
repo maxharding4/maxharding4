@@ -1,5 +1,5 @@
-import Lithuania from './lithuania.js';
-import Vilnius from './vilnius.js';
+import Lithuania from './lithuania';
+import Vilnius from './vilnius';
 
 export {
   Lithuania,

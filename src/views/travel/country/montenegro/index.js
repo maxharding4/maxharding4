@@ -1,5 +1,5 @@
-import Montenegro from './montenegro.js';
-import Budva from './budva.js';
+import Montenegro from './montenegro';
+import Budva from './budva';
 
 export {
   Montenegro,

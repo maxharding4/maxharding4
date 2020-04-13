@@ -1,5 +1,5 @@
-import Slovenia from './slovenia.js';
-import Ljubljana from './ljubljana.js';
+import Slovenia from './slovenia';
+import Ljubljana from './ljubljana';
 
 export {
   Slovenia,

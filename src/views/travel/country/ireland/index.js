@@ -1,6 +1,6 @@
-import Ireland from './ireland.js';
-import Dublin from './dublin.js';
-import Galway from './galway.js';
+import Ireland from './ireland';
+import Dublin from './dublin';
+import Galway from './galway';
 
 export {
   Ireland,

@@ -1,11 +1,11 @@
-import Italy from './italy.js';
-import LakeComo from './como.js';
-import Florence from './florence.js';
-import Monza from './monza.js';
-import Pisa from './pisa.js';
-import Rome from './rome.js';
-import Trieste from './trieste.js';
-import Turin from './turin.js';
+import Italy from './italy';
+import LakeComo from './como';
+import Florence from './florence';
+import Monza from './monza';
+import Pisa from './pisa';
+import Rome from './rome';
+import Trieste from './trieste';
+import Turin from './turin';
 
 export {
   Italy,

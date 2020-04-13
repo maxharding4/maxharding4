@@ -1,5 +1,5 @@
-import Austria from './austria.js';
-import Vienna from './vienna.js';
+import Austria from './austria';
+import Vienna from './vienna';
 
 export {
   Austria,
