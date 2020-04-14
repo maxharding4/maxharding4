@@ -22,6 +22,7 @@ import { Montenegro, Budva } from '../views/travel/country/montenegro/';
 import { Scotland, Edinburgh } from '../views/travel/country/scotland';
 import { Slovenia, Ljubljana } from '../views/travel/country/slovenia';
 import { Spain, Alicante, Javea } from '../views/travel/country/spain';
+import { Switzerland, Basel } from '../views/travel/country/switzerland';
 import Info from '../views/Info';
 import '../styles/styles.css';
 
@@ -94,6 +95,8 @@ class App extends Component {
           <Route exact path='/travel/spain' render={() => (<Spain />)} />
           <Route exact path='/travel/spain/alicante' render={() => (<Alicante />)} />
           <Route exact path='/travel/spain/javea' render={() => (<Javea />)} />
+          <Route exact path='/travel/switzerland' render={() => (<Switzerland />)} />
+          <Route exact path='/travel/switzerland/basel' render={() => (<Basel />)} />
         </BrowserRouter>
         <div>
           <Footer />

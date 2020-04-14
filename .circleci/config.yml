@@ -42,6 +42,7 @@ jobs:
             --acl public-read \
             --cache-control "max-age=86400"
           overwrite: true
+      - run: aws cloudfront create-invalidation --distribution-id=EOA1ZN68DNT68 --paths /static/js/*
 
 workflows:
   version: 2
