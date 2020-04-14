@@ -40,9 +40,8 @@ jobs:
           to: 's3://maxharding4/'
           arguments: |
             --acl public-read \
-            --cache-control "max-age=86400"
+            --cache-control "max-age=43200"
           overwrite: true
-      - run: aws cloudfront create-invalidation --distribution-id=EOA1ZN68DNT68 --paths /*
 
 workflows:
   version: 2

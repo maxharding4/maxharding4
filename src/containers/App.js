@@ -10,7 +10,7 @@ import { Austria, Vienna } from '../views/travel/country/austria';
 import { Brazil, Iguazu, Pantanal } from '../views/travel/country/brazil';
 import { Canada, Banff, Bowen, Drumheller, Duffey, Icefields, Jasper, Joffre, Louise, Moraine, Ottawa, Squamish, Yellowhead } from '../views/travel/country/canada/';
 import { Cuba, Havana, Veradero } from '../views/travel/country/cuba/';
-import { England, Lympne, Margate, York } from '../views/travel/country/england/';
+import { England, Buxton, Ilkley, Lympne, Margate, York } from '../views/travel/country/england/';
 import { Estonia, Tallinn } from '../views/travel/country/estonia/';
 import { Finland, Helsinki } from '../views/travel/country/finland/';
 import { France, Bethune, Dijon, Marseille } from '../views/travel/country/france/';
@@ -60,6 +60,8 @@ class App extends Component {
           <Route exact path='/travel/cuba/havana' render={() => (<Havana />)} />
           <Route exact path='/travel/cuba/veradero' render={() => (<Veradero />)} />
           <Route exact path='/travel/england' render={() => (<England />)} />
+          <Route exact path='/travel/england/buxton' render={() => (<Buxton />)} />
+          <Route exact path='/travel/england/ilkley' render={() => (<Ilkley />)} />
           <Route exact path='/travel/england/lympne' render={() => (<Lympne />)} />
           <Route exact path='/travel/england/margate' render={() => (<Margate />)} />
           <Route exact path='/travel/england/york' render={() => (<York />)} />
