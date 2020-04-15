@@ -23,6 +23,7 @@ import { Scotland, Edinburgh } from '../views/travel/country/scotland';
 import { Slovenia, Ljubljana } from '../views/travel/country/slovenia';
 import { Spain, Alicante, Javea } from '../views/travel/country/spain';
 import { Switzerland, Basel } from '../views/travel/country/switzerland';
+import { Usa, Cape, Dc, Miami, Ny, Providence } from '../views/travel/country/usa';
 import Info from '../views/Info';
 import '../styles/styles.css';
 
@@ -99,6 +100,12 @@ class App extends Component {
           <Route exact path='/travel/spain/javea' render={() => (<Javea />)} />
           <Route exact path='/travel/switzerland' render={() => (<Switzerland />)} />
           <Route exact path='/travel/switzerland/basel' render={() => (<Basel />)} />
+          <Route exact path='/travel/usa' render={() => (<Usa />)} />
+          <Route exact path='/travel/usa/cape-cod' render={() => (<Cape />)} />
+          <Route exact path='/travel/usa/washington-dc' render={() => (<Dc />)} />
+          <Route exact path='/travel/usa/miami' render={() => (<Miami />)} />
+          <Route exact path='/travel/usa/new-york' render={() => (<Ny />)} />
+          <Route exact path='/travel/usa/providence' render={() => (<Providence />)} />
         </BrowserRouter>
         <div>
           <Footer />

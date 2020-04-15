@@ -97,6 +97,6 @@ export const countries = [
   {
     id: 20,
     name: 'United States',
-    flag: 'united-states'
+    flag: 'usa'
   },
 ]
