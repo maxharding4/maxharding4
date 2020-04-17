@@ -2,12 +2,12 @@ import React, { Component } from 'react';
 import PictureList from '../../../../components/lists/travel/PictureList';
 import Scroll from '../../../../components/Scroll';
 import ErrorBoundry from '../../../../components/ErrorBoundry';
-import { photos } from '../../../../data/brazil/iguazu-falls';
+import { photos } from '../../../../data/brazil/rio-de-janeiro';
 
 import '../../../../styles/styles.css';
 import 'tachyons';
 
-export default class Iguazu extends Component {
+export default class Rio extends Component {
   state = {
   }
 
@@ -35,7 +35,7 @@ export default class Iguazu extends Component {
     return (
       <div>
         <div className='tc'>
-          <h1 className='f1' id='pageHeader'>Iguazu Falls, Brazil</h1>
+          <h1 className='f1' id='pageHeader'>Rio de Janeiro, Brazil</h1>
           <Scroll>
             <ErrorBoundry>
               <PictureList photos={filteredPhotos}/>
