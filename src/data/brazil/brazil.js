@@ -3,7 +3,7 @@ export const locations = [
     id: 1,
     country: 'brazil',
     name: 'Iguazu Falls',
-    thumb: 'iguazu'
+    thumb: 'iguazu-falls'
   },
   {
     id: 2,
@@ -15,6 +15,6 @@ export const locations = [
     id: 3,
     country: 'brazil',
     name: 'Rio de Janeiro',
-    thumb: 'rio'
+    thumb: 'rio-de-janeiro'
   }
 ]
