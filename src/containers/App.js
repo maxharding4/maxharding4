@@ -9,6 +9,7 @@ import Footer from '../components/Footer';
 import { Austria, Vienna } from '../views/travel/country/austria';
 import { Brazil, Iguazu, Pantanal, Rio } from '../views/travel/country/brazil';
 import { Canada, Banff, Bowen, Drumheller, Duffey, Icefields, Jasper, Joffre, Louise, Moraine, Ottawa, Squamish, Yellowhead } from '../views/travel/country/canada/';
+import { Colombia, Bogota, Cartagena, Medellin, Palomino, Quindio } from '../views/travel/country/colombia/';
 import { Cuba, Havana, Veradero } from '../views/travel/country/cuba/';
 import { England, Buxton, Ilkley, Lympne, Margate, York } from '../views/travel/country/england/';
 import { Estonia, Tallinn } from '../views/travel/country/estonia/';
@@ -58,6 +59,12 @@ class App extends Component {
           <Route exact path='/travel/canada/ottawa' render={() => (<Ottawa />)} />
           <Route exact path='/travel/canada/squamish' render={() => (<Squamish />)} />
           <Route exact path='/travel/canada/yellowhead' render={() => (<Yellowhead />)} />
+          <Route exact path='/travel/colombia' render={() => (<Colombia />)} />
+          <Route exact path='/travel/colombia/bogota' render={() => (<Bogota />)} />
+          <Route exact path='/travel/colombia/cartagena' render={() => (<Cartagena />)} />
+          <Route exact path='/travel/colombia/medellin' render={() => (<Medellin />)} />
+          <Route exact path='/travel/colombia/palomino' render={() => (<Palomino />)} />
+          <Route exact path='/travel/colombia/quindio' render={() => (<Quindio />)} />
           <Route exact path='/travel/cuba' render={() => (<Cuba />)} />
           <Route exact path='/travel/cuba/havana' render={() => (<Havana />)} />
           <Route exact path='/travel/cuba/veradero' render={() => (<Veradero />)} />
