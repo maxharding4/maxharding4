@@ -60,7 +60,7 @@ export const photos = [
     name: 'Palomino'
   },
   {
-    id: 10,
+    id: 11,
     country: 'colombia',
     location: 'palomino',
     name: 'Palomino'
