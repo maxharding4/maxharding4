@@ -37,13 +37,13 @@ jobs:
       - run: yarn build
       - aws-s3/sync:
           from: build
-          to: 's3://maxharding4/'
+          to: 's3://maxharding4.com/'
           arguments: |
             --acl public-read \
             --cache-control "max-age=43200"
           overwrite: true
-      - run: aws cloudfront create-invalidation --distribution-id=EOA1ZN68DNT68 --paths /index.html
-      - run: aws cloudfront create-invalidation --distribution-id=EOA1ZN68DNT68 --paths /service-worker.js
+      - run: aws cloudfront create-invalidation --distribution-id=E18D7W5LICE64E --paths /index.html
+      - run: aws cloudfront create-invalidation --distribution-id=E18D7W5LICE64E --paths /service-worker.js
 
 workflows:
   version: 2
