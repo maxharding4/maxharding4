@@ -12,7 +12,8 @@
     "tachyons": "^4.11.1"
   },
   "devDependencies": {
-    "cypress": "^4.3.0",
+    "chai-colors": "^1.0.1",
+    "cypress": "4.5.0",
     "start-server-and-test": "^1.10.11"
   },
   "scripts": {
