@@ -35,7 +35,7 @@ export default class Rio extends Component {
     return (
       <div>
         <div className='tc'>
-          <h1 className='f1' id='pageHeader'>Rio de Janeiro, Brazil</h1>
+          <h1 className='f1' data-test='page-header'>Rio de Janeiro, Brazil</h1>
           <Scroll>
             <ErrorBoundry>
               <PictureList photos={filteredPhotos}/>

@@ -3,7 +3,7 @@ import Card from '../../cards/travel/CountryCard';
 
 const CountryList = ({ countries }) => {
   return (
-    <div>
+    <div data-test='country-list'>
       {
         countries.map((user, i) => {
           return (

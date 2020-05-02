@@ -35,10 +35,10 @@ export default class Travel extends Component {
     })
     return (
       <div>
-        <div className='tc'>
+        <div data-test='content' className='tc'>
           <BrowserRouter>
-            <h1 className='f1' id='pageHeader'>Travel Album</h1>
-            <div className='pa2' id='searchBox'>
+            <h1 data-test='page-header' className='f1'>Travel Album</h1>
+            <div data-test='search-box' className='pa2' >
               <CountrySearchBox searchChange={this.onSearchChange} />
             </div>
             <Scroll>

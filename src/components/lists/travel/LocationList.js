@@ -3,7 +3,7 @@ import CityCard from '../../cards/travel/CityCard';
 
 const LocationList = ({ locations }) => {
   return (
-    <div>
+    <div data-test='city-list'>
       {
         locations.map((user, i) => {
           return (

@@ -36,7 +36,7 @@ export default class Providence extends Component {
     return (
       <div>
         <div className='tc'>
-          <h1 className='f1' id='pageHeader'>Providence, United States</h1>
+          <h1 className='f1' data-test='page-header'>Providence, United States</h1>
           <div className='pa2' id='searchBox'>
             <PictureSearchBox searchChange={this.onSearchChange} />
           </div>

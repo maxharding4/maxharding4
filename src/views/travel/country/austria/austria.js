@@ -35,8 +35,8 @@ export default class Austria extends Component {
     return (
       <div>
         <div className='tc'>
-          <h1 className='f1' id='pageHeader'>Austria</h1>
-          <div className='pa2' id='searchBox'>
+          <h1 className='f1' data-test='page-header'>Austria</h1>
+          <div className='pa2' data-test='search-box'>
             <LocationSearchBox searchChange={this.onSearchChange} />
           </div>
           <Scroll>

@@ -35,7 +35,7 @@ export default class Ireland extends Component {
     return (
       <div>
         <div className='tc'>
-          <h1 className='f1' id='pageHeader'>Ireland</h1>
+          <h1 className='f1' data-test='page-header'>Ireland</h1>
           <div className='pa2' id='searchBox'>
             <LocationSearchBox searchChange={this.onSearchChange} />
           </div>

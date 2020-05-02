@@ -35,7 +35,7 @@ export default class Spain extends Component {
     return (
       <div>
         <div className='tc'>
-          <h1 className='f1' id='pageHeader'>Spain</h1>
+          <h1 className='f1' data-test='page-header'>Spain</h1>
           <div className='pa2' id='searchBox'>
             <LocationSearchBox searchChange={this.onSearchChange} />
           </div>
