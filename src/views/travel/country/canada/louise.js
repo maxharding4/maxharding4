@@ -35,7 +35,7 @@ export default class Louise extends Component {
     return (
       <div>
         <div className='tc'>
-          <h1 className='f1' id='pageHeader'>Lake Louise, Canada</h1>
+          <h1 className='f1' data-test='page-header'>Lake Louise, Canada</h1>
           <Scroll>
             <ErrorBoundry>
               <PictureList photos={filteredPhotos}/>

@@ -8,6 +8,7 @@ const CountySearchBox = ({ searchfield, searchChange }) => {
         type='search'
         placeholder='filter by country'
         onChange={searchChange}
+        data-test='search-box--input'
       />
   );
 }

@@ -4,7 +4,7 @@ import PictureCard from '../../cards/travel/PictureCard';
 const PictureList = ({ photos }) => {
 
   return (
-    <div>
+    <div data-test='picture-list'>
       {
         photos.map((user, i) => {
           return (

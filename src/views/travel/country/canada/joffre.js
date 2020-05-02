@@ -35,7 +35,7 @@ export default class Joffre extends Component {
     return (
       <div>
         <div className='tc'>
-          <h1 className='f1' id='pageHeader'>Joffre Lakes, Canada</h1>
+          <h1 className='f1' data-test='page-header'>Joffre Lakes, Canada</h1>
           <Scroll>
             <ErrorBoundry>
               <PictureList photos={filteredPhotos}/>

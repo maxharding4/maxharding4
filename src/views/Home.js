@@ -9,8 +9,8 @@ export default class Home extends Component {
   render() {
     return (
       <div>
-        <div id='content' className='tc'>
-          <h1 className='f1'>Home</h1>
+        <div data-test='content' className='tc'>
+          <h1 data-test='page-header' className='f1'>Home</h1>
         </div>
       </div>
     )

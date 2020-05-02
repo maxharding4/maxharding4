@@ -35,7 +35,7 @@ export default class Pantanal extends Component {
     return (
       <div>
         <div className='tc'>
-          <h1 className='f1' id='pageHeader'>Pantanal, Brazil</h1>
+          <h1 className='f1' data-test='page-header'>Pantanal, Brazil</h1>
           <Scroll>
             <ErrorBoundry>
               <PictureList photos={filteredPhotos}/>

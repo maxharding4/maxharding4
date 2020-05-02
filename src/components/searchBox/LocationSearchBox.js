@@ -8,6 +8,7 @@ const LocationSearchBox = ({ searchfield, searchChange }) => {
         type='search'
         placeholder='filter by location'
         onChange={searchChange}
+        data-test='search-box--input'
       />
   );
 }
