@@ -28,9 +28,11 @@ jobs:
       - checkout
       - run: yarn install
       - run: sed -i '/process.env.CI/,+7 d' node_modules/react-scripts/scripts/start.js
-      - cypress/run:
-        store_artifacts: true
       - run: yarn ci:cypress-regression
+      - store_artifacts:
+        path: cypress/videos
+      - store_artifacts:
+        path: cypress/screenshots
   smoke_test:
     docker:
     - image: circleci/node:12.9.1-browsers
@@ -38,9 +40,11 @@ jobs:
       - checkout
       - run: yarn install
       - run: sed -i '/process.env.CI/,+7 d' node_modules/react-scripts/scripts/start.js
-      - cypress/run:
-        store_artifacts: true
       - run: yarn ci:cypress-smoke
+      - store_artifacts:
+        path: cypress/videos
+      - store_artifacts:
+        path: cypress/screenshots
   deploy:
     docker:
     - image: circleci/node:12.9.1-browsers
