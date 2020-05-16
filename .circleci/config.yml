@@ -28,6 +28,7 @@ jobs:
       - checkout
       - run: yarn install
       - run: sed -i '/process.env.CI/,+7 d' node_modules/react-scripts/scripts/start.js
+      - store_artifacts: true
       - run: yarn ci:cypress-regression
   smoke_test:
     docker:
@@ -36,6 +37,7 @@ jobs:
       - checkout
       - run: yarn install
       - run: sed -i '/process.env.CI/,+7 d' node_modules/react-scripts/scripts/start.js
+      - store_artifacts: true
       - run: yarn ci:cypress-smoke
   deploy:
     docker:
