@@ -21,8 +21,10 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "cypress:run": "cypress run --record --key=${CYPRESS_RECORD_KEY}",
-    "ci:cypress-run": "start-server-and-test start http://localhost:3000 cypress:run",
+    "cypress:regression": "cypress run",
+    "cypress:smoke": "cypress run --record --key=${CYPRESS_RECORD_KEY} --spec cypress/integration/smoke/*",
+    "ci:cypress-regression": "start-server-and-test start http://localhost:3000 cypress:regression",
+    "ci:cypress-smoke": "start-server-and-test start http://localhost:3000 cypress:smoke",
     "cypress:open": "cypress open"
   },
   "eslintConfig": {
