@@ -2,13 +2,54 @@ version: 2.1
 orbs:
   cypress: cypress-io/cypress@1.20.0
   aws-s3: circleci/aws-s3@1.0.11
+defaults: &defaults
+  docker:
+    - image: circleci/node:12.9.1-browsers
+  working_directory: ~/repo
+
+commands:
+  cypress_install:
+    steps:
+      restore_cache:
+        key: cypress-binary-{{ checksum "yarn.lock" }}
+      restore_cache:
+        key: node-modules-{{ checksum "yarn.lock" }}
+      - run:
+          command: yarn install
+      - run:
+          command: ./node_modules/cypress/bin/cypress install
+
+  cypress_cleanup:
+    steps:
+      - store_artifacts:
+          path: cypress/videos
+      - store_artifacts:
+          path: cypress/screenshots
+      - save_cache:
+          key: cypress-binary-{{ checksum "yarn.lock" }}
+          paths:
+            - ~/.cache/Cypress
+      - save_cache:
+          key: node-modules-{{ checksum "yarn.lock" }}
+          paths:
+            - ./node_modules
+  apply_hack:
+    steps:
+      - run:
+          command: sed -i '/process.env.CI/,+7 d' node_modules/react-scripts/scripts/start.js
+
+  smoke_tests:
+    steps:
+      - run:
+          command: yarn ci:cypress-smoke
+
+  regression_tests:
+    steps:
+      - run:
+          command: yarn ci:cypress-regression
+
 jobs: 
   build:
-    docker:
-    - image: circleci/node:12.9.1-browsers
-
-    working_directory: ~/repo
-
     steps:
       - checkout
       - restore_cache:
@@ -21,28 +62,24 @@ jobs:
           paths:
             - node_modules
           key: v1-dependencies-{{ checksum "package.json" }}
+
   regression_test:
-    docker:
-    - image: circleci/node:12.9.1-browsers
+    <<: *defaults
     steps:
-      - checkout
-      - run: yarn install
-      - run: sed -i '/process.env.CI/,+7 d' node_modules/react-scripts/scripts/start.js
-      - run: yarn ci:cypress-regression
-      - store_artifacts:
-          path: ./cypress/videos
-          path: ./cypress/screenshots
+      - cypress install
+      - apply_hack
+      - regression_tests
+      - cypress_cleanup
+
   smoke_test:
-    docker:
-    - image: circleci/node:12.9.1-browsers
+    <<: *defaults
     steps:
-      - checkout
-      - run: yarn install
-      - run: sed -i '/process.env.CI/,+7 d' node_modules/react-scripts/scripts/start.js
-      - run: yarn ci:cypress-smoke
+      - cypress install
+      - apply_hack
+      - smoke_tests
+      - cypress_cleanup
+
   deploy:
-    docker:
-    - image: circleci/node:12.9.1-browsers
     steps:
       - checkout
       - run: yarn install
