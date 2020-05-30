@@ -14,10 +14,10 @@ commands:
         key: cypress-binary-{{ checksum "yarn.lock" }}
       restore_cache:
         key: node-modules-{{ checksum "yarn.lock" }}
-      - run:
+    - run:
           name: Install dependencies
           command: yarn install
-      - run:
+    - run:
           name: Ensure cypress binary is installed
           command: ./node_modules/cypress/bin/cypress install
 
