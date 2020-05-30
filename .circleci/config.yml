@@ -59,9 +59,14 @@ workflows:
   build_and_test:
     jobs:
       - build
-      - regression_test:
+      - cypress/run:
           requires:
             - build
+          command: yarn ci:cypress-regression
+          store_artifacts: true
+          post-steps:
+            - store_test_results:
+                path: cypress/results
       - deploy:
           requires:
             - regression_test
