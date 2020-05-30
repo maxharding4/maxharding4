@@ -52,6 +52,7 @@ commands:
 
 jobs: 
   build:
+    <<: *defaults
     steps:
       - checkout
       - restore_cache:
@@ -82,6 +83,7 @@ jobs:
       - cypress_cleanup
 
   deploy:
+    <<: *defaults
     steps:
       - checkout
       - run: yarn install
