@@ -10,16 +10,16 @@ defaults: &defaults
 commands:
   cypress_install:
     steps:
-      restore_cache:
-        key: cypress-binary-{{ checksum "yarn.lock" }}
-      restore_cache:
-        key: node-modules-{{ checksum "yarn.lock" }}
-    - run:
-        name: Install dependencies
-        command: yarn install
-    - run:
-        name: Ensure cypress binary is installed
-        command: ./node_modules/cypress/bin/cypress install
+      - restore_cache:
+          key: cypress-binary-{{ checksum "yarn.lock" }}
+      - restore_cache:
+          key: node-modules-{{ checksum "yarn.lock" }}
+      - run:
+          name: Install dependencies
+          command: yarn install
+      - run:
+          name: Ensure cypress binary is installed
+          command: ./node_modules/cypress/bin/cypress install
 
   cypress_cleanup:
     steps:
