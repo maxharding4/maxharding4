@@ -6,9 +6,7 @@ jobs:
   build:
     docker:
     - image: circleci/node:12.9.1-browsers
-
     working_directory: ~/repo
-
     steps:
       - checkout
       - restore_cache:
@@ -28,6 +26,7 @@ jobs:
       - checkout
       - run: yarn install
       - run: sed -i '/process.env.CI/,+7 d' node_modules/react-scripts/scripts/start.js
+      - cypress/run: 
       - run: yarn ci:cypress-regression
   smoke_test:
     docker:
@@ -59,11 +58,15 @@ workflows:
   build_and_test:
     jobs:
       - build
+      - cypress/install:
+        yarn: true
+        requires:
+          - build
+          command: sed -i '/process.env.CI/,+7 d' node_modules/react-scripts/scripts/start.js
       - cypress/run:
           yarn: true
           requires:
-            - build
-          run: sed -i '/process.env.CI/,+7 d' node_modules/react-scripts/scripts/start.js
+            - cypress/install
           command: yarn ci:cypress-regression
           store_artifacts: true
           post-steps:
