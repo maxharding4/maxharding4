@@ -5,15 +5,15 @@ orbs:
 defaults: &defaults
   docker:
     - image: circleci/node:12.9.1-browsers
-  working_directory: ~/code
+  working_directory: ~/repo
 
 attach: &attach
   attach_workspace:
-    at: /root/code
+    at: /repo
 
 persist: &persist
   persist_to_workspace:
-    root: /root/code
+    root: /repo
     paths: ./*
 
 commands:
