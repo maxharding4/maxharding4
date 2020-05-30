@@ -9,11 +9,11 @@ defaults: &defaults
 
 attach: &attach
   attach_workspace:
-    at: /repo
+    at: ~/repo
 
 persist: &persist
   persist_to_workspace:
-    root: /repo
+    root: ~/repo
     paths: ./*
 
 commands:
