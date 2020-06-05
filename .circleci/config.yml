@@ -76,12 +76,9 @@ commands:
 
   send_slack_notification:
     description: "Sends a slack notification to a channel"
-    parameters:
-      webhook:
-        type: string
     steps:
       - slack/status:
-          webhook: << parameters.webhook >>
+          webhook: '${SLACK_WEBHOOK}'
 
 jobs: 
   build:
@@ -95,6 +92,7 @@ jobs:
       - cypress_install
       - apply_hack
       - regression_tests
+      - send_slack_notification
       - cypress_cleanup
 
   smoke_test:
@@ -103,19 +101,8 @@ jobs:
       - cypress_install
       - apply_hack
       - smoke_tests
+      - send_slack_notification
       - cypress_cleanup
-
-  send_smoke_notification:
-    <<: *defaults
-    steps:
-      - send_slack_notification:
-          webhook: '${SLACK_WEBHOOK}'
-
-  send_regression_notification:
-    <<: *defaults
-    steps:
-      - send_slack_notification:
-          webhook: '${SLACK_WEBHOOK}'
 
   deploy:
     <<: *defaults
@@ -141,9 +128,6 @@ workflows:
       - regression_test:
           requires:
             - build
-      - send_regression_notification:
-          requires:
-            - regression_test
       - deploy:
           requires:
             - regression_test
@@ -163,6 +147,3 @@ workflows:
       - smoke_test:
           requires:
             - build
-      - send_smoke_notification:
-          requires:
-            - smoke_test
