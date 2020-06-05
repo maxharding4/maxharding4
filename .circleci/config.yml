@@ -1,6 +1,7 @@
 version: 2.1
 orbs:
   cypress: cypress-io/cypress@1.20.0
+  slack: circleci/slack@3.2.0
   aws-s3: circleci/aws-s3@1.0.11
 defaults: &defaults
   docker:
@@ -72,6 +73,25 @@ commands:
     steps:
       - run:
           command: yarn ci:cypress-regression
+
+  send_slack_notification:
+    description: "Sends a slack notification to a channel"
+    parameters:
+      title: 
+        type: string
+      color:
+        type: string
+      icon:
+        type: string
+      webhook:
+        type: string
+    steps:
+      - slack/notify:
+          title: << parameters.title >>
+          color: << parameters.color >>
+          webhook: << parameters.webhook >>
+          message: 'Test message << parameters.icon >>'
+          footer: 'Workflow URL: https://circleci.com/workflow-run/${CIRCLE_WORKFLOW_ID}}'
 
 jobs: 
   build:
