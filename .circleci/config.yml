@@ -78,6 +78,8 @@ commands:
     description: "Sends a slack notification to a channel"
     steps:
       - slack/status:
+          success_message: 'Hey champ, your tests all passed!'
+          failure_message: 'Uh-oh, looks like some tests failed here buddy.'
           webhook: '${SLACK_WEBHOOK}'
 
 jobs: 
