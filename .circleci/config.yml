@@ -81,8 +81,6 @@ commands:
         type: string
       color:
         type: string
-      icon:
-        type: string
       webhook:
         type: string
     steps:
@@ -115,6 +113,22 @@ jobs:
       - smoke_tests
       - cypress_cleanup
 
+  send_smoke_notification:
+    <<: *defaults
+    steps:
+      - send_slack_notification:
+          title: Smoke tests
+          color: '#0f29ba'
+          webhook: '${SLACK_WEBHOOK}'
+
+  send_regression_notification:
+    <<: *defaults
+    steps:
+      - send_slack_notification:
+          title: Regression tests
+          color: '#0f29ba'
+          webhook: '${SLACK_WEBHOOK}'
+
   deploy:
     <<: *defaults
     steps:
@@ -139,6 +153,9 @@ workflows:
       - regression_test:
           requires:
             - build
+      - send_regression_notification:
+          requires:
+            - regression_test
       - deploy:
           requires:
             - regression_test
@@ -158,3 +175,6 @@ workflows:
       - smoke_test:
           requires:
             - build
+      - send_smoke_notification:
+          requires:
+            - smoke_test
