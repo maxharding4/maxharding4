@@ -11,7 +11,7 @@ TestFilter(['regression', 'travel', 'austria'], () => {
 
     it('Check Austrian cities', function () {
       cy.get('@page-header').should('contain', 'Austria')
-      cy.get('@city-card').should('have.length', 1)
+      cy.get('@city-card').should('have.length', 2)
       cy.get('[city-card=vienna]').should('be.visible')
     })
 
