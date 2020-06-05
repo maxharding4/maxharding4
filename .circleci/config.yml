@@ -77,13 +77,10 @@ commands:
   send_slack_notification:
     description: "Sends a slack notification to a channel"
     parameters:
-      color:
-        type: string
       webhook:
         type: string
     steps:
       - slack/status:
-          color: << parameters.color >>
           webhook: << parameters.webhook >>
 
 jobs: 
@@ -112,14 +109,12 @@ jobs:
     <<: *defaults
     steps:
       - send_slack_notification:
-          color: '#0f29ba'
           webhook: '${SLACK_WEBHOOK}'
 
   send_regression_notification:
     <<: *defaults
     steps:
       - send_slack_notification:
-          color: '#0f29ba'
           webhook: '${SLACK_WEBHOOK}'
 
   deploy:
