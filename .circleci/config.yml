@@ -77,19 +77,14 @@ commands:
   send_slack_notification:
     description: "Sends a slack notification to a channel"
     parameters:
-      title: 
-        type: string
       color:
         type: string
       webhook:
         type: string
     steps:
       - slack/status:
-          title: << parameters.title >>
-          message: 'Tests have finished.'
           color: << parameters.color >>
           webhook: << parameters.webhook >>
-          footer: 'Workflow URL: https://circleci.com/workflow-run/${CIRCLE_WORKFLOW_ID}}'
 
 jobs: 
   build:
@@ -117,7 +112,6 @@ jobs:
     <<: *defaults
     steps:
       - send_slack_notification:
-          title: Smoke tests
           color: '#0f29ba'
           webhook: '${SLACK_WEBHOOK}'
 
@@ -125,7 +119,6 @@ jobs:
     <<: *defaults
     steps:
       - send_slack_notification:
-          title: Regression tests
           color: '#0f29ba'
           webhook: '${SLACK_WEBHOOK}'
 
