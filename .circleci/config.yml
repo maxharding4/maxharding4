@@ -88,7 +88,7 @@ commands:
           title: << parameters.title >>
           color: << parameters.color >>
           webhook: << parameters.webhook >>
-          message: 'Test message << parameters.icon >>'
+          message: 'Test message'
           footer: 'Workflow URL: https://circleci.com/workflow-run/${CIRCLE_WORKFLOW_ID}}'
 
 jobs: 
