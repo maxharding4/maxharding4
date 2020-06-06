@@ -40,5 +40,50 @@ TestFilter(['regression', 'travel', 'canada'], () => {
       cy.get('[city-card=drumheller]').should('be.visible').click()
       cy.get('@page-header').should('contain', 'Drumheller, Canada')
     })
+
+    it('Navigate to Duffey Lake pictures', function () {
+      cy.get('[city-card=duffey]').should('be.visible').click()
+      cy.get('@page-header').should('contain', 'Duffey Lake, Canada')
+    })
+
+    it('Navigate to Icefields Parkway pictures', function () {
+      cy.get('[city-card=icefields]').should('be.visible').click()
+      cy.get('@page-header').should('contain', 'Icefields Parkway, Canada')
+    })
+
+    it('Navigate to Jasper pictures', function () {
+      cy.get('[city-card=jasper]').should('be.visible').click()
+      cy.get('@page-header').should('contain', 'Jasper, Canada')
+    })
+
+    it('Navigate to Joffre Lakes pictures', function () {
+      cy.get('[city-card=joffre]').should('be.visible').click()
+      cy.get('@page-header').should('contain', 'Joffre Lakes, Canada')
+    })
+
+    it('Navigate to Lake Louise pictures', function () {
+      cy.get('[city-card=louise]').should('be.visible').click()
+      cy.get('@page-header').should('contain', 'Lake Louise, Canada')
+    })
+
+    it('Navigate to Lake Moraine pictures', function () {
+      cy.get('[city-card=moraine]').should('be.visible').click()
+      cy.get('@page-header').should('contain', 'Lake Moraine, Canada')
+    })
+
+    it('Navigate to Ottawa pictures', function () {
+      cy.get('[city-card=ottawa]').should('be.visible').click()
+      cy.get('@page-header').should('contain', 'Ottawa, Canada')
+    })
+
+    it('Navigate to Squamish pictures', function () {
+      cy.get('[city-card=squamish]').should('be.visible').click()
+      cy.get('@page-header').should('contain', 'Squamish, Canada')
+    })
+
+    it('Navigate to Yellowhead pictures', function () {
+      cy.get('[city-card=yellowhead]').should('be.visible').click()
+      cy.get('@page-header').should('contain', 'Yellowhead Highway, Canada')
+    })
   })
 })
