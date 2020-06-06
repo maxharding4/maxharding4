@@ -1,6 +1,7 @@
 version: 2.1
 orbs:
   cypress: cypress-io/cypress@1.20.0
+  slack: circleci/slack@3.2.0
   aws-s3: circleci/aws-s3@1.0.11
 defaults: &defaults
   docker:
@@ -73,6 +74,14 @@ commands:
       - run:
           command: yarn ci:cypress-regression
 
+  send_slack_notification:
+    description: "Sends a slack notification to a channel"
+    steps:
+      - slack/status:
+          success_message: 'Hey champ, your tests all passed!'
+          failure_message: 'Uh-oh, looks like some tests failed here buddy.'
+          webhook: '${SLACK_WEBHOOK}'
+
 jobs: 
   build:
     <<: *defaults
@@ -85,6 +94,7 @@ jobs:
       - cypress_install
       - apply_hack
       - regression_tests
+      - send_slack_notification
       - cypress_cleanup
 
   smoke_test:
@@ -93,6 +103,7 @@ jobs:
       - cypress_install
       - apply_hack
       - smoke_tests
+      - send_slack_notification
       - cypress_cleanup
 
   deploy:

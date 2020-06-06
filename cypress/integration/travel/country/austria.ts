@@ -1,6 +1,6 @@
 import TestFilter from '../../../support/testFilter';
 
-TestFilter(['regression', 'austria'], () => {
+TestFilter(['regression', 'travel', 'austria'], () => {
   describe('Austria landing page', () => {
     beforeEach(() => {
       cy.visit('http://localhost:3000/travel/austria')
