@@ -22,7 +22,7 @@ TestFilter(['regression', 'travel', 'cuba'], () => {
     })
 
     it('Navigate to Veradero pictures', function () {
-      cy.get('[city-card=havana]').should('be.visible').click()
+      cy.get('[city-card=veradero]').should('be.visible').click()
       cy.get('@page-header').should('contain', 'Veradero, Cuba')
     })
   })
