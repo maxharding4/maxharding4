@@ -1,3 +1,8 @@
 {
-  "projectId": "kiyvjd"
+  "projectId": "kiyvjd",
+  "baseUrl": "http://localhost:3000",
+  "retries": {
+    "runMode": 2,
+    "openMode": 1
+  }
 }
