@@ -14,7 +14,7 @@
   },
   "devDependencies": {
     "chai-colors": "^1.0.1",
-    "cypress": "^4.7.0",
+    "cypress": "5.2.0",
     "start-server-and-test": "^1.10.11"
   },
   "scripts": {
