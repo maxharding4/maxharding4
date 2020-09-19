@@ -3,7 +3,7 @@ import TestFilter from '../../support/testFilter';
 TestFilter(['regression', 'travel', 'smoke'], () => {
   describe('Travel album landing page', () => {
     beforeEach(() => {
-      cy.visit('http://localhost:3000/travel')
+      cy.visit('/travel')
       cy.get('#navbar').as('navbar')
       cy.get('[data-test=page-header]').as('page-header')
       cy.get('[data-test=search-box').as('search-box')

@@ -3,7 +3,7 @@ import TestFilter from '../../../support/testFilter';
 TestFilter(['regression', 'travel', 'canada'], () => {
   describe('Canada landing page', () => {
     beforeEach(() => {
-      cy.visit('http://localhost:3000/travel/canada')
+      cy.visit('/travel/canada')
       cy.get('[data-test=page-header]').as('page-header')
       cy.get('[data-test=city-card').as('city-card')
       cy.get('[data-test=search-box--input').as('search-box-input')
