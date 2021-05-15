@@ -71,31 +71,26 @@ export const countries = [
   },
   {
     id: 15,
-    name: 'San Marino',
-    flag: 'san-marino'
-  },
-  {
-    id: 16,
     name: 'Scotland',
     flag: 'scotland'
   },
   {
-    id: 17,
+    id: 16,
     name: 'Slovenia',
     flag: 'slovenia'
   },
   {
-    id: 18,
+    id: 17,
     name: 'Spain',
     flag: 'spain'
   },
   {
-    id: 19,
+    id: 18,
     name: 'Switzerland',
     flag: 'switzerland'
   },
   {
-    id: 20,
+    id: 19,
     name: 'United States',
     flag: 'usa'
   },
