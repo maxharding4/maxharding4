@@ -23,7 +23,7 @@ TestFilter(['regression', 'travel', 'smoke'], () => {
     })
 
     it('check the number of country cards displayed', function () {
-      cy.get('@country-card').should('have.length', 20)
+      cy.get('@country-card').should('have.length', 19)
     })
 
     it('check the search-box functionality works', function () {
