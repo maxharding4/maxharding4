@@ -1,6 +1,11 @@
 export const countries = [
   {
     id: 1,
+    name: 'Antigua & Barbuda',
+    flag: 'antigua-and-barbuda'
+  },
+  {
+    id: 1,
     name: 'Austria',
     flag: 'austria'
   },
