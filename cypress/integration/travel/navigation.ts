@@ -10,6 +10,12 @@ TestFilter(['regression', 'navigation'], () => {
       cy.get('[data-test=search-box--input').as('search-box-input')
     })
 
+    it('Searching for and navigating to Antigua & Barbuda', function () {
+      cy.get('@search-box-input').type('antigua')
+      cy.get('[country-card=antigua-and-barbuda]').should('be.visible').click()
+      cy.get('@page-header').should('contain', 'Antigua & Barbuda')
+    })
+
     it('Searching for and navigating to Austria', function () {
       cy.get('@search-box-input').type('austria')
       cy.get('[country-card=austria]').should('be.visible').click()
