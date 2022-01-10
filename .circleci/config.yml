@@ -5,7 +5,7 @@ orbs:
   aws-s3: circleci/aws-s3@3.0.0
 defaults: &defaults
   docker:
-    - image: circleci/node:12.9.1-browsers
+    - image: circleci/node:17.2.0-browsers
   working_directory: ~/repo
 
 attach: &attach
