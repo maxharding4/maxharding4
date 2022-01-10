@@ -6,6 +6,7 @@ import Work from '../views/Work';
 import Travel from '../views/Travel';
 import Footer from '../components/Footer';
 
+import { AntiguaBarbuda, AntiguaAccom, AntiguaBeaches, AntiguaHistoric, Barbuda } from '../views/travel/country/antigua-barbuda/';
 import { Austria, Vienna } from '../views/travel/country/austria';
 import { Brazil, Iguazu, Pantanal, Rio } from '../views/travel/country/brazil';
 import { Canada, Banff, Bowen, Drumheller, Duffey, Icefields, Jasper, Joffre, Louise, Moraine, Ottawa, Squamish, Yellowhead } from '../views/travel/country/canada/';
@@ -40,6 +41,11 @@ class App extends Component {
             <Route exact path='/travel' render={() => (<Travel />)} />
             <Route exact path='/info' render={() => (<Info />)} />
           </div>
+          <Route exact path='/travel/antigua-and-barbuda' render={() => (<AntiguaBarbuda />)} />
+          <Route exact path='/travel/antigua-and-barbuda/antigua-accommodation' render={() => (<AntiguaAccom />)} />
+          <Route exact path='/travel/antigua-and-barbuda/antigua-beaches' render={() => (<AntiguaBeaches />)} />
+          <Route exact path='/travel/antigua-and-barbuda/antigua-historic' render={() => (<AntiguaHistoric />)} />
+          <Route exact path='/travel/antigua-and-barbuda/barbuda' render={() => (<Barbuda />)} />
           <Route exact path='/travel/austria' render={() => (<Austria />)} />
           <Route exact path='/travel/austria/vienna' render={() => (<Vienna />)} />
           <Route exact path='/travel/brazil' render={() => (<Brazil />)} />
