@@ -18,9 +18,9 @@
     "start-server-and-test": "^1.10.11"
   },
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
+    "start": "react-scripts --openssl-legacy-provider start",
+    "build": "react-scripts --openssl-legacy-provider build",
+    "test": "react-scripts --openssl-legacy-provider test",
     "eject": "react-scripts eject",
     "cypress:regression": "cypress run --env tags=regression",
     "cypress:smoke": "cypress run --env tags=smoke --record --key ${CYPRESS_RECORD_KEY} --tag 'smoke tests'",
