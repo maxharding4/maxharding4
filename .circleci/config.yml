@@ -2,10 +2,10 @@ version: 2.1
 orbs:
   cypress: cypress-io/cypress@1.20.0
   slack: circleci/slack@3.2.0
-  aws-s3: circleci/aws-s3@1.0.11
+  aws-s3: circleci/aws-s3@3.0.0
 defaults: &defaults
   docker:
-    - image: circleci/node:17.2.0-browsers
+    - image: circleci/node:16.3.1-browsers
   working_directory: ~/repo
 
 attach: &attach
@@ -118,7 +118,6 @@ jobs:
           arguments: |
             --acl public-read \
             --cache-control "max-age=43200"
-          overwrite: true
       - run: aws cloudfront create-invalidation --distribution-id=E18D7W5LICE64E --paths /index.html
       - run: aws cloudfront create-invalidation --distribution-id=E18D7W5LICE64E --paths /service-worker.js
 
