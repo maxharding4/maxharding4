@@ -2,7 +2,7 @@ version: 2.1
 orbs:
   cypress: cypress-io/cypress@1.20.0
   slack: circleci/slack@3.2.0
-  aws-s3: circleci/aws-s3@1.1.1
+  aws-s3: circleci/aws-s3@3.0.0
 defaults: &defaults
   docker:
     - image: circleci/node:12.9.1-browsers
