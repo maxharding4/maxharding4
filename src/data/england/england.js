@@ -26,6 +26,12 @@ export const locations = [
   {
     id: 5,
     country: 'england',
+    name: 'Salisbury',
+    thumb: 'salisbury'
+  },
+  {
+    id: 6,
+    country: 'england',
     name: 'York',
     thumb: 'york'
   },

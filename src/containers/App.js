@@ -12,7 +12,7 @@ import { Brazil, Iguazu, Pantanal, Rio } from '../views/travel/country/brazil';
 import { Canada, Banff, Bowen, Drumheller, Duffey, Icefields, Jasper, Joffre, Louise, Moraine, Ottawa, Squamish, Yellowhead } from '../views/travel/country/canada/';
 import { Colombia, Bogota, Cartagena, Medellin, Palomino, Quindio } from '../views/travel/country/colombia/';
 import { Cuba, Havana, Veradero } from '../views/travel/country/cuba/';
-import { England, Buxton, Ilkley, Lympne, Margate, York } from '../views/travel/country/england/';
+import { England, Buxton, Ilkley, Lympne, Margate, Salisbury, York } from '../views/travel/country/england/';
 import { Estonia, Tallinn } from '../views/travel/country/estonia/';
 import { Finland, Helsinki } from '../views/travel/country/finland/';
 import { France, Bethune, Dijon, Marseille } from '../views/travel/country/france/';
@@ -79,6 +79,7 @@ class App extends Component {
           <Route exact path='/travel/england/ilkley' render={() => (<Ilkley />)} />
           <Route exact path='/travel/england/lympne' render={() => (<Lympne />)} />
           <Route exact path='/travel/england/margate' render={() => (<Margate />)} />
+          <Route exact path='/travel/england/salisbury' render={() => (<Salisbury />)} />
           <Route exact path='/travel/england/york' render={() => (<York />)} />
           <Route exact path='/travel/estonia' render={() => (<Estonia />)} />
           <Route exact path='/travel/estonia/tallinn' render={() => (<Tallinn />)} />
