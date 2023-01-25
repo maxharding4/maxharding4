@@ -17,7 +17,7 @@ import { Estonia, Tallinn } from '../views/travel/country/estonia/';
 import { Finland, Helsinki } from '../views/travel/country/finland/';
 import { France, Bethune, Dijon, Marseille } from '../views/travel/country/france/';
 import { Ireland, Dublin, Galway } from '../views/travel/country/ireland/';
-import { Italy, LakeComo, Florence, Monza, Pisa, Rome, Trieste, Turin } from '../views/travel/country/italy/';
+import { Italy, Capri, LakeComo, Florence, Monza, Sorrento, Pisa, Rome, Trieste, Turin } from '../views/travel/country/italy/';
 import { Lithuania, Vilnius } from '../views/travel/country/lithuania/';
 import { Maldives, Helengeli } from '../views/travel/country/maldives/';
 import { Montenegro, Budva } from '../views/travel/country/montenegro/';
@@ -93,9 +93,11 @@ class App extends Component {
           <Route exact path='/travel/ireland/dublin' render={() => (<Dublin />)} />
           <Route exact path='/travel/ireland/galway' render={() => (<Galway />)} />
           <Route exact path='/travel/italy' render={() => (<Italy />)} />
+          <Route exact path='/travel/italy/capri' render={() => (<Capri />)} />
           <Route exact path='/travel/italy/como' render={() => (<LakeComo />)} />
           <Route exact path='/travel/italy/florence' render={() => (<Florence />)} />
           <Route exact path='/travel/italy/monza' render={() => (<Monza />)} />
+          <Route exact path='/travel/italy/sorrento' render={() => (<Sorrento />)} />
           <Route exact path='/travel/italy/pisa' render={() => (<Pisa />)} />
           <Route exact path='/travel/italy/rome' render={() => (<Rome />)} />
           <Route exact path='/travel/italy/trieste' render={() => (<Trieste />)} />
