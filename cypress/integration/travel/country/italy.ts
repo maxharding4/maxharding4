@@ -11,19 +11,26 @@ TestFilter(['regression', 'travel', 'italy'], () => {
 
     it('Check Italian cities', function () {
       cy.get('@page-header').should('contain', 'Italy')
-      cy.get('@city-card').should('have.length', 7)
+      cy.get('@city-card').should('have.length', 9)
+      cy.get('[city-card=capri]').should('be.visible')
       cy.get('[city-card=como]').should('be.visible')
       cy.get('[city-card=florence]').should('be.visible')
       cy.get('[city-card=monza]').should('be.visible')
+      cy.get('[city-card=sorrento]').should('be.visible')
       cy.get('[city-card=pisa]').should('be.visible')
       cy.get('[city-card=rome]').should('be.visible')
       cy.get('[city-card=trieste]').should('be.visible')
       cy.get('[city-card=turin]').should('be.visible')
     })
 
+    it('Navigate to Capri pictures', function () {
+      cy.get('[city-card=capri]').should('be.visible').click()
+      cy.get('@page-header').should('contain', 'Lake Como, Italy')
+    })
+
     it('Navigate to Lake Como pictures', function () {
       cy.get('[city-card=como]').should('be.visible').click()
-      cy.get('@page-header').should('contain', 'Lake Como, Italy')
+      cy.get('@page-header').should('contain', 'Capri, Italy')
     })
 
     it('Navigate to Florence pictures', function () {
@@ -44,6 +51,11 @@ TestFilter(['regression', 'travel', 'italy'], () => {
     it('Navigate to Rome pictures', function () {
       cy.get('[city-card=rome]').should('be.visible').click()
       cy.get('@page-header').should('contain', 'Rome, Italy')
+    })
+
+    it('Navigate to Sorrento pictures', function () {
+      cy.get('[city-card=como]').should('be.visible').click()
+      cy.get('@page-header').should('contain', 'Sorrento, Italy')
     })
 
     it('Navigate to Trieste pictures', function () {
