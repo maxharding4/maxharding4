@@ -11,11 +11,12 @@ TestFilter(['regression', 'travel', 'england'], () => {
 
     it('Check English cities', function () {
       cy.get('@page-header').should('contain', 'England')
-      cy.get('@city-card').should('have.length', 5)
+      cy.get('@city-card').should('have.length', 6)
       cy.get('[city-card=buxton]').should('be.visible')
       cy.get('[city-card=ilkley]').should('be.visible')
       cy.get('[city-card=lympne]').should('be.visible')
       cy.get('[city-card=margate]').should('be.visible')
+      cy.get('[city-card=salisbury]').should('be.visible')
       cy.get('[city-card=york]').should('be.visible')
     })
 
@@ -37,6 +38,11 @@ TestFilter(['regression', 'travel', 'england'], () => {
     it('Navigate to Margate pictures', function () {
       cy.get('[city-card=margate]').should('be.visible').click()
       cy.get('@page-header').should('contain', 'Margate, England')
+    })
+
+    it('Navigate to Salisbury pictures', function () {
+      cy.get('[city-card=salisbury]').should('be.visible').click()
+      cy.get('@page-header').should('contain', 'Salisbury, England')
     })
 
     it('Navigate to York pictures', function () {

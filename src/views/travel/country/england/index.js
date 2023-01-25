@@ -3,6 +3,7 @@ import Buxton from './buxton';
 import Ilkley from './ilkley';
 import Lympne from './lympne';
 import Margate from './margate';
+import Salisbury from './salisbury';
 import York from './york';
 
 export {
@@ -11,5 +12,6 @@ export {
   Ilkley,
   Lympne,
   Margate,
+  Salisbury,
   York
 }
