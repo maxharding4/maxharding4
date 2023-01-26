@@ -10,6 +10,12 @@ export const locations = [
     country: 'spain',
     name: 'Javea',
     thumb: 'javea'
+  },
+  {
+    id: 3,
+    country: 'spain',
+    name: 'Valencia',
+    thumb: 'valencia'
   }
 
 ]
