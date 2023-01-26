@@ -25,12 +25,12 @@ TestFilter(['regression', 'travel', 'italy'], () => {
 
     it('Navigate to Capri pictures', function () {
       cy.get('[city-card=capri]').should('be.visible').click()
-      cy.get('@page-header').should('contain', 'Lake Como, Italy')
+      cy.get('@page-header').should('contain', 'Capri, Italy')
     })
 
     it('Navigate to Lake Como pictures', function () {
       cy.get('[city-card=como]').should('be.visible').click()
-      cy.get('@page-header').should('contain', 'Capri, Italy')
+      cy.get('@page-header').should('contain', 'Lake Como, Italy')
     })
 
     it('Navigate to Florence pictures', function () {
@@ -54,7 +54,7 @@ TestFilter(['regression', 'travel', 'italy'], () => {
     })
 
     it('Navigate to Sorrento pictures', function () {
-      cy.get('[city-card=como]').should('be.visible').click()
+      cy.get('[city-card=sorrento]').should('be.visible').click()
       cy.get('@page-header').should('contain', 'Sorrento, Italy')
     })
 

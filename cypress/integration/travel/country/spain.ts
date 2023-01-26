@@ -11,9 +11,10 @@ TestFilter(['regression', 'travel', 'spain'], () => {
 
     it('Check Spanish cities', function () {
       cy.get('@page-header').should('contain', 'Spain')
-      cy.get('@city-card').should('have.length', 2)
+      cy.get('@city-card').should('have.length', 3)
       cy.get('[city-card=alicante]').should('be.visible')
       cy.get('[city-card=javea]').should('be.visible')
+      cy.get('[city-card=valencia]').should('be.visible')
     })
 
     it('Navigate to Alicante pictures', function () {
@@ -24,6 +25,11 @@ TestFilter(['regression', 'travel', 'spain'], () => {
     it('Navigate to Javea pictures', function () {
       cy.get('[city-card=javea]').should('be.visible').click()
       cy.get('@page-header').should('contain', 'Javea, Spain')
+    })
+
+    it('Navigate to Valencia pictures', function () {
+      cy.get('[city-card=valencia]').should('be.visible').click()
+      cy.get('@page-header').should('contain', 'Valencia, Spain')
     })
   })
 })
