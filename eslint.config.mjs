@@ -14,6 +14,9 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // Allow require in config files
+    "*.config.js",
+    "*.config.mjs",
   ]),
 ]);
 
