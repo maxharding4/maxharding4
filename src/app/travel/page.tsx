@@ -8,7 +8,7 @@ export const revalidate = 3600; // Revalidate every hour
 export default async function TravelPage() {
   // Fetch all countries from Contentful, sorted alphabetically
   const countries = await getEntriesByType<CountrySkeleton>("country", {
-    order: ["fields.name"] as any,
+    order: ["fields.name"] as unknown as string[],
   });
 
   return (

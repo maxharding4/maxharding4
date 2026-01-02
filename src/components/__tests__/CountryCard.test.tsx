@@ -3,11 +3,12 @@ import { render, screen } from "@testing-library/react";
 import CountryCard from "../CountryCard";
 import { Entry } from "contentful";
 import { CountrySkeleton } from "@/types/contentful";
+import React from "react";
 
 // Mock Next.js components
 jest.mock("next/image", () => ({
   __esModule: true,
-  default: (props: any) => {
+  default: (props: Record<string, unknown>) => {
     const { fill, ...rest } = props;
     // eslint-disable-next-line @next/next/no-img-element, jsx-a11y/alt-text
     return <img {...rest} data-fill={fill ? "true" : "false"} />;
@@ -16,7 +17,16 @@ jest.mock("next/image", () => ({
 
 jest.mock("next/link", () => ({
   __esModule: true,
-  default: ({ children, href, className, ...props }: any) => (
+  default: ({
+    children,
+    href,
+    className,
+    ...props
+  }: {
+    children: React.ReactNode;
+    href: string;
+    className?: string;
+  }) => (
     <a href={href} className={className} {...props}>
       {children}
     </a>
@@ -76,7 +86,7 @@ describe("CountryCard", () => {
     metadata: {
       tags: [],
     },
-  } as any;
+  } as unknown as Entry<CountrySkeleton>;
 
   const mockCountryWithoutImage: Entry<CountrySkeleton> = {
     ...mockCountry,
@@ -84,7 +94,7 @@ describe("CountryCard", () => {
       ...mockCountry.fields,
       flagImage: undefined,
     },
-  } as any;
+  } as unknown as Entry<CountrySkeleton>;
 
   describe("Rendering", () => {
     it("should render country name", () => {
@@ -158,7 +168,7 @@ describe("CountryCard", () => {
           ...mockCountry.fields,
           name: '<script>alert("xss")</script>Spain',
         },
-      } as any;
+      } as unknown as Entry<CountrySkeleton>;
 
       render(<CountryCard country={maliciousCountry} />);
       // React automatically escapes content, so the script tag should be rendered as text
@@ -174,7 +184,7 @@ describe("CountryCard", () => {
           ...mockCountry.fields,
           slug: "spain-test/../../../etc/passwd",
         },
-      } as any;
+      } as unknown as Entry<CountrySkeleton>;
 
       render(<CountryCard country={countryWithSpecialChars} />);
       const link = screen.getByRole("link");
@@ -254,8 +264,8 @@ describe("CountryCard", () => {
     it("should handle undefined fields gracefully", () => {
       const countryWithUndefinedFields = {
         sys: mockCountry.sys,
-        fields: {} as any,
-      } as any;
+        fields: {},
+      } as unknown as Entry<CountrySkeleton>;
 
       expect(() => {
         render(<CountryCard country={countryWithUndefinedFields} />);
@@ -271,9 +281,9 @@ describe("CountryCard", () => {
             fields: {
               file: null,
             },
-          } as any,
+          },
         },
-      } as any;
+      } as unknown as Entry<CountrySkeleton>;
 
       render(<CountryCard country={countryWithNullImageUrl} />);
       expect(screen.getByText("Spain")).toBeInTheDocument();

@@ -46,7 +46,7 @@ export type PhotoSkeleton = EntrySkeletonType<PhotoFields, "photo">;
 export interface PageFields {
   title: string;
   slug: string;
-  content: any; // Rich text field
+  content: unknown; // Rich text field - Contentful document type
   metaDescription?: string;
   metaKeywords?: string[];
   ogImage?: Asset;
@@ -59,7 +59,7 @@ export interface CVResumeFields {
   fullName: string;
   slug: string;
   professionalTitle: string;
-  bio: any; // Rich text field
+  bio: unknown; // Rich text field - Contentful document type
   profilePhoto?: Asset;
   email?: string;
   phone?: string;

@@ -2,13 +2,14 @@
 import { render, screen } from "@testing-library/react";
 import TravelPage, { generateMetadata } from "../page";
 import * as contentful from "@/lib/contentful";
-import { EntryCollection } from "contentful";
+import { Entry, EntryCollection } from "contentful";
 import { CountrySkeleton } from "@/types/contentful";
+import React from "react";
 
 // Mock Next.js components
 jest.mock("next/image", () => ({
   __esModule: true,
-  default: (props: any) => {
+  default: (props: Record<string, unknown>) => {
     const { fill, ...rest } = props;
     // eslint-disable-next-line @next/next/no-img-element, jsx-a11y/alt-text
     return <img {...rest} data-fill={fill ? "true" : "false"} />;
@@ -17,7 +18,16 @@ jest.mock("next/image", () => ({
 
 jest.mock("next/link", () => ({
   __esModule: true,
-  default: ({ children, href, className, ...props }: any) => (
+  default: ({
+    children,
+    href,
+    className,
+    ...props
+  }: {
+    children: React.ReactNode;
+    href: string;
+    className?: string;
+  }) => (
     <a href={href} className={className} {...props}>
       {children}
     </a>
@@ -136,7 +146,7 @@ describe("Travel Page", () => {
           tags: [],
         },
       },
-    ] as any,
+    ] as unknown as Entry<CountrySkeleton>[],
     total: 2,
     skip: 0,
     limit: 100,
@@ -398,8 +408,8 @@ describe("Travel Page", () => {
               ...mockCountries.items[0].fields,
               name: '<script>alert("xss")</script>Malicious Country',
             },
-          } as any,
-        ],
+          },
+        ] as unknown as Entry<CountrySkeleton>[],
       };
 
       jest
@@ -423,8 +433,8 @@ describe("Travel Page", () => {
               ...mockCountries.items[0].fields,
               name: "'; DROP TABLE countries; --",
             },
-          } as any,
-        ],
+          },
+        ] as unknown as Entry<CountrySkeleton>[],
       };
 
       jest

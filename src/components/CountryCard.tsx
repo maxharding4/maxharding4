@@ -11,7 +11,13 @@ export default function CountryCard({ country }: CountryCardProps) {
   const fields = country.fields as unknown as {
     name: string;
     slug: string;
-    flagImage?: any;
+    flagImage?: {
+      fields?: {
+        file?: {
+          url?: string;
+        };
+      };
+    };
   };
   const { name, slug, flagImage } = fields;
   // Type assertion needed due to Contentful's Asset type complexity

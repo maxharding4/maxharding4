@@ -65,6 +65,9 @@ jobs:
 
       - name: Run tests
         run: npm test -- --coverage
+        env:
+          CONTENTFUL_SPACE_ID: test-space-id
+          CONTENTFUL_ACCESS_TOKEN: test-access-token
 
       - name: Upload coverage reports
         uses: codecov/codecov-action@v4
@@ -93,6 +96,9 @@ jobs:
 
       - name: Run build
         run: npm run build
+        env:
+          CONTENTFUL_SPACE_ID: test-space-id
+          CONTENTFUL_ACCESS_TOKEN: test-access-token
 
   security:
     name: Security Audit
