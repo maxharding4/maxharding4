@@ -1,5 +1,6 @@
 /// <reference types="@testing-library/jest-dom" />
-import { render, screen } from "@testing-library/react";
+import { render, screen, waitFor } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 import TravelPage, { generateMetadata } from "../page";
 import * as contentful from "@/lib/contentful";
 import { Entry, EntryCollection } from "contentful";
@@ -520,6 +521,346 @@ describe("Travel Page", () => {
 
       const mainDiv = container.querySelector(".min-h-screen");
       expect(mainDiv).toBeInTheDocument();
+    });
+  });
+
+  describe("Search Functionality", () => {
+    it("should render search box when countries exist", async () => {
+      jest
+        .spyOn(contentful, "getEntriesByType")
+        .mockResolvedValue(mockCountries);
+
+      const page = await TravelPage();
+      render(page);
+
+      const searchInput = screen.getByPlaceholderText("Search countries...");
+      expect(searchInput).toBeInTheDocument();
+    });
+
+    it("should not render search box when no countries exist", async () => {
+      jest
+        .spyOn(contentful, "getEntriesByType")
+        .mockResolvedValue(mockEmptyCountries);
+
+      const page = await TravelPage();
+      render(page);
+
+      const searchInput = screen.queryByPlaceholderText("Search countries...");
+      expect(searchInput).not.toBeInTheDocument();
+    });
+
+    it("should filter countries by search query", async () => {
+      const user = userEvent.setup();
+      jest
+        .spyOn(contentful, "getEntriesByType")
+        .mockResolvedValue(mockCountries);
+
+      const page = await TravelPage();
+      render(page);
+
+      const searchInput = screen.getByPlaceholderText("Search countries...");
+      await user.type(searchInput, "Spain");
+
+      await waitFor(() => {
+        expect(screen.getByText("Spain")).toBeInTheDocument();
+        expect(screen.queryByText("France")).not.toBeInTheDocument();
+      });
+    });
+
+    it("should show results count when searching", async () => {
+      const user = userEvent.setup();
+      jest
+        .spyOn(contentful, "getEntriesByType")
+        .mockResolvedValue(mockCountries);
+
+      const page = await TravelPage();
+      render(page);
+
+      const searchInput = screen.getByPlaceholderText("Search countries...");
+      await user.type(searchInput, "Spain");
+
+      await waitFor(() => {
+        expect(
+          screen.getByText(/Showing 1 of 2 countries/i)
+        ).toBeInTheDocument();
+      });
+    });
+
+    it("should show no results message when search has no matches", async () => {
+      const user = userEvent.setup();
+      jest
+        .spyOn(contentful, "getEntriesByType")
+        .mockResolvedValue(mockCountries);
+
+      const page = await TravelPage();
+      render(page);
+
+      const searchInput = screen.getByPlaceholderText("Search countries...");
+      await user.type(searchInput, "NonexistentCountry");
+
+      await waitFor(() => {
+        expect(
+          screen.getByText(/No countries match "NonexistentCountry"/i)
+        ).toBeInTheDocument();
+      });
+    });
+
+    it("should be case-insensitive when filtering", async () => {
+      const user = userEvent.setup();
+      jest
+        .spyOn(contentful, "getEntriesByType")
+        .mockResolvedValue(mockCountries);
+
+      const page = await TravelPage();
+      render(page);
+
+      const searchInput = screen.getByPlaceholderText("Search countries...");
+      await user.type(searchInput, "spain");
+
+      await waitFor(() => {
+        expect(screen.getByText("Spain")).toBeInTheDocument();
+      });
+    });
+
+    it("should show all countries when search is cleared", async () => {
+      const user = userEvent.setup();
+      jest
+        .spyOn(contentful, "getEntriesByType")
+        .mockResolvedValue(mockCountries);
+
+      const page = await TravelPage();
+      render(page);
+
+      const searchInput = screen.getByPlaceholderText("Search countries...");
+      await user.type(searchInput, "Spain");
+
+      await waitFor(() => {
+        expect(screen.queryByText("France")).not.toBeInTheDocument();
+      });
+
+      await user.clear(searchInput);
+
+      await waitFor(() => {
+        expect(screen.getByText("Spain")).toBeInTheDocument();
+        expect(screen.getByText("France")).toBeInTheDocument();
+      });
+    });
+
+    it("should hide country count when searching", async () => {
+      const user = userEvent.setup();
+      jest
+        .spyOn(contentful, "getEntriesByType")
+        .mockResolvedValue(mockCountries);
+
+      const page = await TravelPage();
+      render(page);
+
+      expect(screen.getByText("2 countries visited")).toBeInTheDocument();
+
+      const searchInput = screen.getByPlaceholderText("Search countries...");
+      await user.type(searchInput, "Spain");
+
+      await waitFor(() => {
+        expect(
+          screen.queryByText("2 countries visited")
+        ).not.toBeInTheDocument();
+      });
+    });
+
+    it("should handle partial matches", async () => {
+      const user = userEvent.setup();
+      jest
+        .spyOn(contentful, "getEntriesByType")
+        .mockResolvedValue(mockCountries);
+
+      const page = await TravelPage();
+      render(page);
+
+      const searchInput = screen.getByPlaceholderText("Search countries...");
+      await user.type(searchInput, "Spa");
+
+      await waitFor(() => {
+        expect(screen.getByText("Spain")).toBeInTheDocument();
+      });
+    });
+
+    it("should filter multiple matching countries", async () => {
+      const user = userEvent.setup();
+      const countriesWithSimilarNames = {
+        ...mockCountries,
+        items: [
+          ...mockCountries.items,
+          {
+            ...mockCountries.items[0],
+            sys: {
+              ...mockCountries.items[0].sys,
+              id: "spain-2-id",
+            },
+            fields: {
+              ...mockCountries.items[0].fields,
+              name: "Spanish Sahara",
+              slug: "spanish-sahara",
+            },
+          },
+        ] as unknown as Entry<CountrySkeleton>[],
+        total: 3,
+      };
+
+      jest
+        .spyOn(contentful, "getEntriesByType")
+        .mockResolvedValue(countriesWithSimilarNames);
+
+      const page = await TravelPage();
+      render(page);
+
+      const searchInput = screen.getByPlaceholderText("Search countries...");
+      await user.type(searchInput, "Spai");
+
+      await waitFor(() => {
+        expect(screen.getByText("Spain")).toBeInTheDocument();
+        expect(screen.queryByText("France")).not.toBeInTheDocument();
+      });
+
+      await user.clear(searchInput);
+      await user.type(searchInput, "Spanish");
+
+      await waitFor(() => {
+        expect(screen.getByText("Spanish Sahara")).toBeInTheDocument();
+        expect(screen.queryByText("France")).not.toBeInTheDocument();
+      });
+    });
+
+    it("should handle XSS attempts in search query", async () => {
+      const user = userEvent.setup();
+      jest
+        .spyOn(contentful, "getEntriesByType")
+        .mockResolvedValue(mockCountries);
+
+      const page = await TravelPage();
+      render(page);
+
+      const searchInput = screen.getByPlaceholderText("Search countries...");
+      await user.type(searchInput, '<script>alert("xss")</script>');
+
+      await waitFor(() => {
+        expect(document.querySelector("script")).not.toBeInTheDocument();
+      });
+    });
+
+    it("should trim whitespace in search query", async () => {
+      const user = userEvent.setup();
+      jest
+        .spyOn(contentful, "getEntriesByType")
+        .mockResolvedValue(mockCountries);
+
+      const page = await TravelPage();
+      render(page);
+
+      const searchInput = screen.getByPlaceholderText("Search countries...");
+      await user.type(searchInput, "   Spain   ");
+
+      await waitFor(() => {
+        expect(screen.getByText("Spain")).toBeInTheDocument();
+        expect(screen.queryByText("France")).not.toBeInTheDocument();
+      });
+    });
+
+    it("should show all countries when search is only whitespace", async () => {
+      const user = userEvent.setup();
+      jest
+        .spyOn(contentful, "getEntriesByType")
+        .mockResolvedValue(mockCountries);
+
+      const page = await TravelPage();
+      render(page);
+
+      const searchInput = screen.getByPlaceholderText("Search countries...");
+      await user.type(searchInput, "   ");
+
+      await waitFor(() => {
+        expect(screen.getByText("Spain")).toBeInTheDocument();
+        expect(screen.getByText("France")).toBeInTheDocument();
+      });
+    });
+
+    it("should have accessible search box with proper ARIA label", async () => {
+      jest
+        .spyOn(contentful, "getEntriesByType")
+        .mockResolvedValue(mockCountries);
+
+      const page = await TravelPage();
+      render(page);
+
+      const searchInput = screen.getByLabelText("Search countries by name");
+      expect(searchInput).toBeInTheDocument();
+    });
+
+    it("should clear search with clear button", async () => {
+      const user = userEvent.setup();
+      jest
+        .spyOn(contentful, "getEntriesByType")
+        .mockResolvedValue(mockCountries);
+
+      const page = await TravelPage();
+      render(page);
+
+      const searchInput = screen.getByPlaceholderText("Search countries...");
+      await user.type(searchInput, "Spain");
+
+      await waitFor(() => {
+        expect(screen.queryByText("France")).not.toBeInTheDocument();
+      });
+
+      const clearButton = screen.getByLabelText("Clear search");
+      await user.click(clearButton);
+
+      await waitFor(() => {
+        expect(screen.getByText("Spain")).toBeInTheDocument();
+        expect(screen.getByText("France")).toBeInTheDocument();
+      });
+    });
+
+    it("should clear search with Escape key", async () => {
+      const user = userEvent.setup();
+      jest
+        .spyOn(contentful, "getEntriesByType")
+        .mockResolvedValue(mockCountries);
+
+      const page = await TravelPage();
+      render(page);
+
+      const searchInput = screen.getByPlaceholderText("Search countries...");
+      await user.type(searchInput, "Spain");
+
+      await waitFor(() => {
+        expect(screen.queryByText("France")).not.toBeInTheDocument();
+      });
+
+      await user.keyboard("{Escape}");
+
+      await waitFor(() => {
+        expect(screen.getByText("Spain")).toBeInTheDocument();
+        expect(screen.getByText("France")).toBeInTheDocument();
+      });
+    });
+
+    it("should show correct singular/plural for results count", async () => {
+      const user = userEvent.setup();
+      jest
+        .spyOn(contentful, "getEntriesByType")
+        .mockResolvedValue(mockCountries);
+
+      const page = await TravelPage();
+      render(page);
+
+      const searchInput = screen.getByPlaceholderText("Search countries...");
+      await user.type(searchInput, "Spain");
+
+      await waitFor(() => {
+        expect(
+          screen.getByText(/Showing 1 of 2 countries/i)
+        ).toBeInTheDocument();
+      });
     });
   });
 });
