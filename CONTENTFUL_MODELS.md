@@ -89,23 +89,59 @@ Countries for the Travel section.
 
 | Field Name | Field ID | Type | Required | Unique | Validation | Description |
 |------------|----------|------|----------|--------|------------|-------------|
-| Name | `name` | Short text | Yes | No | Max 100 chars | Country name |
-| Country Code | `countryCode` | Short text | No | Yes | ISO 3166-1 alpha-2 (2 chars) | Two-letter country code (e.g., "US", "GB") |
-| Flag Image | `flagImage` | Media (Asset) | No | No | Image | Country flag |
-| Description | `description` | Long text | No | No | Max 2000 chars | Country description |
-| Slug | `slug` | Short text | Yes | Yes | Lowercase, no spaces | URL-friendly identifier (e.g., "united-states") |
+| Name | `name` | Short text | Yes | No | Max 100 chars | Country/region name |
+| Country Code | `countryCode` | Short text | No | Yes | ISO 3166-1 or ISO 3166-2 | Country code (e.g., "IT", "ES") or subdivision code (e.g., "GB-ENG", "GB-SCT") |
+| Flag Image | `flagImage` | Media (Asset) | No | No | Image | Country/region flag |
+| Description | `description` | Long text | No | No | Max 2000 chars | Country/region description |
+| Slug | `slug` | Short text | Yes | Yes | Lowercase, no spaces | URL-friendly identifier (e.g., "england", "italy") |
 
 ### Display Field
 `name`
 
-### Sample Entry
+### Sample Entries
+
+**Whole Country Example:**
 ```
-Name: Japan
-Country Code: JP
-Flag Image: [Japan flag image asset]
-Description: A fascinating blend of ancient tradition and cutting-edge technology...
-Slug: japan
+Name: Italy
+Country Code: IT
+Flag Image: [Italy flag image asset]
+Description: A Mediterranean country known for its art, architecture, and cuisine...
+Slug: italy
 ```
+
+**Subdivision Example:**
+```
+Name: Scotland
+Country Code: GB-SCT
+Flag Image: [Scotland flag image asset]
+Description: A country within the United Kingdom, known for its highlands, castles, and whisky...
+Slug: scotland
+```
+
+### Country Code Guidelines
+
+This field accepts two formats:
+
+1. **Standard Country Codes (ISO 3166-1)**: For whole countries
+   - Format: 2 uppercase letters (e.g., `IT`, `ES`, `FR`, `JP`)
+   - Use when representing a country as a whole entity
+
+2. **Subdivision Codes (ISO 3166-2)**: For regions/nations within countries
+   - Format: Country code + hyphen + subdivision code (e.g., `GB-ENG`, `GB-SCT`, `GB-WLS`)
+   - Use when representing specific regions or constituent countries
+   - Common examples:
+     - England: `GB-ENG`
+     - Scotland: `GB-SCT`
+     - Wales: `GB-WLS`
+     - Northern Ireland: `GB-NIR`
+     - Catalonia: `ES-CT`
+     - California: `US-CA`
+
+**Benefits of this approach:**
+- Each entry has a unique identifier (required by Contentful)
+- Follows international standards (ISO 3166-1 and ISO 3166-2)
+- Flexible for both countries and subdivisions
+- Works well with flag emoji and image systems
 
 ---
 
@@ -292,7 +328,8 @@ Contact information.
 
 #### Format Validations
 - Slug fields: lowercase, hyphen-separated (e.g., "my-page-slug")
-- Country code: exactly 2 uppercase letters (ISO 3166-1 alpha-2)
+- Country code: 2 uppercase letters (ISO 3166-1) OR country code + hyphen + subdivision (ISO 3166-2)
+  - Examples: `IT`, `ES`, `GB-ENG`, `GB-SCT`, `US-CA`
 - Email: standard email format validation
 
 ### Content Relationships

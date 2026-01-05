@@ -162,6 +162,42 @@ export const revalidate = 3600; // Revalidate every hour
 4. **Use Rich Text** for flexible content formatting
 5. **Tag content** for easier filtering and organization
 
+### Country Code Field Implementation
+
+The Country content model uses a flexible approach for the `countryCode` field to support both whole countries and subdivisions:
+
+**Standard Country Codes (ISO 3166-1)**
+- Format: 2 uppercase letters
+- Examples: `IT` (Italy), `ES` (Spain), `FR` (France), `JP` (Japan)
+- Use for countries as whole entities
+
+**Subdivision Codes (ISO 3166-2)**
+- Format: Country code + hyphen + subdivision code
+- Examples: `GB-ENG` (England), `GB-SCT` (Scotland), `GB-WLS` (Wales), `ES-CT` (Catalonia)
+- Use for specific regions or constituent countries within a larger country
+
+**Why this approach?**
+- Maintains unique identifiers for each entry (required by Contentful)
+- Follows international standards (ISO 3166-1 and ISO 3166-2)
+- Allows representation of both countries and subdivisions (e.g., England, Scotland, Wales separately from Great Britain)
+- Works with flag emoji and image systems
+- Future-proof for adding other subdivisions
+
+**Example Contentful entries:**
+```
+Name: Italy
+Country Code: IT
+Slug: italy
+
+Name: England
+Country Code: GB-ENG
+Slug: england
+
+Name: Scotland
+Country Code: GB-SCT
+Slug: scotland
+```
+
 ## Troubleshooting
 
 ### Error: "CONTENTFUL_SPACE_ID and CONTENTFUL_ACCESS_TOKEN must be set"
