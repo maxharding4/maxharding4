@@ -445,7 +445,7 @@ describe("SearchBox", () => {
       render(<SearchBox onSearch={mockOnSearch} />);
       const input = screen.getByRole("textbox");
 
-      await user.type(input, "abcdefghijklmnopqrstuvwxyz", { delay: 1 });
+      await user.type(input, "abcdefghijklmnopqrstuvwxyz");
 
       await waitFor(() => {
         expect(mockOnSearch).toHaveBeenCalled();
