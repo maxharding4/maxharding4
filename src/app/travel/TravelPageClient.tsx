@@ -6,12 +6,17 @@ import { CountrySkeleton } from "@/types/contentful";
 import CountryCard from "@/components/CountryCard";
 import SearchBox from "@/components/SearchBox";
 
+interface CountryWithCityCount {
+  country: Entry<CountrySkeleton>;
+  cityCount: number;
+}
+
 interface TravelPageClientProps {
-  countries: Entry<CountrySkeleton>[];
+  countriesWithCityCounts: CountryWithCityCount[];
 }
 
 export default function TravelPageClient({
-  countries,
+  countriesWithCityCounts,
 }: TravelPageClientProps) {
   const [searchQuery, setSearchQuery] = useState("");
 
@@ -22,12 +27,12 @@ export default function TravelPageClient({
   // Filter countries based on search query
   const trimmedQuery = searchQuery.trim().toLowerCase();
   const filteredCountries = trimmedQuery
-    ? countries.filter((country) => {
+    ? countriesWithCityCounts.filter(({ country }) => {
         const name = country.fields.name as unknown as string | undefined;
         if (!name) return false;
         return name.toLowerCase().includes(trimmedQuery);
       })
-    : countries;
+    : countriesWithCityCounts;
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white">
@@ -41,10 +46,17 @@ export default function TravelPageClient({
             Explore my adventures around the world. Click on a country to see
             photos and stories from my travels.
           </p>
+          {countriesWithCityCounts.length > 0 && !searchQuery && (
+            <p className="mt-2 text-sm text-gray-500">
+              {countriesWithCityCounts.length}{" "}
+              {countriesWithCityCounts.length === 1 ? "country" : "countries"}{" "}
+              visited, and counting...
+            </p>
+          )}
         </header>
 
         {/* Search Box */}
-        {countries.length > 0 && (
+        {countriesWithCityCounts.length > 0 && (
           <div className="mb-8">
             <SearchBox
               placeholder="Search countries..."
@@ -62,8 +74,11 @@ export default function TravelPageClient({
                 "No countries match your search"
               ) : (
                 <>
-                  Showing {filteredCountries.length} of {countries.length}{" "}
-                  {countries.length === 1 ? "country" : "countries"}
+                  Showing {filteredCountries.length} of{" "}
+                  {countriesWithCityCounts.length}{" "}
+                  {countriesWithCityCounts.length === 1
+                    ? "country"
+                    : "countries"}
                 </>
               )}
             </p>
@@ -71,11 +86,15 @@ export default function TravelPageClient({
         )}
 
         {/* Countries Grid */}
-        {countries.length > 0 ? (
+        {countriesWithCityCounts.length > 0 ? (
           filteredCountries.length > 0 ? (
             <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-              {filteredCountries.map((country: Entry<CountrySkeleton>) => (
-                <CountryCard key={country.sys.id} country={country} />
+              {filteredCountries.map(({ country, cityCount }) => (
+                <CountryCard
+                  key={country.sys.id}
+                  country={country}
+                  cityCount={cityCount}
+                />
               ))}
             </div>
           ) : (
@@ -90,16 +109,6 @@ export default function TravelPageClient({
           <div className="text-center py-12">
             <p className="text-gray-500 text-lg">
               No countries available yet. Check back soon!
-            </p>
-          </div>
-        )}
-
-        {/* Country Count */}
-        {countries.length > 0 && !searchQuery && (
-          <div className="mt-12 text-center">
-            <p className="text-sm text-gray-500">
-              {countries.length}{" "}
-              {countries.length === 1 ? "country" : "countries"} visited
             </p>
           </div>
         )}

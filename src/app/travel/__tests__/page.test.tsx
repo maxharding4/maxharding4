@@ -211,7 +211,9 @@ describe("Travel Page", () => {
       const page = await TravelPage();
       render(page);
 
-      expect(screen.getByText("2 countries visited")).toBeInTheDocument();
+      expect(
+        screen.getByText("2 countries visited, and counting...")
+      ).toBeInTheDocument();
     });
 
     it("should use singular 'country' for single country", async () => {
@@ -228,7 +230,9 @@ describe("Travel Page", () => {
       const page = await TravelPage();
       render(page);
 
-      expect(screen.getByText("1 country visited")).toBeInTheDocument();
+      expect(
+        screen.getByText("1 country visited, and counting...")
+      ).toBeInTheDocument();
     });
   });
 
@@ -655,14 +659,16 @@ describe("Travel Page", () => {
       const page = await TravelPage();
       render(page);
 
-      expect(screen.getByText("2 countries visited")).toBeInTheDocument();
+      expect(
+        screen.getByText("2 countries visited, and counting...")
+      ).toBeInTheDocument();
 
       const searchInput = screen.getByPlaceholderText("Search countries...");
       await user.type(searchInput, "Spain");
 
       await waitFor(() => {
         expect(
-          screen.queryByText("2 countries visited")
+          screen.queryByText(/countries visited/)
         ).not.toBeInTheDocument();
       });
     });
