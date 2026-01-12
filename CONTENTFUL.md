@@ -1,225 +1,123 @@
-# Contentful Integration Documentation
+# Contentful CMS Documentation
 
-## Overview
+## Quick Start
 
-This project uses Contentful as a headless CMS to manage and deliver content. The integration uses the Contentful JavaScript SDK with the Content Delivery API for fetching published content.
+### 1. Get API Credentials
 
-## Setup
+1. Log in to [Contentful](https://app.contentful.com/)
+2. Navigate to Settings → API keys
+3. Copy your Space ID and Content Delivery API token
 
-### 1. Install Dependencies
+### 2. Configure Environment
 
-The Contentful SDK is already installed:
-
-```bash
-npm install contentful
-```
-
-### 2. Configure Environment Variables
-
-Create a `.env.local` file in the project root (use `.env.local.example` as a template):
+Create `.env.local` (use `.env.local.example` as template):
 
 ```env
 CONTENTFUL_SPACE_ID=your_space_id_here
 CONTENTFUL_ACCESS_TOKEN=your_access_token_here
-CONTENTFUL_PREVIEW_ACCESS_TOKEN=your_preview_token_here  # Optional
-CONTENTFUL_PREVIEW_MODE=false  # Optional
 ```
 
-**How to get these values:**
-1. Log in to [Contentful](https://app.contentful.com/)
-2. Navigate to your space
-3. Go to Settings → API keys
-4. Create a new API key or use an existing one
-5. Copy the Space ID and Content Delivery API access token
+**Security**: Never commit `.env.local` - it's already gitignored.
 
-### 3. Security Best Practices
-
-- ✅ **Never commit API tokens** to version control
-- ✅ `.env.local` is already in `.gitignore`
-- ✅ Use **Content Delivery API** (read-only) for the public-facing site
-- ✅ Only use **Content Preview API** for draft content in development
-- ❌ **Never expose** API tokens in client-side code
-
-## Usage
-
-### Basic Client Usage
-
-```typescript
-import { contentfulClient } from "@/lib/contentful";
-
-// The client is automatically configured using environment variables
-```
-
-### Fetch a Single Entry
-
-```typescript
-import { getEntry } from "@/lib/contentful";
-
-const entry = await getEntry<YourContentType>("entry-id");
-if (entry) {
-  console.log(entry.fields);
-}
-```
-
-### Fetch Entries by Content Type
+### 3. Usage in Code
 
 ```typescript
 import { getEntriesByType, parseEntries } from "@/lib/contentful";
 
-const entries = await getEntriesByType<YourContentType>("contentTypeId", {
-  limit: 10,
+const entries = await getEntriesByType("country", {
   order: "-sys.createdAt",
 });
-
-const items = parseEntries(entries);
+const countries = parseEntries(entries);
 ```
 
-### Fetch All Entries with Filtering
+## Content Models
 
-```typescript
-import { getAllEntries } from "@/lib/contentful";
+This project uses these Contentful content types:
 
-const entries = await getAllEntries({
-  "fields.category": "blog",
-  limit: 20,
-});
+### Country (`country`)
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| name | Text | Yes | Country/region name (e.g., "Italy", "Scotland") |
+| countryCode | Text | No* | ISO 3166-1 or 3166-2 code (e.g., "IT", "GB-SCT") |
+| flagImage | Asset | No | Flag image |
+| description | Long text | No | Country description |
+| slug | Text | Yes | URL identifier (e.g., "italy") |
+
+*Unique when provided
+
+**Country Code Format:**
+- Whole countries: `IT`, `ES`, `FR`, `JP` (ISO 3166-1)
+- Subdivisions: `GB-ENG`, `GB-SCT`, `US-CA` (ISO 3166-2)
+
+Examples:
+```
+Italy: IT
+Scotland: GB-SCT
+Wales: GB-WLS
+California: US-CA
 ```
 
-## API Rate Limits
+### City (`city`)
 
-### Content Delivery API (Production)
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| name | Text | Yes | City name |
+| country | Reference | Yes | Link to Country |
+| description | Long text | No | City description |
+| slug | Text | Yes | URL identifier |
+| visitDate | Date | No | Visit date |
 
-- **Rate Limit**: 78 requests per second
-- **Burst**: Up to 216 requests per second for short periods
-- **Recommendation**: Implement caching to stay well below limits
+### Photo (`photo`)
 
-### Content Preview API (Development)
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| title | Text | No | Photo title |
+| image | Asset | Yes | Photo file (1920px width recommended) |
+| city | Reference | Yes | Link to City |
+| caption | Long text | No | Photo description |
+| dateTaken | Date | No | Date taken |
+| altText | Text | Yes | Accessibility description |
+| displayOrder | Integer | No | Sort order |
 
-- **Rate Limit**: 14 requests per second
-- **Burst**: Up to 40 requests per second for short periods
-- **Recommendation**: Use sparingly, primarily for preview features
+## Creating Content Models
 
-### Best Practices for Rate Limiting
+1. Go to Content model in Contentful
+2. Click "Add content type"
+3. Add fields matching the tables above
+4. Set slug fields as "Unique"
+5. Set display fields: `name` for Country/City, `title` for Photo
 
-1. **Cache responses** at build time using Next.js Static Generation
-2. **Use incremental static regeneration** (ISR) if you need periodic updates
-3. **Implement request batching** when fetching multiple related entries
-4. **Monitor usage** in Contentful dashboard
+## Static Export Behavior
 
-## Caching Strategy
+This site uses `output: 'export'` which means:
+- ✅ Content fetched during `npm run build`
+- ✅ No API calls at runtime (zero rate limit concerns)
+- ⚠️ Manual rebuild needed to update content
+- ⚠️ No ISR or revalidation (static HTML only)
 
-### For Static Export (Current Setup)
+To update content: `npm run build` after editing in Contentful.
 
-Since this project uses `output: 'export'` for static site generation:
+## Rate Limits
 
-1. **Build-time fetching**: All content is fetched during `next build`
-2. **No runtime API calls**: Content is baked into static HTML
-3. **Manual rebuilds**: Run `npm run build` to fetch latest content
-4. **Zero rate limit concerns**: API is only called during builds
+Only relevant during builds:
+- Content Delivery API: 78 req/sec (burst: 216 req/sec)
+- Content Preview API: 14 req/sec (burst: 40 req/sec)
 
-### Example: Static Page with Contentful Content
-
-```typescript
-// app/blog/page.tsx
-import { getEntriesByType, parseEntries } from "@/lib/contentful";
-
-export default async function BlogPage() {
-  const entries = await getEntriesByType("blogPost", {
-    order: "-sys.createdAt",
-  });
-
-  const posts = parseEntries(entries);
-
-  return (
-    <div>
-      {posts.map((post) => (
-        <article key={post.slug}>
-          <h2>{post.title}</h2>
-          <p>{post.excerpt}</p>
-        </article>
-      ))}
-    </div>
-  );
-}
-```
-
-### Recommended Caching Approach
-
-For future enhancements if moving to dynamic rendering:
-
-```typescript
-// Enable Next.js caching with revalidation
-export const revalidate = 3600; // Revalidate every hour
-
-// Or use on-demand revalidation via webhooks
-```
-
-## Content Modeling Tips
-
-1. **Create clear content types** with descriptive field names
-2. **Use references** to link related content
-3. **Add validations** in Contentful to ensure data quality
-4. **Use Rich Text** for flexible content formatting
-5. **Tag content** for easier filtering and organization
-
-### Country Code Field Implementation
-
-The Country content model uses a flexible approach for the `countryCode` field to support both whole countries and subdivisions:
-
-**Standard Country Codes (ISO 3166-1)**
-- Format: 2 uppercase letters
-- Examples: `IT` (Italy), `ES` (Spain), `FR` (France), `JP` (Japan)
-- Use for countries as whole entities
-
-**Subdivision Codes (ISO 3166-2)**
-- Format: Country code + hyphen + subdivision code
-- Examples: `GB-ENG` (England), `GB-SCT` (Scotland), `GB-WLS` (Wales), `ES-CT` (Catalonia)
-- Use for specific regions or constituent countries within a larger country
-
-**Why this approach?**
-- Maintains unique identifiers for each entry (required by Contentful)
-- Follows international standards (ISO 3166-1 and ISO 3166-2)
-- Allows representation of both countries and subdivisions (e.g., England, Scotland, Wales separately from Great Britain)
-- Works with flag emoji and image systems
-- Future-proof for adding other subdivisions
-
-**Example Contentful entries:**
-```
-Name: Italy
-Country Code: IT
-Slug: italy
-
-Name: England
-Country Code: GB-ENG
-Slug: england
-
-Name: Scotland
-Country Code: GB-SCT
-Slug: scotland
-```
+Static export typically makes 10-50 API calls per build.
 
 ## Troubleshooting
 
-### Error: "CONTENTFUL_SPACE_ID and CONTENTFUL_ACCESS_TOKEN must be set"
+**Error: "CONTENTFUL_SPACE_ID must be set"**
+- Check `.env.local` exists and has correct values
+- Restart dev server after adding variables
 
-- Ensure `.env.local` exists and contains the required variables
-- Restart the development server after adding environment variables
-
-### Error: "The access token you sent could not be found"
-
-- Verify the access token is correct
-- Ensure you're using the Content Delivery API token (not Management API)
-- Check that the token hasn't been deleted or regenerated in Contentful
-
-### Preview Mode Not Working
-
-- Ensure `CONTENTFUL_PREVIEW_ACCESS_TOKEN` is set
-- Set `CONTENTFUL_PREVIEW_MODE=true` in `.env.local`
-- Verify the preview token is for the Content Preview API
+**Error: "Access token not found"**
+- Verify you're using Content Delivery API token (not Management API)
+- Check token hasn't been regenerated in Contentful
 
 ## Resources
 
 - [Contentful Documentation](https://www.contentful.com/developers/docs/)
-- [Contentful JavaScript SDK](https://github.com/contentful/contentful.js)
-- [Next.js Static Export](https://nextjs.org/docs/app/building-your-application/deploying/static-exports)
+- [Contentful JS SDK](https://github.com/contentful/contentful.js)
 - [Content Delivery API Reference](https://www.contentful.com/developers/docs/references/content-delivery-api/)

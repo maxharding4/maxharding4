@@ -8,20 +8,11 @@ interface CountryCardProps {
 }
 
 export default function CountryCard({ country }: CountryCardProps) {
-  const fields = country.fields as unknown as {
-    name: string;
-    slug: string;
-    flagImage?: {
-      fields?: {
-        file?: {
-          url?: string;
-        };
-      };
-    };
-  };
-  const { name, slug, flagImage } = fields;
-  // Type assertion needed due to Contentful's Asset type complexity
-  const imageUrl = flagImage?.fields?.file?.url as string | undefined;
+  const name = country.fields.name as unknown as string;
+  const slug = country.fields.slug as unknown as string;
+  const flagImage = country.fields.flagImage;
+  // Contentful Asset type - safely access the file URL
+  const imageUrl = (flagImage as any)?.fields?.file?.url as string | undefined;
 
   return (
     <Link
@@ -46,7 +37,7 @@ export default function CountryCard({ country }: CountryCardProps) {
         {/* Country Name */}
         <div className="p-4 bg-white">
           <h3 className="text-lg font-semibold text-gray-900 group-hover:text-blue-600 transition-colors">
-            {name}
+            {name || "Unknown"}
           </h3>
         </div>
 
