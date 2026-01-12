@@ -15,7 +15,7 @@ jest.mock("next/image", () => ({
   __esModule: true,
   default: (props: Record<string, unknown>) => {
     const { fill, priority, ...rest } = props;
-    // eslint-disable-next-line @next/next/no-img-element, jsx-a11y/alt-text
+     
     return (
       <img
         {...rest}
@@ -432,6 +432,7 @@ describe("Country Page", () => {
 
   describe("404 Handling", () => {
     it("should call notFound when country not found", async () => {
+      // eslint-disable-next-line @typescript-eslint/no-require-imports
       const { notFound } = require("next/navigation");
       // Make notFound throw an error to stop execution (simulating Next.js behavior)
       notFound.mockImplementation(() => {
@@ -450,6 +451,7 @@ describe("Country Page", () => {
     });
 
     it("should call notFound for invalid slug", async () => {
+      // eslint-disable-next-line @typescript-eslint/no-require-imports
       const { notFound } = require("next/navigation");
       // Make notFound throw an error to stop execution (simulating Next.js behavior)
       notFound.mockImplementation(() => {

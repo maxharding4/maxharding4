@@ -20,9 +20,11 @@ export default function CityCard({
   const slug = city.fields.slug as unknown as string;
 
   // Get preview image URL from the first photo
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const previewImageUrl = previewPhoto
-    ? ((previewPhoto.fields.image as any)?.fields?.file?.url as string | undefined)
+    ? // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      ((previewPhoto.fields.image as any)?.fields?.file?.url as
+        | string
+        | undefined)
     : undefined;
 
   return (
