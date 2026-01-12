@@ -7,10 +7,10 @@ import { Asset, Entry, EntrySkeletonType } from "contentful";
 
 // Country Content Type
 export interface CountryFields {
-  name: string;
-  slug: string;
-  countryCode: string;
-  flagImage: Asset;
+  name?: string;
+  slug?: string;
+  countryCode?: string;
+  flagImage?: Asset;
   description?: string;
   cities?: Entry<CitySkeleton>[];
 }

@@ -2,12 +2,13 @@ import { getEntriesByType } from "@/lib/contentful";
 import { CountrySkeleton } from "@/types/contentful";
 import TravelPageClient from "./TravelPageClient";
 
-export const revalidate = 3600; // Revalidate every hour
+// Note: revalidate has no effect with static export (output: 'export')
+// Content is fetched at build time only. Run 'npm run build' to update.
 
 export default async function TravelPage() {
   // Fetch all countries from Contentful, sorted alphabetically
   const countries = await getEntriesByType<CountrySkeleton>("country", {
-    order: ["fields.name"] as unknown as string[],
+    order: ["fields.name"],
   });
 
   return <TravelPageClient countries={countries.items} />;

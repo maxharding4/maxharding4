@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState } from "react";
 import { Entry } from "contentful";
 import { CountrySkeleton } from "@/types/contentful";
 import CountryCard from "@/components/CountryCard";
@@ -15,25 +15,19 @@ export default function TravelPageClient({
 }: TravelPageClientProps) {
   const [searchQuery, setSearchQuery] = useState("");
 
-  // Filter countries based on search query
-  const filteredCountries = useMemo(() => {
-    const trimmedQuery = searchQuery.trim();
-    if (!trimmedQuery) {
-      return countries;
-    }
-
-    const query = trimmedQuery.toLowerCase();
-    return countries.filter((country) => {
-      const fields = country.fields as unknown as {
-        name: string;
-      };
-      return fields.name.toLowerCase().includes(query);
-    });
-  }, [countries, searchQuery]);
-
   const handleSearch = (query: string) => {
     setSearchQuery(query);
   };
+
+  // Filter countries based on search query
+  const trimmedQuery = searchQuery.trim().toLowerCase();
+  const filteredCountries = trimmedQuery
+    ? countries.filter((country) => {
+        const name = country.fields.name as unknown as string | undefined;
+        if (!name) return false;
+        return name.toLowerCase().includes(trimmedQuery);
+      })
+    : countries;
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white">

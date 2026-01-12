@@ -6,8 +6,8 @@ on:
     types: [opened, synchronize, reopened]
 
 jobs:
-  lint:
-    name: Linting
+  quality-checks:
+    name: Quality Checks
     runs-on: ubuntu-latest
 
     steps:
@@ -23,76 +23,17 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Run ESLint
+      - name: Run linting
         run: npm run lint
 
-  type-check:
-    name: TypeScript Type Check
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-          cache: 'npm'
-
-      - name: Install dependencies
-        run: npm ci
-
-      - name: Run TypeScript compiler
+      - name: Run type checking
         run: npm run type-check
 
-  test:
-    name: Unit Tests
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-          cache: 'npm'
-
-      - name: Install dependencies
-        run: npm ci
-
       - name: Run tests
-        run: npm test -- --coverage
+        run: npm test
         env:
           CONTENTFUL_SPACE_ID: test-space-id
           CONTENTFUL_ACCESS_TOKEN: test-access-token
-
-      - name: Upload coverage reports
-        uses: codecov/codecov-action@v4
-        if: always()
-        with:
-          files: ./coverage/coverage-final.json
-          fail_ci_if_error: false
-        continue-on-error: true
-
-  build:
-    name: Build Verification
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-          cache: 'npm'
-
-      - name: Install dependencies
-        run: npm ci
 
       - name: Run build
         run: npm run build
@@ -100,19 +41,6 @@ jobs:
           CONTENTFUL_SPACE_ID: test-space-id
           CONTENTFUL_ACCESS_TOKEN: test-access-token
 
-  security:
-    name: Security Audit
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-
-      - name: Run npm audit
+      - name: Run security audit
         run: npm audit --audit-level=moderate
         continue-on-error: true
