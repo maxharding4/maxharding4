@@ -5,13 +5,15 @@ import { Entry } from "contentful";
 
 interface CountryCardProps {
   country: Entry<CountrySkeleton>;
+  cityCount?: number;
 }
 
-export default function CountryCard({ country }: CountryCardProps) {
+export default function CountryCard({ country, cityCount }: CountryCardProps) {
   const name = country.fields.name as unknown as string;
   const slug = country.fields.slug as unknown as string;
   const flagImage = country.fields.flagImage;
   // Contentful Asset type - safely access the file URL
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const imageUrl = (flagImage as any)?.fields?.file?.url as string | undefined;
 
   return (
@@ -35,10 +37,17 @@ export default function CountryCard({ country }: CountryCardProps) {
         </div>
 
         {/* Country Name */}
-        <div className="p-4 bg-white">
+        <div className="relative p-4 bg-white">
           <h3 className="text-lg font-semibold text-gray-900 group-hover:text-blue-600 transition-colors">
             {name || "Unknown"}
           </h3>
+
+          {/* Album Count Badge */}
+          {cityCount !== undefined && (
+            <div className="absolute right-4 top-1/2 -translate-y-1/2 text-xs font-medium text-gray-500">
+              {cityCount} {cityCount === 1 ? "album" : "albums"}
+            </div>
+          )}
         </div>
 
         {/* Hover overlay effect */}
