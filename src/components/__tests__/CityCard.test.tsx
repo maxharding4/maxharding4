@@ -153,7 +153,9 @@ describe("CityCard", () => {
 
     it("should handle zero photo count", () => {
       render(<CityCard {...defaultProps} photoCount={0} />);
-      expect(screen.getByText("0 photos")).toBeInTheDocument();
+      // When photoCount is 0, the card shows "COMING SOON" instead of photo count
+      expect(screen.getByText("COMING SOON")).toBeInTheDocument();
+      expect(screen.queryByText("0 photos")).not.toBeInTheDocument();
     });
 
     it("should handle missing preview photo gracefully", () => {
@@ -381,6 +383,228 @@ describe("CityCard", () => {
       // Should include mobile, tablet, and desktop breakpoints
       expect(sizes).toContain("640px");
       expect(sizes).toContain("1024px");
+    });
+  });
+
+  describe("COMING SOON Overlay", () => {
+    describe("Functional Requirements", () => {
+      it("should display COMING SOON overlay when photoCount is 0", () => {
+        render(<CityCard {...defaultProps} photoCount={0} />);
+        expect(screen.getByText("COMING SOON")).toBeInTheDocument();
+      });
+
+      it("should not display COMING SOON overlay when photoCount is greater than 0", () => {
+        render(<CityCard {...defaultProps} photoCount={5} />);
+        expect(screen.queryByText("COMING SOON")).not.toBeInTheDocument();
+      });
+
+      it("should hide photo count badge when photoCount is 0", () => {
+        render(<CityCard {...defaultProps} photoCount={0} />);
+        expect(screen.queryByText("0 photos")).not.toBeInTheDocument();
+      });
+
+      it("should display city name beneath overlay", () => {
+        render(<CityCard {...defaultProps} photoCount={0} />);
+        expect(screen.getByText("Barcelona")).toBeInTheDocument();
+      });
+
+      it("should display preview image beneath overlay if available", () => {
+        render(<CityCard {...defaultProps} photoCount={0} />);
+        expect(screen.getByAltText("Preview of Barcelona")).toBeInTheDocument();
+      });
+
+      it("should not have hover overlay effect when coming soon", () => {
+        const { container } = render(
+          <CityCard {...defaultProps} photoCount={0} />
+        );
+        // The hover overlay should not be present for coming soon cards
+        const hoverOverlay = container.querySelector(
+          ".bg-gradient-to-t.from-black\\/20"
+        );
+        expect(hoverOverlay).not.toBeInTheDocument();
+      });
+    });
+
+    describe("Navigation Behavior", () => {
+      it("should render as div (non-clickable) when photoCount is 0", () => {
+        render(<CityCard {...defaultProps} photoCount={0} />);
+        expect(screen.queryByRole("link")).not.toBeInTheDocument();
+      });
+
+      it("should render as Link (clickable) when photoCount is greater than 0", () => {
+        render(<CityCard {...defaultProps} photoCount={5} />);
+        const link = screen.getByRole("link");
+        expect(link).toBeInTheDocument();
+        expect(link).toHaveAttribute("href", "/travel/spain/barcelona");
+      });
+
+      it("should have cursor-not-allowed class when coming soon", () => {
+        const { container } = render(
+          <CityCard {...defaultProps} photoCount={0} />
+        );
+        const card = container.firstChild as HTMLElement;
+        expect(card.className).toContain("cursor-not-allowed");
+      });
+
+      it("should have reduced opacity when coming soon", () => {
+        const { container } = render(
+          <CityCard {...defaultProps} photoCount={0} />
+        );
+        const card = container.firstChild as HTMLElement;
+        expect(card.className).toContain("opacity-75");
+      });
+
+      it("should not have hover effects when coming soon", () => {
+        const { container } = render(
+          <CityCard {...defaultProps} photoCount={0} />
+        );
+        const card = container.firstChild as HTMLElement;
+        expect(card.className).not.toContain("hover:shadow-xl");
+        expect(card.className).not.toContain("hover:scale-105");
+      });
+    });
+
+    describe("Accessibility", () => {
+      it("should have aria-disabled attribute when coming soon", () => {
+        const { container } = render(
+          <CityCard {...defaultProps} photoCount={0} />
+        );
+        const card = container.firstChild as HTMLElement;
+        expect(card).toHaveAttribute("aria-disabled", "true");
+      });
+
+      it("should have descriptive aria-label on card when coming soon", () => {
+        const { container } = render(
+          <CityCard {...defaultProps} photoCount={0} />
+        );
+        const card = container.firstChild as HTMLElement;
+        expect(card).toHaveAttribute(
+          "aria-label",
+          "Barcelona - Coming soon, no photos available yet"
+        );
+      });
+
+      it("should have role=status on overlay for screen readers", () => {
+        render(<CityCard {...defaultProps} photoCount={0} />);
+        const overlay = screen
+          .getByText("COMING SOON")
+          .closest('[role="status"]');
+        expect(overlay).toBeInTheDocument();
+      });
+
+      it("should have aria-label on overlay for screen readers", () => {
+        render(<CityCard {...defaultProps} photoCount={0} />);
+        const overlay = screen
+          .getByText("COMING SOON")
+          .closest('[aria-label]');
+        expect(overlay).toHaveAttribute(
+          "aria-label",
+          "Coming soon - No photos available yet"
+        );
+      });
+
+      it("should meet WCAG AA contrast ratio with white text on black/40 background", () => {
+        render(<CityCard {...defaultProps} photoCount={0} />);
+        const comingSoonText = screen.getByText("COMING SOON");
+        expect(comingSoonText.className).toContain("text-white");
+        const overlay = comingSoonText.closest('[role="status"]');
+        expect(overlay?.className).toContain("bg-black/40");
+      });
+    });
+
+    describe("Visual Design", () => {
+      it("should have semi-transparent background overlay", () => {
+        render(<CityCard {...defaultProps} photoCount={0} />);
+        const overlay = screen.getByText("COMING SOON").closest('[role="status"]');
+        expect(overlay?.className).toContain("bg-black/40");
+      });
+
+      it("should have backdrop blur effect on overlay", () => {
+        render(<CityCard {...defaultProps} photoCount={0} />);
+        const overlay = screen.getByText("COMING SOON").closest('[role="status"]');
+        expect(overlay?.className).toContain("backdrop-blur-sm");
+      });
+
+      it("should center COMING SOON text", () => {
+        render(<CityCard {...defaultProps} photoCount={0} />);
+        const overlay = screen.getByText("COMING SOON").closest('[role="status"]');
+        expect(overlay?.className).toContain("flex");
+        expect(overlay?.className).toContain("items-center");
+        expect(overlay?.className).toContain("justify-center");
+      });
+
+      it("should have large, bold text for COMING SOON", () => {
+        render(<CityCard {...defaultProps} photoCount={0} />);
+        const text = screen.getByText("COMING SOON");
+        expect(text.className).toContain("text-2xl");
+        expect(text.className).toContain("font-bold");
+      });
+
+      it("should cover entire card with overlay", () => {
+        render(<CityCard {...defaultProps} photoCount={0} />);
+        const overlay = screen.getByText("COMING SOON").closest('[role="status"]');
+        expect(overlay?.className).toContain("absolute");
+        expect(overlay?.className).toContain("inset-0");
+      });
+    });
+
+    describe("Edge Cases", () => {
+      it("should handle coming soon with no preview photo", () => {
+        render(
+          <CityCard {...defaultProps} photoCount={0} previewPhoto={null} />
+        );
+        expect(screen.getByText("COMING SOON")).toBeInTheDocument();
+        expect(screen.getByText("Barcelona")).toBeInTheDocument();
+      });
+
+      it("should handle coming soon with undefined city name", () => {
+        const cityWithNoName = {
+          ...mockCity,
+          fields: {
+            ...mockCity.fields,
+            name: undefined,
+          },
+        } as unknown as Entry<CitySkeleton>;
+
+        const { container } = render(
+          <CityCard {...defaultProps} city={cityWithNoName} photoCount={0} />
+        );
+        expect(screen.getByText("COMING SOON")).toBeInTheDocument();
+        const card = container.firstChild as HTMLElement;
+        expect(card).toHaveAttribute(
+          "aria-label",
+          "Unknown City - Coming soon, no photos available yet"
+        );
+      });
+
+      it("should transition from coming soon to normal when photoCount changes", () => {
+        const { rerender } = render(
+          <CityCard {...defaultProps} photoCount={0} />
+        );
+        expect(screen.getByText("COMING SOON")).toBeInTheDocument();
+        expect(screen.queryByRole("link")).not.toBeInTheDocument();
+
+        rerender(<CityCard {...defaultProps} photoCount={5} />);
+        expect(screen.queryByText("COMING SOON")).not.toBeInTheDocument();
+        expect(screen.getByRole("link")).toBeInTheDocument();
+      });
+    });
+
+    describe("Responsive Design", () => {
+      it("should maintain overlay on all screen sizes", () => {
+        render(<CityCard {...defaultProps} photoCount={0} />);
+        const overlay = screen.getByText("COMING SOON").closest('[role="status"]');
+        // Overlay uses absolute positioning with inset-0, which is responsive
+        expect(overlay?.className).toContain("absolute");
+        expect(overlay?.className).toContain("inset-0");
+      });
+
+      it("should have appropriate text size for mobile", () => {
+        render(<CityCard {...defaultProps} photoCount={0} />);
+        const text = screen.getByText("COMING SOON");
+        // text-2xl is readable on mobile (1.5rem / 24px)
+        expect(text.className).toContain("text-2xl");
+      });
     });
   });
 });
