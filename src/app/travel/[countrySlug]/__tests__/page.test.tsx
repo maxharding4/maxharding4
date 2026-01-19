@@ -11,8 +11,8 @@ jest.mock("next/image", () => ({
   __esModule: true,
   default: (props: Record<string, unknown>) => {
     const { fill, priority, ...rest } = props;
-     
     return (
+      // eslint-disable-next-line @next/next/no-img-element, jsx-a11y/alt-text
       <img
         {...rest}
         data-fill={fill ? "true" : "false"}
@@ -827,7 +827,7 @@ describe("Country Page", () => {
     it("should handle cities with zero photos", async () => {
       jest
         .spyOn(contentful, "getEntriesByType")
-        .mockImplementation((contentType: string, options?: Record<string, unknown>) => {
+        .mockImplementation((contentType: string) => {
           if (contentType === "country") {
             return Promise.resolve(createCountryCollection([mockCountry]));
           }
