@@ -58,13 +58,6 @@ export default function CityCard({
           </div>
         )}
 
-        {/* Photo count badge */}
-        {!isComingSoon && (
-          <div className="absolute bottom-2 right-2 rounded-full bg-black/70 px-2.5 py-1 text-xs font-medium text-white">
-            {photoCount} {photoCount === 1 ? "photo" : "photos"}
-          </div>
-        )}
-
         {/* COMING SOON overlay - only covers image section */}
         {isComingSoon && (
           <div
@@ -82,10 +75,17 @@ export default function CityCard({
       </div>
 
       {/* City Name */}
-      <div className="p-4 bg-white">
+      <div className="relative p-4 bg-white">
         <h2 className="text-lg font-semibold text-gray-900 group-hover:text-blue-600 transition-colors">
           {name || "Unknown City"}
         </h2>
+
+        {/* Photo count badge */}
+        {!isComingSoon && (
+          <div className="absolute right-4 top-1/2 -translate-y-1/2 text-xs font-medium text-gray-500">
+            {photoCount} {photoCount === 1 ? "photo" : "photos"}
+          </div>
+        )}
       </div>
 
       {/* Hover overlay effect */}

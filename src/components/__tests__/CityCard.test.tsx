@@ -300,8 +300,9 @@ describe("CityCard", () => {
     it("should have photo count badge with proper styling", () => {
       render(<CityCard {...defaultProps} />);
       const badge = screen.getByText("15 photos");
-      expect(badge.className).toContain("rounded-full");
-      expect(badge.className).toContain("bg-black/70");
+      expect(badge.className).toContain("absolute");
+      expect(badge.className).toContain("right-4");
+      expect(badge.className).toContain("text-gray-500");
     });
   });
 
