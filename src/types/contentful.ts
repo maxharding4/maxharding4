@@ -24,12 +24,14 @@ export interface CityFields {
   country: Entry<CountrySkeleton>;
   description?: string;
   visitDate?: string;
-  photos?: Entry<PhotoSkeleton>[];
+  photos?: Asset[];
 }
 
 export type CitySkeleton = EntrySkeletonType<CityFields, "city">;
 
 // Photo Content Type
+// @deprecated - Photos are now stored directly as assets in City.photos field
+// This type is kept for backwards compatibility but should not be used in new code
 export interface PhotoFields {
   title: string;
   image: Asset;

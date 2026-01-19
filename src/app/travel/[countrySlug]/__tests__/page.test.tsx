@@ -2,12 +2,8 @@
 import { render, screen } from "@testing-library/react";
 import CountryPage, { generateStaticParams, generateMetadata } from "../page";
 import * as contentful from "@/lib/contentful";
-import { Entry, EntryCollection } from "contentful";
-import {
-  CountrySkeleton,
-  CitySkeleton,
-  PhotoSkeleton,
-} from "@/types/contentful";
+import { Asset, Entry, EntryCollection } from "contentful";
+import { CountrySkeleton, CitySkeleton } from "@/types/contentful";
 import React from "react";
 
 // Mock Next.js components
@@ -15,8 +11,8 @@ jest.mock("next/image", () => ({
   __esModule: true,
   default: (props: Record<string, unknown>) => {
     const { fill, priority, ...rest } = props;
-     
     return (
+      // eslint-disable-next-line @next/next/no-img-element, jsx-a11y/alt-text
       <img
         {...rest}
         data-fill={fill ? "true" : "false"}
@@ -107,6 +103,35 @@ describe("Country Page", () => {
     },
   } as unknown as Entry<CountrySkeleton>;
 
+  const mockPhotoAsset: Asset = {
+    sys: {
+      id: "photo-id",
+      type: "Asset",
+      createdAt: "2024-01-01T00:00:00Z",
+      updatedAt: "2024-01-01T00:00:00Z",
+      locale: "en-US",
+      revision: 1,
+    },
+    fields: {
+      title: "Beach Photo",
+      file: {
+        url: "//images.ctfassets.net/space/beach.jpg",
+        details: {
+          size: 12345,
+          image: {
+            width: 1200,
+            height: 800,
+          },
+        },
+        fileName: "beach.jpg",
+        contentType: "image/jpeg",
+      },
+    },
+    metadata: {
+      tags: [],
+    },
+  } as unknown as Asset;
+
   const mockCity: Entry<CitySkeleton> = {
     sys: {
       id: "barcelona-id",
@@ -127,6 +152,7 @@ describe("Country Page", () => {
       name: "Barcelona",
       slug: "barcelona",
       description: "A vibrant coastal city in Catalonia",
+      photos: [mockPhotoAsset, mockPhotoAsset, mockPhotoAsset], // 3 photos
     },
     metadata: {
       tags: [],
@@ -153,63 +179,12 @@ describe("Country Page", () => {
       name: "Madrid",
       slug: "madrid",
       description: "The capital of Spain",
+      photos: [], // No photos
     },
     metadata: {
       tags: [],
     },
   } as unknown as Entry<CitySkeleton>;
-
-  const mockPhoto: Entry<PhotoSkeleton> = {
-    sys: {
-      id: "photo-id",
-      type: "Entry",
-      createdAt: "2024-01-01T00:00:00Z",
-      updatedAt: "2024-01-01T00:00:00Z",
-      locale: "en-US",
-      contentType: {
-        sys: {
-          id: "photo",
-          type: "Link",
-          linkType: "ContentType",
-        },
-      },
-      revision: 1,
-    },
-    fields: {
-      title: "Barcelona Beach",
-      image: {
-        sys: {
-          id: "image-id",
-          type: "Asset",
-          createdAt: "2024-01-01T00:00:00Z",
-          updatedAt: "2024-01-01T00:00:00Z",
-          locale: "en-US",
-          revision: 1,
-        },
-        fields: {
-          title: "Beach Photo",
-          file: {
-            url: "//images.ctfassets.net/space/beach.jpg",
-            details: {
-              size: 12345,
-              image: {
-                width: 1200,
-                height: 800,
-              },
-            },
-            fileName: "beach.jpg",
-            contentType: "image/jpeg",
-          },
-        },
-        metadata: {
-          tags: [],
-        },
-      },
-    },
-    metadata: {
-      tags: [],
-    },
-  } as unknown as Entry<PhotoSkeleton>;
 
   const createCountryCollection = (
     items: Entry<CountrySkeleton>[]
@@ -231,17 +206,6 @@ describe("Country Page", () => {
     sys: { type: "Array" },
   });
 
-  const createPhotoCollection = (
-    items: Entry<PhotoSkeleton>[],
-    total?: number
-  ): EntryCollection<PhotoSkeleton> => ({
-    items,
-    total: total ?? items.length,
-    skip: 0,
-    limit: 100,
-    sys: { type: "Array" },
-  });
-
   const mockParams = Promise.resolve({ countrySlug: "spain" });
 
   beforeEach(() => {
@@ -250,22 +214,15 @@ describe("Country Page", () => {
 
   describe("Rendering with Country Data", () => {
     beforeEach(() => {
-      // Setup default mocks for a country with cities and photos
+      // Setup default mocks for a country with cities
       jest
         .spyOn(contentful, "getEntriesByType")
-        .mockImplementation((contentType: string, options?: Record<string, unknown>) => {
+        .mockImplementation((contentType: string) => {
           if (contentType === "country") {
             return Promise.resolve(createCountryCollection([mockCountry]));
           }
           if (contentType === "city") {
             return Promise.resolve(createCityCollection([mockCity, mockCity2]));
-          }
-          if (contentType === "photo") {
-            // Return preview photo for first call (limit: 1), total count for second
-            if (options?.limit === 1) {
-              return Promise.resolve(createPhotoCollection([mockPhoto]));
-            }
-            return Promise.resolve(createPhotoCollection([], 5));
           }
           return Promise.resolve(createCountryCollection([]));
         });
@@ -337,18 +294,12 @@ describe("Country Page", () => {
     it("should use singular 'city' for one city", async () => {
       jest
         .spyOn(contentful, "getEntriesByType")
-        .mockImplementation((contentType: string, options?: Record<string, unknown>) => {
+        .mockImplementation((contentType: string) => {
           if (contentType === "country") {
             return Promise.resolve(createCountryCollection([mockCountry]));
           }
           if (contentType === "city") {
             return Promise.resolve(createCityCollection([mockCity]));
-          }
-          if (contentType === "photo") {
-            if (options?.limit === 1) {
-              return Promise.resolve(createPhotoCollection([mockPhoto]));
-            }
-            return Promise.resolve(createPhotoCollection([], 5));
           }
           return Promise.resolve(createCountryCollection([]));
         });
@@ -363,8 +314,8 @@ describe("Country Page", () => {
       const page = await CountryPage({ params: mockParams });
       render(page);
 
-      // 5 photos per city * 2 cities = 10 photos total
-      expect(screen.getByText(/10 photos across 2 cities/i)).toBeInTheDocument();
+      // Barcelona has 3 photos, Madrid has 0 = 3 photos total across 2 cities
+      expect(screen.getByText(/3 photos across 2 cities/i)).toBeInTheDocument();
     });
   });
 
@@ -476,18 +427,12 @@ describe("Country Page", () => {
     beforeEach(() => {
       jest
         .spyOn(contentful, "getEntriesByType")
-        .mockImplementation((contentType: string, options?: Record<string, unknown>) => {
+        .mockImplementation((contentType: string) => {
           if (contentType === "country") {
             return Promise.resolve(createCountryCollection([mockCountry]));
           }
           if (contentType === "city") {
             return Promise.resolve(createCityCollection([mockCity]));
-          }
-          if (contentType === "photo") {
-            if (options?.limit === 1) {
-              return Promise.resolve(createPhotoCollection([mockPhoto]));
-            }
-            return Promise.resolve(createPhotoCollection([], 5));
           }
           return Promise.resolve(createCountryCollection([]));
         });
@@ -712,18 +657,12 @@ describe("Country Page", () => {
     beforeEach(() => {
       jest
         .spyOn(contentful, "getEntriesByType")
-        .mockImplementation((contentType: string, options?: Record<string, unknown>) => {
+        .mockImplementation((contentType: string) => {
           if (contentType === "country") {
             return Promise.resolve(createCountryCollection([mockCountry]));
           }
           if (contentType === "city") {
             return Promise.resolve(createCityCollection([mockCity, mockCity2]));
-          }
-          if (contentType === "photo") {
-            if (options?.limit === 1) {
-              return Promise.resolve(createPhotoCollection([mockPhoto]));
-            }
-            return Promise.resolve(createPhotoCollection([], 5));
           }
           return Promise.resolve(createCountryCollection([]));
         });
@@ -888,15 +827,12 @@ describe("Country Page", () => {
     it("should handle cities with zero photos", async () => {
       jest
         .spyOn(contentful, "getEntriesByType")
-        .mockImplementation((contentType: string, options?: Record<string, unknown>) => {
+        .mockImplementation((contentType: string) => {
           if (contentType === "country") {
             return Promise.resolve(createCountryCollection([mockCountry]));
           }
           if (contentType === "city") {
-            return Promise.resolve(createCityCollection([mockCity]));
-          }
-          if (contentType === "photo") {
-            return Promise.resolve(createPhotoCollection([], 0));
+            return Promise.resolve(createCityCollection([mockCity2])); // Use mockCity2 which has no photos
           }
           return Promise.resolve(createCountryCollection([]));
         });
@@ -904,7 +840,7 @@ describe("Country Page", () => {
       const page = await CountryPage({ params: mockParams });
       render(page);
 
-      expect(screen.getByText("Barcelona")).toBeInTheDocument();
+      expect(screen.getByText("Madrid")).toBeInTheDocument();
       expect(screen.getByText(/0 photos across 1 city/i)).toBeInTheDocument();
     });
 
@@ -941,18 +877,12 @@ describe("Country Page", () => {
     beforeEach(() => {
       jest
         .spyOn(contentful, "getEntriesByType")
-        .mockImplementation((contentType: string, options?: Record<string, unknown>) => {
+        .mockImplementation((contentType: string) => {
           if (contentType === "country") {
             return Promise.resolve(createCountryCollection([mockCountry]));
           }
           if (contentType === "city") {
             return Promise.resolve(createCityCollection([mockCity]));
-          }
-          if (contentType === "photo") {
-            if (options?.limit === 1) {
-              return Promise.resolve(createPhotoCollection([mockPhoto]));
-            }
-            return Promise.resolve(createPhotoCollection([], 5));
           }
           return Promise.resolve(createCountryCollection([]));
         });
