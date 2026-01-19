@@ -225,7 +225,8 @@ describe("PhotoGallery", () => {
 
       const images = screen.getAllByRole("img");
       const lightboxImage = images.find((img) =>
-        img.getAttribute("src")?.includes("beach.jpg") && img.width === 1920
+        img.getAttribute("src")?.includes("beach.jpg") &&
+        (img as HTMLImageElement).width === 1920
       );
 
       if (lightboxImage) {
