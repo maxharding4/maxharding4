@@ -1,14 +1,10 @@
 import { notFound } from "next/navigation";
 import Image from "next/image";
 import { getEntriesByType } from "@/lib/contentful";
-import {
-  CountrySkeleton,
-  CitySkeleton,
-  PhotoSkeleton,
-} from "@/types/contentful";
+import { CountrySkeleton, CitySkeleton } from "@/types/contentful";
 import CityCard from "@/components/CityCard";
 import Breadcrumb from "@/components/Breadcrumb";
-import { Entry } from "contentful";
+import { Asset, Entry } from "contentful";
 
 interface CountryPageProps {
   params: Promise<{
@@ -59,7 +55,7 @@ export async function generateMetadata({ params }: CountryPageProps) {
 // City with photo data for display
 interface CityWithPhotos {
   city: Entry<CitySkeleton>;
-  previewPhoto: Entry<PhotoSkeleton> | null;
+  previewPhoto: Asset | null;
   photoCount: number;
 }
 
@@ -90,27 +86,16 @@ export default async function CountryPage({ params }: CountryPageProps) {
     order: ["fields.name"],
   });
 
-  // For each city, get photo count and first photo for preview
-  const citiesWithPhotos: CityWithPhotos[] = await Promise.all(
-    cities.items.map(async (city) => {
-      const photos = await getEntriesByType<PhotoSkeleton>("photo", {
-        "fields.city.sys.id": city.sys.id,
-        order: ["fields.displayOrder"],
-        limit: 1,
-      });
+  // For each city, extract photo data from the city object
+  const citiesWithPhotos: CityWithPhotos[] = cities.items.map((city) => {
+    const photos = (city.fields.photos as unknown as Asset[]) || [];
 
-      // Get total photo count
-      const allPhotos = await getEntriesByType<PhotoSkeleton>("photo", {
-        "fields.city.sys.id": city.sys.id,
-      });
-
-      return {
-        city,
-        previewPhoto: photos.items[0] || null,
-        photoCount: allPhotos.total,
-      };
-    })
-  );
+    return {
+      city,
+      previewPhoto: photos[0] || null,
+      photoCount: photos.length,
+    };
+  });
 
   const breadcrumbItems = [
     { label: "Travel", href: "/travel" },

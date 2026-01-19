@@ -1,8 +1,8 @@
 /// <reference types="@testing-library/jest-dom" />
 import { render, screen } from "@testing-library/react";
 import CityCard from "../CityCard";
-import { Entry } from "contentful";
-import { CitySkeleton, PhotoSkeleton } from "@/types/contentful";
+import { Asset, Entry } from "contentful";
+import { CitySkeleton } from "@/types/contentful";
 import React from "react";
 
 // Mock Next.js components
@@ -60,57 +60,34 @@ describe("CityCard", () => {
     },
   } as unknown as Entry<CitySkeleton>;
 
-  const mockPreviewPhoto: Entry<PhotoSkeleton> = {
+  const mockPreviewPhoto: Asset = {
     sys: {
       id: "test-photo-id",
-      type: "Entry",
+      type: "Asset",
       createdAt: "2024-01-01T00:00:00Z",
       updatedAt: "2024-01-01T00:00:00Z",
       locale: "en-US",
-      contentType: {
-        sys: {
-          id: "photo",
-          type: "Link",
-          linkType: "ContentType",
-        },
-      },
       revision: 1,
     },
     fields: {
-      title: "Barcelona Beach",
-      image: {
-        sys: {
-          id: "image-id",
-          type: "Asset",
-          createdAt: "2024-01-01T00:00:00Z",
-          updatedAt: "2024-01-01T00:00:00Z",
-          locale: "en-US",
-          revision: 1,
-        },
-        fields: {
-          title: "Beach Photo",
-          file: {
-            url: "//images.ctfassets.net/space/beach.jpg",
-            details: {
-              size: 12345,
-              image: {
-                width: 1200,
-                height: 800,
-              },
-            },
-            fileName: "beach.jpg",
-            contentType: "image/jpeg",
+      title: "Beach Photo",
+      file: {
+        url: "//images.ctfassets.net/space/beach.jpg",
+        details: {
+          size: 12345,
+          image: {
+            width: 1200,
+            height: 800,
           },
         },
-        metadata: {
-          tags: [],
-        },
+        fileName: "beach.jpg",
+        contentType: "image/jpeg",
       },
     },
     metadata: {
       tags: [],
     },
-  } as unknown as Entry<PhotoSkeleton>;
+  } as unknown as Asset;
 
   const defaultProps = {
     city: mockCity,
@@ -340,16 +317,16 @@ describe("CityCard", () => {
       }).not.toThrow();
     });
 
-    it("should handle null image in preview photo", () => {
-      const photoWithNullImage = {
+    it("should handle null file in preview photo asset", () => {
+      const photoWithNullFile = {
         ...mockPreviewPhoto,
         fields: {
           ...mockPreviewPhoto.fields,
-          image: null,
+          file: null,
         },
-      } as unknown as Entry<PhotoSkeleton>;
+      } as unknown as Asset;
 
-      render(<CityCard {...defaultProps} previewPhoto={photoWithNullImage} />);
+      render(<CityCard {...defaultProps} previewPhoto={photoWithNullFile} />);
       expect(screen.getByText("Barcelona")).toBeInTheDocument();
     });
 
