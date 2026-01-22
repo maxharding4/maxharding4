@@ -279,4 +279,31 @@ describe("Footer Component", () => {
     });
   });
 
+  describe("Breakpoint Responsiveness", () => {
+    it("applies responsive flex direction classes", () => {
+      const { container } = render(<Footer />);
+      const flexContainer = container.querySelector(".flex.flex-col.sm\\:flex-row");
+      expect(flexContainer).toBeInTheDocument();
+      expect(flexContainer).toHaveClass("flex-col", "sm:flex-row");
+    });
+
+    it("applies responsive padding at all breakpoints", () => {
+      const { container } = render(<Footer />);
+      const innerContainer = container.querySelector(".container");
+      expect(innerContainer).toHaveClass("px-4", "sm:px-6", "lg:px-8");
+    });
+
+    it("uses responsive spacing classes", () => {
+      const { container } = render(<Footer />);
+      const flexContainer = container.querySelector(".flex.flex-col.sm\\:flex-row");
+      expect(flexContainer).toHaveClass("gap-4");
+    });
+
+    it("maintains alignment across breakpoints", () => {
+      const { container } = render(<Footer />);
+      const flexContainer = container.querySelector(".flex");
+      expect(flexContainer).toHaveClass("items-center", "justify-between");
+    });
+  });
+
 });

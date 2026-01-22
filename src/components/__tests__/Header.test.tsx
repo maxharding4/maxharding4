@@ -426,4 +426,31 @@ describe("Header Component", () => {
       removeEventListenerSpy.mockRestore();
     });
   });
+
+  describe("Breakpoint Responsiveness", () => {
+    it("shows desktop navigation on large screens (1024px+)", () => {
+      render(<Header />);
+      const desktopNav = screen.getByRole("navigation").querySelector(".hidden.md\\:flex");
+      expect(desktopNav).toBeInTheDocument();
+      expect(desktopNav).toHaveClass("hidden", "md:flex");
+    });
+
+    it("shows mobile menu button on small/medium screens", () => {
+      render(<Header />);
+      const mobileButton = screen.getByRole("button", { name: /menu/i });
+      expect(mobileButton).toHaveClass("md:hidden");
+    });
+
+    it("applies responsive padding at all breakpoints", () => {
+      render(<Header />);
+      const nav = screen.getByRole("navigation");
+      expect(nav).toHaveClass("px-4", "sm:px-6", "lg:px-8");
+    });
+
+    it("container has responsive structure", () => {
+      render(<Header />);
+      const container = screen.getByRole("navigation").querySelector("div");
+      expect(container).toHaveClass("flex", "h-16", "items-center", "justify-between");
+    });
+  });
 });

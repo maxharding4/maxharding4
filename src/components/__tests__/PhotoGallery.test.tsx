@@ -624,4 +624,50 @@ describe("PhotoGallery", () => {
       expect(buttons[0]).toHaveClass("focus:ring-blue-500");
     });
   });
+
+  describe("Breakpoint Responsiveness", () => {
+    it("applies responsive grid layout classes", () => {
+      const { container } = render(<PhotoGallery photos={mockPhotos} cityName="Barcelona" />);
+      const grid = container.querySelector(".grid");
+      expect(grid).toHaveClass("grid");
+      expect(grid).toHaveClass("grid-cols-1");
+      expect(grid).toHaveClass("sm:grid-cols-2");
+      expect(grid).toHaveClass("lg:grid-cols-3");
+      expect(grid).toHaveClass("xl:grid-cols-4");
+    });
+
+    it("applies consistent gap spacing", () => {
+      const { container } = render(<PhotoGallery photos={mockPhotos} cityName="Barcelona" />);
+      const grid = container.querySelector(".grid");
+      expect(grid).toHaveClass("gap-4");
+    });
+
+    it("uses responsive image sizes attribute", () => {
+      render(<PhotoGallery photos={mockPhotos} cityName="Barcelona" />);
+      const images = screen.getAllByRole("img");
+      const firstImage = images[0];
+      expect(firstImage).toHaveAttribute("sizes");
+      const sizes = firstImage.getAttribute("sizes");
+      expect(sizes).toContain("max-width: 640px");
+      expect(sizes).toContain("max-width: 1024px");
+      expect(sizes).toContain("max-width: 1280px");
+    });
+
+    it("lightbox modal is viewport-aware", () => {
+      render(<PhotoGallery photos={mockPhotos} cityName="Barcelona" />);
+      const firstPhotoButton = screen.getByRole("button", { name: /View photo 1/i });
+      fireEvent.click(firstPhotoButton);
+
+      const lightbox = screen.getByRole("dialog", { name: "Photo viewer" });
+      const lightboxImage = lightbox.querySelector("img");
+      expect(lightboxImage?.parentElement).toHaveClass("max-h-[90vh]", "max-w-[90vw]");
+    });
+
+    it("applies responsive aspect ratio to photo container", () => {
+      const { container } = render(<PhotoGallery photos={mockPhotos} cityName="Barcelona" />);
+      const aspectContainer = container.querySelector(".aspect-\\[4\\/3\\]");
+      expect(aspectContainer).toBeInTheDocument();
+      expect(aspectContainer).toHaveClass("aspect-[4/3]");
+    });
+  });
 });
