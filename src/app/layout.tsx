@@ -26,7 +26,7 @@ export const metadata: Metadata = {
     description: "Personal website and travel photography by Max Harding",
     url: "https://maxharding4.com",
     siteName: "Max Harding",
-    locale: "en_US",
+    locale: "en_GB",
     type: "website",
   },
   twitter: {
