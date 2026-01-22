@@ -15,8 +15,36 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Max Harding - Personal Website",
+  metadataBase: new URL("https://maxharding4.com"),
+  title: {
+    default: "Max Harding - Personal Website",
+    template: "%s | Max Harding",
+  },
   description: "Personal website and travel photography by Max Harding",
+  openGraph: {
+    title: "Max Harding - Personal Website",
+    description: "Personal website and travel photography by Max Harding",
+    url: "https://maxharding4.com",
+    siteName: "Max Harding",
+    locale: "en_US",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Max Harding - Personal Website",
+    description: "Personal website and travel photography by Max Harding",
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-video-preview": -1,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+    },
+  },
 };
 
 export default function RootLayout({

@@ -462,6 +462,20 @@ describe("CityPage", () => {
         title: "Barcelona, Spain - Travel Gallery",
         description: "A beautiful city in Spain",
         type: "website",
+        url: "/travel/spain/barcelona",
+        images: [
+          {
+            url: "https://images.ctfassets.net/space/beach.jpg",
+            alt: "Photo from Barcelona, Spain",
+          },
+        ],
+      });
+
+      expect(metadata.twitter).toEqual({
+        card: "summary_large_image",
+        title: "Barcelona, Spain - Travel Gallery",
+        description: "A beautiful city in Spain",
+        images: ["https://images.ctfassets.net/space/beach.jpg"],
       });
     });
 

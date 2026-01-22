@@ -397,8 +397,9 @@ describe("Travel Page", () => {
       const metadata = await generateMetadata();
 
       expect(metadata.openGraph).toBeDefined();
-      expect(metadata.openGraph?.title).toBe("Travel Gallery");
+      expect(metadata.openGraph?.title).toBe("Travel Gallery | My Adventures Around the World");
       expect(metadata.openGraph?.type).toBe("website");
+      expect(metadata.openGraph?.url).toBe("/travel");
     });
   });
 

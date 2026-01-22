@@ -40,14 +40,36 @@ export async function generateMetadata({ params }: CountryPageProps) {
 
   const name = country.fields.name as unknown as string;
   const description = country.fields.description as unknown as string | undefined;
+  const flagImage = country.fields.flagImage;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const flagImageUrl = (flagImage as any)?.fields?.file?.url as string | undefined;
+
+  const metaDescription = description || `Explore photos from ${name}`;
 
   return {
     title: `${name} | Travel Gallery`,
-    description: description || `Explore photos from ${name}`,
+    description: metaDescription,
     openGraph: {
       title: `${name} - Travel Gallery`,
-      description: description || `Explore photos from ${name}`,
+      description: metaDescription,
+      url: `/travel/${countrySlug}`,
       type: "website",
+      ...(flagImageUrl && {
+        images: [
+          {
+            url: `https:${flagImageUrl}`,
+            alt: `${name} flag`,
+          },
+        ],
+      }),
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: `${name} - Travel Gallery`,
+      description: metaDescription,
+      ...(flagImageUrl && {
+        images: [`https:${flagImageUrl}`],
+      }),
     },
   };
 }

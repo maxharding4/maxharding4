@@ -31,7 +31,7 @@ export async function generateStaticParams() {
 
 // Generate metadata for SEO
 export async function generateMetadata({ params }: CityPageProps) {
-  const { citySlug } = await params;
+  const { countrySlug, citySlug } = await params;
 
   const cities = await getEntriesByType<CitySkeleton>("city", {
     "fields.slug": citySlug,
@@ -52,15 +52,37 @@ export async function generateMetadata({ params }: CityPageProps) {
   const description = city.fields.description as unknown as string | undefined;
   const photos = (city.fields.photos as unknown as Asset[]) || [];
 
+  // Get first photo for Open Graph image
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const firstPhotoUrl = (photos[0] as any)?.fields?.file?.url as string | undefined;
+
+  const metaDescription =
+    description || `Explore ${photos.length} photos from ${name}, ${countryName}`;
+
   return {
     title: `${name}, ${countryName} | Travel Gallery`,
-    description:
-      description || `Explore ${photos.length} photos from ${name}, ${countryName}`,
+    description: metaDescription,
     openGraph: {
       title: `${name}, ${countryName} - Travel Gallery`,
-      description:
-        description || `Explore ${photos.length} photos from ${name}, ${countryName}`,
+      description: metaDescription,
+      url: `/travel/${countrySlug}/${citySlug}`,
       type: "website",
+      ...(firstPhotoUrl && {
+        images: [
+          {
+            url: `https:${firstPhotoUrl}`,
+            alt: `Photo from ${name}, ${countryName}`,
+          },
+        ],
+      }),
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: `${name}, ${countryName} - Travel Gallery`,
+      description: metaDescription,
+      ...(firstPhotoUrl && {
+        images: [`https:${firstPhotoUrl}`],
+      }),
     },
   };
 }
