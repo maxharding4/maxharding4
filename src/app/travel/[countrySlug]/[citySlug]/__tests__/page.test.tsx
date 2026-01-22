@@ -462,6 +462,20 @@ describe("CityPage", () => {
         title: "Barcelona, Spain - Travel Gallery",
         description: "A beautiful city in Spain",
         type: "website",
+        url: "/travel/spain/barcelona",
+        images: [
+          {
+            url: "https://images.ctfassets.net/space/beach.jpg",
+            alt: "Photo from Barcelona, Spain",
+          },
+        ],
+      });
+
+      expect(metadata.twitter).toEqual({
+        card: "summary_large_image",
+        title: "Barcelona, Spain - Travel Gallery",
+        description: "A beautiful city in Spain",
+        images: ["https://images.ctfassets.net/space/beach.jpg"],
       });
     });
 
@@ -548,7 +562,8 @@ describe("CityPage", () => {
 
       // React should escape the script tag - check for the heading
       expect(screen.getByRole("heading", { name: /<script>alert\("XSS"\)<\/script>/ })).toBeInTheDocument();
-      expect(document.querySelectorAll("script").length).toBe(0);
+      // Check that there are no executable script tags (excluding JSON-LD structured data)
+      expect(document.querySelectorAll("script:not([type='application/ld+json'])").length).toBe(0);
     });
 
     it("should sanitize description to prevent XSS", async () => {

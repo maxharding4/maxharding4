@@ -30,14 +30,21 @@ export default async function TravelPage() {
 // Generate metadata for SEO
 export async function generateMetadata() {
   const countries = await getEntriesByType<CountrySkeleton>("country");
+  const description = `Explore my travel photography from ${countries.items.length} countries around the world. View photos and stories from my adventures.`;
 
   return {
     title: "Travel Gallery | My Adventures Around the World",
-    description: `Explore my travel photography from ${countries.items.length} countries around the world. View photos and stories from my adventures.`,
+    description,
     openGraph: {
-      title: "Travel Gallery",
-      description: "Explore my adventures around the world",
+      title: "Travel Gallery | My Adventures Around the World",
+      description,
+      url: "/travel",
       type: "website",
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: "Travel Gallery | My Adventures Around the World",
+      description,
     },
   };
 }

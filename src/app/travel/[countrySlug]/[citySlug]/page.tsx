@@ -31,7 +31,7 @@ export async function generateStaticParams() {
 
 // Generate metadata for SEO
 export async function generateMetadata({ params }: CityPageProps) {
-  const { citySlug } = await params;
+  const { countrySlug, citySlug } = await params;
 
   const cities = await getEntriesByType<CitySkeleton>("city", {
     "fields.slug": citySlug,
@@ -52,15 +52,37 @@ export async function generateMetadata({ params }: CityPageProps) {
   const description = city.fields.description as unknown as string | undefined;
   const photos = (city.fields.photos as unknown as Asset[]) || [];
 
+  // Get first photo for Open Graph image
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const firstPhotoUrl = (photos[0] as any)?.fields?.file?.url as string | undefined;
+
+  const metaDescription =
+    description || `Explore ${photos.length} photos from ${name}, ${countryName}`;
+
   return {
     title: `${name}, ${countryName} | Travel Gallery`,
-    description:
-      description || `Explore ${photos.length} photos from ${name}, ${countryName}`,
+    description: metaDescription,
     openGraph: {
       title: `${name}, ${countryName} - Travel Gallery`,
-      description:
-        description || `Explore ${photos.length} photos from ${name}, ${countryName}`,
+      description: metaDescription,
+      url: `/travel/${countrySlug}/${citySlug}`,
       type: "website",
+      ...(firstPhotoUrl && {
+        images: [
+          {
+            url: `https:${firstPhotoUrl}`,
+            alt: `Photo from ${name}, ${countryName}`,
+          },
+        ],
+      }),
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: `${name}, ${countryName} - Travel Gallery`,
+      description: metaDescription,
+      ...(firstPhotoUrl && {
+        images: [`https:${firstPhotoUrl}`],
+      }),
     },
   };
 }
@@ -99,8 +121,66 @@ export default async function CityPage({ params }: CityPageProps) {
     { label: name },
   ];
 
+  // ImageGallery JSON-LD structured data
+  const imageGallerySchema = {
+    "@context": "https://schema.org",
+    "@type": "ImageGallery",
+    name: `${name}, ${countryName} - Photo Gallery`,
+    description: description || `Photo gallery from ${name}, ${countryName}`,
+    image: photos.map((photo) => {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const photoUrl = (photo as any)?.fields?.file?.url as string | undefined;
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const photoTitle = (photo as any)?.fields?.title as string | undefined;
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const photoDescription = (photo as any)?.fields?.description as string | undefined;
+
+      return {
+        "@type": "ImageObject",
+        contentUrl: photoUrl ? `https:${photoUrl}` : "",
+        name: photoTitle || `Photo from ${name}`,
+        description: photoDescription || `A photograph from ${name}, ${countryName}`,
+      };
+    }),
+  };
+
+  // BreadcrumbList JSON-LD structured data
+  const breadcrumbSchema = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      {
+        "@type": "ListItem",
+        position: 1,
+        name: "Travel",
+        item: "https://www.maxharding4.com/travel",
+      },
+      {
+        "@type": "ListItem",
+        position: 2,
+        name: countryName,
+        item: `https://www.maxharding4.com/travel/${countrySlug}`,
+      },
+      {
+        "@type": "ListItem",
+        position: 3,
+        name: name,
+        item: `https://www.maxharding4.com/travel/${countrySlug}/${citySlug}`,
+      },
+    ],
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white">
+      {/* Structured Data */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(imageGallerySchema) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
+      />
       <div className="container mx-auto px-4 py-12 sm:px-6 lg:px-8">
         {/* Breadcrumb Navigation */}
         <Breadcrumb items={breadcrumbItems} />
