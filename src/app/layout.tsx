@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import GoogleAnalytics from "@/components/GoogleAnalytics";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -28,11 +29,20 @@ export const metadata: Metadata = {
     siteName: "Max Harding",
     locale: "en_GB",
     type: "website",
+    images: [
+      {
+        url: "/og-image.jpg",
+        width: 1200,
+        height: 630,
+        alt: "Max Harding - Personal Website",
+      },
+    ],
   },
   twitter: {
     card: "summary_large_image",
     title: "Max Harding - Personal Website",
     description: "Personal website and travel photography by Max Harding",
+    images: ["/twitter-image.jpg"],
   },
   robots: {
     index: true,
@@ -52,11 +62,32 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  // Person JSON-LD structured data
+  const personSchema = {
+    "@context": "https://schema.org",
+    "@type": "Person",
+    name: "Max Harding",
+    url: "https://www.maxharding4.com",
+    description: "Personal website and travel photography by Max Harding",
+    jobTitle: "Software Engineer & Travel Photographer",
+    sameAs: [
+      // Add your social media profiles here when available
+      // "https://linkedin.com/in/maxharding",
+      // "https://github.com/maxharding",
+    ],
+  };
+
   return (
     <html lang="en">
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
+        {/* Person Structured Data */}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(personSchema) }}
+        />
+        <GoogleAnalytics />
         <a
           href="#main-content"
           className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-50 focus:rounded-md focus:bg-gray-900 focus:px-4 focus:py-2 focus:text-white focus:outline-none focus:ring-2 focus:ring-white dark:focus:bg-white dark:focus:text-gray-900"

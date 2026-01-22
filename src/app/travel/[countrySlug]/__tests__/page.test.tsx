@@ -722,7 +722,8 @@ describe("Country Page", () => {
       const page = await CountryPage({ params: mockParams });
       render(page);
 
-      expect(document.querySelector("script")).not.toBeInTheDocument();
+      // JSON-LD scripts are allowed, but check there are no executable scripts
+      expect(document.querySelector("script:not([type='application/ld+json'])")).not.toBeInTheDocument();
       // The text should contain Spain (React escapes the script tag)
       expect(screen.getAllByText(/Spain/)[0]).toBeInTheDocument();
     });

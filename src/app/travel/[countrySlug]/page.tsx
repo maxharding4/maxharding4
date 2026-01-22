@@ -124,8 +124,33 @@ export default async function CountryPage({ params }: CountryPageProps) {
     { label: name },
   ];
 
+  // BreadcrumbList JSON-LD structured data
+  const breadcrumbSchema = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      {
+        "@type": "ListItem",
+        position: 1,
+        name: "Travel",
+        item: "https://www.maxharding4.com/travel",
+      },
+      {
+        "@type": "ListItem",
+        position: 2,
+        name: name,
+        item: `https://www.maxharding4.com/travel/${countrySlug}`,
+      },
+    ],
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white">
+      {/* Breadcrumb Structured Data */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
+      />
       <div className="container mx-auto px-4 py-12 sm:px-6 lg:px-8">
         {/* Breadcrumb Navigation */}
         <Breadcrumb items={breadcrumbItems} />
