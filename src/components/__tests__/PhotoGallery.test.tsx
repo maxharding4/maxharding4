@@ -1,5 +1,5 @@
 /// <reference types="@testing-library/jest-dom" />
-import { render, screen, fireEvent, waitFor } from "@testing-library/react";
+import { render, screen, fireEvent } from "@testing-library/react";
 import PhotoGallery from "../PhotoGallery";
 import { Asset } from "contentful";
 import React from "react";
@@ -8,6 +8,7 @@ import React from "react";
 jest.mock("next/image", () => ({
   __esModule: true,
   default: (props: Record<string, unknown>) => {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { fill, ...rest } = props;
     // eslint-disable-next-line @next/next/no-img-element, jsx-a11y/alt-text
     return <img {...rest} />;
@@ -159,7 +160,7 @@ describe("PhotoGallery", () => {
         },
       } as unknown as Asset;
 
-      const { container } = render(
+      render(
         <PhotoGallery photos={[photoWithoutUrl, mockPhotos[1]]} cityName="Barcelona" />
       );
 
