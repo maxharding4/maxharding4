@@ -290,4 +290,34 @@ describe("CountryCard", () => {
       expect(screen.queryByAltText("Spain flag")).not.toBeInTheDocument();
     });
   });
+
+  describe("Breakpoint Responsiveness", () => {
+    it("uses responsive image sizes attribute", () => {
+      render(<CountryCard country={mockCountry} cityCount={5} />);
+      const image = screen.getByRole("img");
+      expect(image).toHaveAttribute("sizes");
+      const sizes = image.getAttribute("sizes");
+      expect(sizes).toBe("(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw");
+    });
+
+    it("card has responsive hover and transition classes", () => {
+      const { container } = render(<CountryCard country={mockCountry} cityCount={5} />);
+      const card = container.querySelector("a");
+      expect(card).toHaveClass("transition-all");
+      expect(card).toHaveClass("hover:scale-105");
+    });
+
+    it("uses responsive aspect ratio for image", () => {
+      const { container } = render(<CountryCard country={mockCountry} cityCount={5} />);
+      const imageContainer = container.querySelector(".aspect-\\[3\\/2\\]");
+      expect(imageContainer).toBeInTheDocument();
+    });
+
+    it("applies responsive spacing and shadows", () => {
+      const { container } = render(<CountryCard country={mockCountry} cityCount={5} />);
+      const card = container.querySelector("a");
+      expect(card).toHaveClass("rounded-lg", "overflow-hidden", "shadow-sm");
+      expect(card).toHaveClass("hover:shadow-xl");
+    });
+  });
 });
