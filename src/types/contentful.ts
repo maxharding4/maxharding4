@@ -71,6 +71,7 @@ export interface CVResumeFields {
   github?: string;
   skills?: string[];
   workExperience?: Entry<WorkExperienceSkeleton>[];
+  education?: Entry<EducationSkeleton>[];
 }
 
 export type CVResumeSkeleton = EntrySkeletonType<CVResumeFields, "cvResume">;
@@ -92,3 +93,18 @@ export type WorkExperienceSkeleton = EntrySkeletonType<
   WorkExperienceFields,
   "workExperience"
 >;
+
+// Education Content Type
+export interface EducationFields {
+  institution: string;
+  degree: string;
+  fieldOfStudy: string;
+  startDate: string;
+  endDate?: string;
+  current?: boolean;
+  location?: string;
+  honors?: string[];
+  description?: string;
+}
+
+export type EducationSkeleton = EntrySkeletonType<EducationFields, "education">;

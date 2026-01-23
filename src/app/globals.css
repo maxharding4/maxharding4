@@ -24,3 +24,78 @@ body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+/* Print Styles for CV Page */
+@media print {
+  /* Hide navigation, footer, and print button */
+  header nav,
+  footer,
+  button,
+  .no-print {
+    display: none !important;
+  }
+
+  /* Optimize for A4 portrait */
+  @page {
+    size: A4 portrait;
+    margin: 2cm;
+  }
+
+  /* Prevent page breaks inside important sections */
+  .timeline-item,
+  article,
+  section {
+    page-break-inside: avoid;
+  }
+
+  /* Adjust colors for print (remove gradients) */
+  body {
+    background: white !important;
+    color: black !important;
+  }
+
+  /* Make all text black */
+  * {
+    color: black !important;
+  }
+
+  /* Show link URLs inline */
+  a[href^="http"]::after {
+    content: " (" attr(href) ")";
+    font-size: 0.8em;
+    color: #666;
+  }
+
+  /* Don't show URLs for internal navigation */
+  a[href^="/"]::after,
+  a[href^="#"]::after {
+    content: "";
+  }
+
+  /* Simplify timeline for print */
+  .timeline-line {
+    display: none;
+  }
+
+  /* Single column layout */
+  .timeline-item {
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+  }
+
+  /* Optimize spacing */
+  section {
+    margin-bottom: 1.5rem !important;
+  }
+
+  /* Ensure good contrast */
+  .border-gray-200 {
+    border-color: #000 !important;
+  }
+
+  /* Remove shadows and effects */
+  * {
+    box-shadow: none !important;
+    text-shadow: none !important;
+  }
+}
