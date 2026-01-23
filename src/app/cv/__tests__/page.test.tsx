@@ -344,13 +344,12 @@ describe("CV Page", () => {
   });
 
   describe("Data Fetching", () => {
-    it("should fetch CV by slug 'main'", async () => {
+    it("should fetch first CV Resume entry", async () => {
       (contentful.getEntriesByType as jest.Mock).mockResolvedValue(mockCVData);
 
       await CVPage();
 
       expect(contentful.getEntriesByType).toHaveBeenCalledWith("cvResume", {
-        "fields.slug": "main",
         limit: 1,
         include: 2,
       });
