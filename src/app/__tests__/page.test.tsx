@@ -505,7 +505,7 @@ describe("Home Page", () => {
             },
           },
         ],
-      } as EntryCollection<PageSkeleton>;
+      } as unknown as EntryCollection<PageSkeleton>;
 
       jest
         .spyOn(contentful, "getEntriesByType")
@@ -566,7 +566,8 @@ describe("Home Page", () => {
         "Welcome to my personal website"
       );
       expect(metadata.openGraph?.url).toBe("/");
-      expect(metadata.openGraph?.type).toBe("website");
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      expect((metadata.openGraph as any)?.type).toBe("website");
     });
 
     it("should include OpenGraph image from Contentful", async () => {
@@ -595,7 +596,8 @@ describe("Home Page", () => {
       const metadata = await generateMetadata();
 
       expect(metadata.twitter).toBeDefined();
-      expect(metadata.twitter?.card).toBe("summary_large_image");
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      expect((metadata.twitter as any)?.card).toBe("summary_large_image");
       expect(metadata.twitter?.title).toBe("Home");
       expect(metadata.twitter?.description).toContain(
         "Welcome to my personal website"
