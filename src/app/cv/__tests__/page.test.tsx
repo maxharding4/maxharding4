@@ -410,7 +410,8 @@ describe("CV Page", () => {
       expect(metadata.openGraph?.title).toBe(
         "Max Harding - Lead QA Engineer & Travel Photographer"
       );
-      expect(metadata.openGraph?.type).toBe("profile");
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      expect((metadata.openGraph as any)?.type).toBe("profile");
       expect(metadata.openGraph?.url).toBe("/cv");
     });
 
@@ -420,7 +421,8 @@ describe("CV Page", () => {
       const metadata = await generateMetadata();
 
       expect(metadata.twitter).toBeDefined();
-      expect(metadata.twitter?.card).toBe("summary_large_image");
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      expect((metadata.twitter as any)?.card).toBe("summary_large_image");
       expect(metadata.twitter?.title).toBe(
         "Max Harding - Lead QA Engineer & Travel Photographer"
       );
@@ -432,7 +434,10 @@ describe("CV Page", () => {
       const metadata = await generateMetadata();
 
       expect(metadata.openGraph?.images).toBeDefined();
-      expect(metadata.openGraph?.images?.[0]).toMatchObject({
+      const images = Array.isArray(metadata.openGraph?.images)
+        ? metadata.openGraph?.images
+        : [metadata.openGraph?.images];
+      expect(images[0]).toMatchObject({
         url: expect.stringContaining("profile.jpg"),
         width: 1200,
         height: 630,
