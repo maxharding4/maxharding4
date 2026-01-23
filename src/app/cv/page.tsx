@@ -203,13 +203,13 @@ export default async function CVPage() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(personSchema) }}
       />
 
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 max-w-5xl">
-        {/* Header Section */}
-        <header className="mb-12">
-          <div className="flex flex-col md:flex-row gap-8 items-center md:items-start">
-            {/* Profile Photo */}
-            {profilePhotoUrl && (
-              <div className="relative w-32 h-32 md:w-48 md:h-48 flex-shrink-0">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+        {/* Header Section - matches homepage styling */}
+        <header className="py-8 sm:py-12 lg:py-16 text-center">
+          {/* Profile Photo (centered above name if available) */}
+          {profilePhotoUrl && (
+            <div className="mb-6">
+              <div className="relative w-32 h-32 sm:w-40 sm:h-40 md:w-48 md:h-48 mx-auto">
                 <Image
                   src={profilePhotoUrl}
                   alt={fullName}
@@ -218,22 +218,25 @@ export default async function CVPage() {
                   priority
                 />
               </div>
-            )}
-
-            {/* Name and Title */}
-            <div className="flex-1 text-center md:text-left">
-              <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold text-gray-900 mb-2">
-                {fullName}
-              </h1>
-              <h2 className="text-2xl sm:text-3xl md:text-4xl text-gray-600 font-light mb-4">
-                {professionalTitle}
-              </h2>
-              <p className="text-base sm:text-lg text-gray-600 leading-relaxed">
-                {bio}
-              </p>
             </div>
-          </div>
+          )}
+
+          {/* Name and Title - matches homepage exactly */}
+          <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold tracking-tight text-gray-900 mb-4">
+            {fullName}
+          </h1>
+          <h2 className="text-2xl sm:text-3xl md:text-4xl text-gray-600 font-light">
+            {professionalTitle}
+          </h2>
         </header>
+
+        {/* Bio/Introduction Section */}
+        <section className="py-6 sm:py-8 max-w-2xl mx-auto text-center mb-12">
+          <h2 className="sr-only">Professional Summary</h2>
+          <p className="text-base sm:text-lg text-gray-600 leading-relaxed">
+            {bio}
+          </p>
+        </section>
 
         {/* Contact Information */}
         <section className="mb-12">
