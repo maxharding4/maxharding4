@@ -70,7 +70,7 @@ export default function RootLayout({
     name: "Max Harding",
     url: "https://www.maxharding4.com",
     description: "Personal website and travel photography by Max Harding",
-    jobTitle: "Software Engineer & Travel Photographer",
+    jobTitle: "Lead QA Engineer & Travel Photographer",
     sameAs: [
       // Add your social media profiles here when available
       // "https://linkedin.com/in/maxharding",

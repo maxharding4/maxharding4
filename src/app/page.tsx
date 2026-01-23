@@ -1,65 +1,162 @@
-import Image from "next/image";
+import { getEntriesByType } from "@/lib/contentful";
+import { PageSkeleton } from "@/types/contentful";
+import NavigationCard from "@/components/NavigationCard";
+import { Metadata } from "next";
 
-export default function Home() {
+// Generate metadata for SEO
+export async function generateMetadata(): Promise<Metadata> {
+  try {
+    const pages = await getEntriesByType<PageSkeleton>("page", {
+      "fields.slug": "home",
+      limit: 1,
+    });
+
+    const homePage = pages.items[0];
+    const title = (homePage?.fields.title as unknown as string) || "Max Harding - Personal Website";
+    const description =
+      (homePage?.fields.metaDescription as unknown as string) ||
+      "Personal website and portfolio of Max Harding - Lead QA Engineer and Travel Photographer";
+
+    // Get ogImage from Contentful if available
+    const ogImage = homePage?.fields.ogImage;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const ogImageUrl = (ogImage as any)?.fields?.file?.url as string | undefined;
+
+    return {
+      title,
+      description,
+      openGraph: {
+        title,
+        description,
+        url: "/",
+        type: "website",
+        ...(ogImageUrl && {
+          images: [
+            {
+              url: `https:${ogImageUrl}`,
+              width: 1200,
+              height: 630,
+              alt: title,
+            },
+          ],
+        }),
+      },
+      twitter: {
+        card: "summary_large_image",
+        title,
+        description,
+        ...(ogImageUrl && {
+          images: [`https:${ogImageUrl}`],
+        }),
+      },
+    };
+  } catch (error) {
+    console.error("Error generating metadata:", error);
+    return {
+      title: "Max Harding - Personal Website",
+      description: "Personal website and portfolio of Max Harding - Lead QA Engineer and Travel Photographer",
+    };
+  }
+}
+
+export default async function HomePage() {
+  // Fetch home page content from Contentful
+  let homePage;
+  let introContent = "Welcome to my personal website. I'm a Lead QA Engineer with a passion for travel photography, exploring the intersection of technology and creativity.";
+
+  try {
+    const pages = await getEntriesByType<PageSkeleton>("page", {
+      "fields.slug": "home",
+      limit: 1,
+    });
+    homePage = pages.items[0];
+
+    // Use metaDescription as intro content (plain text approach)
+    if (homePage?.fields.metaDescription) {
+      introContent = homePage.fields.metaDescription as unknown as string;
+    }
+  } catch (error) {
+    console.error("Error fetching home page:", error);
+    // Continue with fallback content
+  }
+
+  // WebPage structured data
+  const webPageSchema = {
+    "@context": "https://schema.org",
+    "@type": "WebPage",
+    "@id": "https://www.maxharding4.com/#webpage",
+    url: "https://www.maxharding4.com",
+    name: "Max Harding - Personal Website",
+    description: introContent,
+    isPartOf: {
+      "@id": "https://www.maxharding4.com/#website",
+    },
+    about: {
+      "@id": "https://www.maxharding4.com/#person",
+    },
+  };
+
+  // Navigation sections data
+  const navigationSections = [
+    {
+      title: "Professional CV",
+      description: "View my work experience, skills, and professional background",
+      href: "/cv",
+      gradient: "from-blue-50 to-blue-100",
+    },
+    {
+      title: "Travel Gallery",
+      description: "Explore photos and stories from my adventures around the world",
+      href: "/travel",
+      gradient: "from-green-50 to-green-100",
+    },
+  ];
+
   return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
+    <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white">
+      {/* WebPage Structured Data */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(webPageSchema) }}
+      />
+
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+        {/* Hero Section */}
+        <header className="py-8 sm:py-12 lg:py-16 text-center">
+          <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold tracking-tight text-gray-900 mb-4">
+            Max Harding
           </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
+          <h2 className="text-2xl sm:text-3xl md:text-4xl text-gray-600 font-light">
+            Lead QA Engineer & Travel Photographer
+          </h2>
+        </header>
+
+        {/* Introduction Section */}
+        <section className="py-6 sm:py-8 max-w-2xl mx-auto text-center">
+          <h2 className="sr-only">Introduction</h2>
+          <p className="text-base sm:text-lg text-gray-600 leading-relaxed">
+            {introContent}
           </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
-      </main>
+        </section>
+
+        {/* Navigation Cards Section */}
+        <section className="py-8 sm:py-12 lg:py-16 max-w-4xl mx-auto">
+          <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 text-center mb-8">
+            Explore
+          </h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-8">
+            {navigationSections.map((section) => (
+              <NavigationCard
+                key={section.href}
+                title={section.title}
+                description={section.description}
+                href={section.href}
+                gradient={section.gradient}
+              />
+            ))}
+          </div>
+        </section>
+      </div>
     </div>
   );
 }
