@@ -16,7 +16,6 @@ import { Metadata } from "next";
 export async function generateMetadata(): Promise<Metadata> {
   try {
     const cvData = await getEntriesByType<CVResumeSkeleton>("cvResume", {
-      "fields.slug": "main",
       limit: 1,
     });
 
@@ -96,7 +95,6 @@ export default async function CVPage() {
 
   try {
     const cvData = await getEntriesByType<CVResumeSkeleton>("cvResume", {
-      "fields.slug": "main",
       limit: 1,
       include: 2, // Include linked entries (work experience, education)
     });
