@@ -36,6 +36,10 @@ yarn-error.log*
 # jira credentials
 .jira-config.json
 
+# claude — commit shared tooling (agents, commands) but not personal settings or generated plans
+.claude/settings.local.json
+.claude/plans/
+
 # vercel
 .vercel
 
