@@ -1,0 +1,28 @@
+{
+  "pkg": "new-site",
+  "globalName": "PersonalSite",
+  "projectId": "aa387dca-a9c0-4a77-b870-6a5673f0d3f8",
+  "shape": "package",
+  "srcDir": "src",
+  "entry": ".design-sync/ds-entry.tsx",
+  "tsconfig": ".design-sync/tsconfig.bundle.json",
+  "cssEntry": ".design-sync/compiled-tailwind.css",
+  "readmeHeader": ".design-sync/conventions.md",
+  "componentSrcMap": {
+    "Breadcrumb": "src/components/Breadcrumb.tsx",
+    "ContactInfo": "src/components/ContactInfo.tsx",
+    "ExperienceCard": "src/components/ExperienceCard.tsx",
+    "NavigationCard": "src/components/NavigationCard.tsx",
+    "SkillsSection": "src/components/SkillsSection.tsx",
+    "Timeline": "src/components/Timeline.tsx",
+    "CityCard": null,
+    "CountryCard": null,
+    "PhotoGallery": null,
+    "PhotoOfTheDay": null,
+    "Header": null,
+    "Footer": null,
+    "GoogleAnalytics": null,
+    "PrintButton": null,
+    "SearchBox": null
+  }
+}
