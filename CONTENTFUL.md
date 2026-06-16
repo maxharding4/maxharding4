@@ -116,6 +116,59 @@ Static export typically makes 10-50 API calls per build.
 - Verify you're using Content Delivery API token (not Management API)
 - Check token hasn't been regenerated in Contentful
 
+## Creating Countries & Cities
+
+Before uploading photos for new locations, make sure the Country and City
+entries exist. `scripts/create-locations.mjs` reads the same folder layout
+the photo uploader uses and creates any missing entries as **drafts**.
+
+```bash
+# Preview what would be created (no writes)
+node --env-file=.env.local scripts/create-locations.mjs ./photos/pre-processed --dry-run
+
+# Real run
+node --env-file=.env.local scripts/create-locations.mjs ./photos/pre-processed
+```
+
+Behaviour:
+- **Drafts, not published.** Auto-created entries are minimal (just `name`
+  + `slug`, plus the country reference on cities). Open each one in
+  Contentful to fill in optional fields like `countryCode` (needed for the
+  flag image on country cards) and `description`, then publish.
+- **`name` derived from slug.** `cair-paravel` → "Cair Paravel". Rename
+  in the UI if you want something different.
+- **Idempotent.** Re-running reports existing slugs as `(exists)` and only
+  creates the gaps.
+- **City references can point to draft Countries.** Contentful allows this;
+  just remember to publish the Country before the City.
+
+## Batch Uploading Photos
+
+Use `scripts/upload-to-contentful.mjs` to bulk-upload processed photos. It walks
+`<input-dir>/<countrySlug>/<citySlug>/*.{jpg,jpeg,png,webp}`, uploads each file as an
+Asset, applies `country-<slug>` and `city-<slug>` tags, and appends the asset to the
+matching City entry's `photos` field.
+
+```bash
+# 1. Add a Content Management API token to .env.local
+#    (create one at https://app.contentful.com/account/profile/cma_tokens)
+echo "CONTENTFUL_PHOTO_UPLOADER_TOKEN=CFPAT-..." >> .env.local
+
+# 2. Dry-run first to verify what will be uploaded
+node --env-file=.env.local scripts/upload-to-contentful.mjs ./photos/processed --dry-run
+
+# 3. Real run
+node --env-file=.env.local scripts/upload-to-contentful.mjs ./photos/processed
+```
+
+Behaviour:
+- **Idempotent** — files whose `fileName` already exists on the target city's `photos`
+  array are skipped, so re-runs are safe.
+- **Append-only** — never replaces existing photos on a city.
+- **Missing city** — folders that don't match any City entry's slug are reported and
+  skipped (no auto-create).
+- **Sequential** — uploads one file at a time, well within CMA rate limits.
+
 ## Resources
 
 - [Contentful Documentation](https://www.contentful.com/developers/docs/)

@@ -40,6 +40,11 @@ yarn-error.log*
 .claude/settings.local.json
 .claude/plans/
 
+# photo processing — raw originals and optimised outputs (large, regenerable)
+# Matches both at repo root and under scripts/ (or any subfolder).
+**/pre-processed/
+**/processed/
+
 # vercel
 .vercel
 

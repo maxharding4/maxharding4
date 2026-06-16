@@ -224,16 +224,12 @@ describe("PhotoGallery", () => {
       const firstPhotoButton = screen.getByRole("button", { name: /View photo 1/i });
       fireEvent.click(firstPhotoButton);
 
-      const images = screen.getAllByRole("img");
-      const lightboxImage = images.find((img) =>
-        img.getAttribute("src")?.includes("beach.jpg") &&
-        (img as HTMLImageElement).width === 1920
-      );
+      const lightbox = screen.getByRole("dialog", { name: "Photo viewer" });
+      const lightboxImage = lightbox.querySelector("img");
+      expect(lightboxImage).not.toBeNull();
 
-      if (lightboxImage) {
-        fireEvent.click(lightboxImage);
-        expect(screen.getByRole("dialog")).toBeInTheDocument();
-      }
+      fireEvent.click(lightboxImage!);
+      expect(screen.getByRole("dialog")).toBeInTheDocument();
     });
 
     it("should display photo counter in lightbox", () => {
@@ -653,6 +649,57 @@ describe("PhotoGallery", () => {
       expect(sizes).toContain("max-width: 1280px");
     });
 
+    it("lightbox uses each photo's actual dimensions so portrait images keep their aspect ratio", () => {
+      const portraitPhoto: Asset = {
+        ...mockPhotos[0],
+        sys: { ...mockPhotos[0].sys, id: "portrait-1" },
+        fields: {
+          title: "Portrait Photo",
+          file: {
+            url: "//images.ctfassets.net/space/portrait.jpg",
+            details: {
+              size: 12345,
+              image: { width: 800, height: 1200 },
+            },
+            fileName: "portrait.jpg",
+            contentType: "image/jpeg",
+          },
+        },
+      } as unknown as Asset;
+
+      render(<PhotoGallery photos={[portraitPhoto]} cityName="Barcelona" />);
+      fireEvent.click(screen.getByRole("button", { name: /View photo 1/i }));
+
+      const lightbox = screen.getByRole("dialog", { name: "Photo viewer" });
+      const lightboxImage = lightbox.querySelector("img");
+      expect(lightboxImage).toHaveAttribute("width", "800");
+      expect(lightboxImage).toHaveAttribute("height", "1200");
+    });
+
+    it("lightbox falls back to a sensible default when asset dimensions are missing", () => {
+      const noDimsPhoto: Asset = {
+        ...mockPhotos[0],
+        sys: { ...mockPhotos[0].sys, id: "no-dims" },
+        fields: {
+          title: "No Dims",
+          file: {
+            url: "//images.ctfassets.net/space/no-dims.jpg",
+            details: undefined,
+            fileName: "no-dims.jpg",
+            contentType: "image/jpeg",
+          },
+        },
+      } as unknown as Asset;
+
+      render(<PhotoGallery photos={[noDimsPhoto]} cityName="Barcelona" />);
+      fireEvent.click(screen.getByRole("button", { name: /View photo 1/i }));
+
+      const lightbox = screen.getByRole("dialog", { name: "Photo viewer" });
+      const lightboxImage = lightbox.querySelector("img");
+      expect(lightboxImage).toHaveAttribute("width", "1920");
+      expect(lightboxImage).toHaveAttribute("height", "1440");
+    });
+
     it("lightbox modal is viewport-aware", () => {
       render(<PhotoGallery photos={mockPhotos} cityName="Barcelona" />);
       const firstPhotoButton = screen.getByRole("button", { name: /View photo 1/i });
@@ -668,6 +715,52 @@ describe("PhotoGallery", () => {
       const aspectContainer = container.querySelector(".aspect-\\[4\\/3\\]");
       expect(aspectContainer).toBeInTheDocument();
       expect(aspectContainer).toHaveClass("aspect-[4/3]");
+    });
+  });
+
+  describe("Panoramic Photos", () => {
+    const panoramicPhoto: Asset = {
+      ...mockPhotos[0],
+      sys: { ...mockPhotos[0].sys, id: "pano-1" },
+      fields: {
+        title: "Panorama Photo",
+        file: {
+          url: "//images.ctfassets.net/space/pano.jpg",
+          details: {
+            size: 45678,
+            image: { width: 4464, height: 1024 },
+          },
+          fileName: "pano.jpg",
+          contentType: "image/jpeg",
+        },
+      },
+    } as unknown as Asset;
+
+    it("gives a panoramic photo its own full-width row", () => {
+      render(<PhotoGallery photos={[panoramicPhoto]} cityName="Barcelona" />);
+      const button = screen.getByRole("button", { name: /View photo 1/i });
+      expect(button).toHaveClass("col-span-full");
+      expect(button).not.toHaveClass("aspect-[4/3]");
+    });
+
+    it("sizes the panoramic container to the photo's real aspect ratio so it is not cropped", () => {
+      render(<PhotoGallery photos={[panoramicPhoto]} cityName="Barcelona" />);
+      const button = screen.getByRole("button", { name: /View photo 1/i });
+      expect(button.style.aspectRatio).toBe("4464 / 1024");
+    });
+
+    it("requests a full-width source for panoramic photos", () => {
+      render(<PhotoGallery photos={[panoramicPhoto]} cityName="Barcelona" />);
+      const image = screen.getByRole("img");
+      expect(image).toHaveAttribute("sizes", "100vw");
+    });
+
+    it("keeps ordinary 16:9 landscape photos in the 4:3 grid", () => {
+      // mockPhotos[1] is 1920×1080 (1.78) — below the panoramic threshold.
+      render(<PhotoGallery photos={[mockPhotos[1]]} cityName="Barcelona" />);
+      const button = screen.getByRole("button", { name: /View photo 1/i });
+      expect(button).toHaveClass("aspect-[4/3]");
+      expect(button).not.toHaveClass("col-span-full");
     });
   });
 });
