@@ -242,7 +242,7 @@ describe("Breadcrumb", () => {
         />
       );
       const lastItem = screen.getByText("Current Page");
-      expect(lastItem.className).toContain("font-medium");
+      expect(lastItem.className).toContain("font-semibold");
       expect(lastItem.className).toContain("text-gray-900");
     });
 

@@ -38,7 +38,7 @@ export default function Breadcrumb({ items }: BreadcrumbProps) {
                 <span
                   className={
                     isLast
-                      ? "font-medium text-gray-900"
+                      ? "font-semibold text-gray-900"
                       : "text-gray-500"
                   }
                   aria-current={isLast ? "page" : undefined}

@@ -145,7 +145,7 @@ export default function PhotoGallery({ photos, cityName }: PhotoGalleryProps) {
           {/* Close button */}
           <button
             onClick={closeLightbox}
-            className="absolute top-4 right-4 z-10 rounded-full bg-white/10 p-2 text-white transition-colors hover:bg-white/20 focus:outline-none focus:ring-2 focus:ring-white"
+            className="absolute top-4 right-4 z-10 rounded-full bg-white/10 p-2 text-white transition-colors hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-white"
             aria-label="Close photo viewer"
           >
             <svg
@@ -171,7 +171,7 @@ export default function PhotoGallery({ photos, cityName }: PhotoGalleryProps) {
                 e.stopPropagation();
                 goToPrevious();
               }}
-              className="absolute left-4 z-10 rounded-full bg-white/10 p-3 text-white transition-colors hover:bg-white/20 focus:outline-none focus:ring-2 focus:ring-white"
+              className="absolute left-4 z-10 rounded-full bg-white/10 p-3 text-white transition-colors hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-white"
               aria-label="Previous photo"
             >
               <svg
@@ -198,7 +198,7 @@ export default function PhotoGallery({ photos, cityName }: PhotoGalleryProps) {
                 e.stopPropagation();
                 goToNext();
               }}
-              className="absolute right-4 z-10 rounded-full bg-white/10 p-3 text-white transition-colors hover:bg-white/20 focus:outline-none focus:ring-2 focus:ring-white"
+              className="absolute right-4 z-10 rounded-full bg-white/10 p-3 text-white transition-colors hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-white"
               aria-label="Next photo"
             >
               <svg

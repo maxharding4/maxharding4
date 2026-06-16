@@ -43,13 +43,13 @@ export default function ExperienceCard({
   return (
     <article
       className={`rounded-lg border p-6 shadow-sm hover:shadow-md transition-all duration-300 ${
-        current ? "border-blue-500 bg-blue-50" : "border-gray-200 bg-white"
+        current ? "border-2 border-blue-500 bg-blue-50" : "border-gray-200 bg-white"
       }`}
       aria-label={`${type === "work" ? "Work experience" : "Education"}: ${title} at ${subtitle}`}
     >
       {/* Header */}
       <div className="mb-4">
-        <h3 className="text-xl sm:text-2xl font-semibold text-gray-900 mb-1">
+        <h3 className="text-xl sm:text-2xl font-bold text-gray-900 mb-1">
           {title}
         </h3>
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">

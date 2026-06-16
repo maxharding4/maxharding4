@@ -139,26 +139,22 @@ describe("Footer Component", () => {
   });
 
   describe("Styling and Visual Design", () => {
-    it("has distinct background color", () => {
+    it("uses the bold ink surface", () => {
       render(<Footer />);
       const footer = screen.getByRole("contentinfo");
-      expect(footer).toHaveClass("bg-gray-50", "dark:bg-gray-900");
+      expect(footer).toHaveClass("bg-ink", "text-white");
     });
 
     it("has border to separate from content", () => {
       render(<Footer />);
       const footer = screen.getByRole("contentinfo");
-      expect(footer).toHaveClass(
-        "border-t",
-        "border-gray-200",
-        "dark:border-gray-800"
-      );
+      expect(footer).toHaveClass("border-t", "border-white/10");
     });
 
     it("has hover effects on back to top button", () => {
       render(<Footer />);
       const button = screen.getByRole("button", { name: "Back to top" });
-      expect(button).toHaveClass("hover:text-gray-900");
+      expect(button).toHaveClass("hover:text-white");
     });
 
     it("has transition effects for smooth interactions", () => {
@@ -167,13 +163,10 @@ describe("Footer Component", () => {
       expect(button).toHaveClass("transition-colors");
     });
 
-    it("applies dark mode styles", () => {
+    it("uses muted white-on-ink copyright text", () => {
       render(<Footer />);
-      const footer = screen.getByRole("contentinfo");
-      expect(footer).toHaveClass("dark:bg-gray-900");
-
       const copyright = screen.getByText(/Max Harding/);
-      expect(copyright).toHaveClass("dark:text-gray-400");
+      expect(copyright).toHaveClass("text-white/60");
     });
 
     it("has icon animation on hover", () => {
