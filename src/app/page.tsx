@@ -122,28 +122,18 @@ export default async function HomePage() {
 
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         {/* Hero Section */}
-        <header className="py-8 sm:py-12 lg:py-16 text-center">
+        <header className="pt-8 pb-6 sm:pt-12 sm:pb-8 lg:pt-16 lg:pb-10 text-center">
           <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold tracking-tight text-gray-900 mb-4">
             Max Harding
           </h1>
-          <h2 className="text-2xl sm:text-3xl md:text-4xl text-gray-600 font-light">
-            Lead QA Engineer & Travel Photographer
-          </h2>
-        </header>
-
-        {/* Introduction Section */}
-        <section className="py-6 sm:py-8 max-w-2xl mx-auto text-center">
-          <h2 className="sr-only">Introduction</h2>
-          <p className="text-base sm:text-lg text-gray-600 leading-relaxed">
+          <p className="text-base sm:text-lg text-gray-600 leading-relaxed max-w-2xl mx-auto">
             {introContent}
           </p>
-        </section>
+        </header>
 
         {/* Navigation Cards Section */}
-        <section className="py-8 sm:py-12 lg:py-16 max-w-4xl mx-auto">
-          <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 text-center mb-8">
-            Explore
-          </h2>
+        <section className="pt-4 pb-8 sm:pt-6 sm:pb-12 lg:pt-8 lg:pb-16 max-w-4xl mx-auto">
+          <h2 className="sr-only">Explore</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-8">
             {navigationSections.map((section) => (
               <NavigationCard

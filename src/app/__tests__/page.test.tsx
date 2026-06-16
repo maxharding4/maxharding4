@@ -109,7 +109,7 @@ describe("Home Page", () => {
     it("should render hero section with name", async () => {
       jest
         .spyOn(contentful, "getEntriesByType")
-        .mockResolvedValue(mockHomePage);
+        .mockResolvedValueOnce(mockHomePage);
 
       const page = await HomePage();
       render(page);
@@ -119,26 +119,11 @@ describe("Home Page", () => {
       );
     });
 
-    it("should render hero section with professional title", async () => {
-      jest
-        .spyOn(contentful, "getEntriesByType")
-        .mockResolvedValue(mockHomePage);
-
-      const page = await HomePage();
-      render(page);
-
-      expect(
-        screen.getByRole("heading", {
-          level: 2,
-          name: /Lead QA Engineer & Travel Photographer/i,
-        })
-      ).toHaveTextContent("Lead QA Engineer & Travel Photographer");
-    });
 
     it("should render introduction content from Contentful", async () => {
       jest
         .spyOn(contentful, "getEntriesByType")
-        .mockResolvedValue(mockHomePage);
+        .mockResolvedValueOnce(mockHomePage);
 
       const page = await HomePage();
       render(page);
@@ -151,7 +136,7 @@ describe("Home Page", () => {
     it("should render Professional CV navigation card", async () => {
       jest
         .spyOn(contentful, "getEntriesByType")
-        .mockResolvedValue(mockHomePage);
+        .mockResolvedValueOnce(mockHomePage);
 
       const page = await HomePage();
       render(page);
@@ -165,7 +150,7 @@ describe("Home Page", () => {
     it("should render Travel Gallery navigation card", async () => {
       jest
         .spyOn(contentful, "getEntriesByType")
-        .mockResolvedValue(mockHomePage);
+        .mockResolvedValueOnce(mockHomePage);
 
       const page = await HomePage();
       render(page);
@@ -176,17 +161,17 @@ describe("Home Page", () => {
       ).toBeInTheDocument();
     });
 
-    it("should render Explore section heading", async () => {
+    it("should render Explore navigation card links", async () => {
       jest
         .spyOn(contentful, "getEntriesByType")
-        .mockResolvedValue(mockHomePage);
+        .mockResolvedValueOnce(mockHomePage);
 
       const page = await HomePage();
       render(page);
 
-      const exploreHeadings = screen.getAllByText("Explore");
-      // One for section heading, two for navigation cards
-      expect(exploreHeadings.length).toBeGreaterThan(0);
+      // Navigation cards use "Explore" in their link text
+      const exploreLinks = screen.getAllByText("Explore");
+      expect(exploreLinks.length).toBeGreaterThan(0);
     });
   });
 
@@ -207,7 +192,7 @@ describe("Home Page", () => {
     it("should render hero section even without Contentful", async () => {
       jest
         .spyOn(contentful, "getEntriesByType")
-        .mockResolvedValue(mockEmptyPage);
+        .mockResolvedValueOnce(mockEmptyPage);
 
       const page = await HomePage();
       render(page);
@@ -220,7 +205,7 @@ describe("Home Page", () => {
     it("should render navigation cards even without Contentful", async () => {
       jest
         .spyOn(contentful, "getEntriesByType")
-        .mockResolvedValue(mockEmptyPage);
+        .mockResolvedValueOnce(mockEmptyPage);
 
       const page = await HomePage();
       render(page);
@@ -234,7 +219,7 @@ describe("Home Page", () => {
     it("should fetch page by slug 'home'", async () => {
       const getEntriesSpy = jest
         .spyOn(contentful, "getEntriesByType")
-        .mockResolvedValue(mockHomePage);
+        .mockResolvedValueOnce(mockHomePage);
 
       await HomePage();
 
@@ -268,7 +253,7 @@ describe("Home Page", () => {
     it("should have correct link to CV page", async () => {
       jest
         .spyOn(contentful, "getEntriesByType")
-        .mockResolvedValue(mockHomePage);
+        .mockResolvedValueOnce(mockHomePage);
 
       const page = await HomePage();
       const { container } = render(page);
@@ -280,7 +265,7 @@ describe("Home Page", () => {
     it("should have correct link to Travel page", async () => {
       jest
         .spyOn(contentful, "getEntriesByType")
-        .mockResolvedValue(mockHomePage);
+        .mockResolvedValueOnce(mockHomePage);
 
       const page = await HomePage();
       const { container } = render(page);
@@ -294,7 +279,7 @@ describe("Home Page", () => {
     it("should have exactly one h1 heading", async () => {
       jest
         .spyOn(contentful, "getEntriesByType")
-        .mockResolvedValue(mockHomePage);
+        .mockResolvedValueOnce(mockHomePage);
 
       const page = await HomePage();
       const { container } = render(page);
@@ -306,7 +291,7 @@ describe("Home Page", () => {
     it("should have proper heading hierarchy", async () => {
       jest
         .spyOn(contentful, "getEntriesByType")
-        .mockResolvedValue(mockHomePage);
+        .mockResolvedValueOnce(mockHomePage);
 
       const page = await HomePage();
       const { container } = render(page);
@@ -316,14 +301,15 @@ describe("Home Page", () => {
       const h3Elements = container.querySelectorAll("h3");
 
       expect(h1).toBeInTheDocument();
-      expect(h2Elements.length).toBeGreaterThan(0);
+      // One h2: the sr-only "Explore" label on the navigation cards section.
+      expect(h2Elements.length).toBe(1);
       expect(h3Elements.length).toBe(2); // Two navigation cards
     });
 
     it("should have semantic header element for hero section", async () => {
       jest
         .spyOn(contentful, "getEntriesByType")
-        .mockResolvedValue(mockHomePage);
+        .mockResolvedValueOnce(mockHomePage);
 
       const page = await HomePage();
       const { container } = render(page);
@@ -335,19 +321,19 @@ describe("Home Page", () => {
     it("should have semantic section elements", async () => {
       jest
         .spyOn(contentful, "getEntriesByType")
-        .mockResolvedValue(mockHomePage);
+        .mockResolvedValueOnce(mockHomePage);
 
       const page = await HomePage();
       const { container } = render(page);
 
       const sections = container.querySelectorAll("section");
-      expect(sections.length).toBeGreaterThanOrEqual(2); // Intro and Navigation sections
+      expect(sections.length).toBeGreaterThanOrEqual(1); // Navigation Cards section (intro is now in header)
     });
 
     it("should have article elements for navigation cards", async () => {
       jest
         .spyOn(contentful, "getEntriesByType")
-        .mockResolvedValue(mockHomePage);
+        .mockResolvedValueOnce(mockHomePage);
 
       const page = await HomePage();
       const { container } = render(page);
@@ -356,16 +342,18 @@ describe("Home Page", () => {
       expect(articles).toHaveLength(2); // Two navigation cards
     });
 
-    it("should have sr-only text for Introduction heading", async () => {
+    it("should render introduction text inside hero header", async () => {
       jest
         .spyOn(contentful, "getEntriesByType")
-        .mockResolvedValue(mockHomePage);
+        .mockResolvedValueOnce(mockHomePage);
 
       const page = await HomePage();
       const { container } = render(page);
 
-      const srOnlyHeading = container.querySelector(".sr-only");
-      expect(srOnlyHeading).toHaveTextContent("Introduction");
+      const header = container.querySelector("header");
+      expect(header).toContainElement(
+        container.querySelector("p") as HTMLElement
+      );
     });
   });
 
@@ -373,7 +361,7 @@ describe("Home Page", () => {
     it("should have responsive container classes", async () => {
       jest
         .spyOn(contentful, "getEntriesByType")
-        .mockResolvedValue(mockHomePage);
+        .mockResolvedValueOnce(mockHomePage);
 
       const page = await HomePage();
       const { container } = render(page);
@@ -387,7 +375,7 @@ describe("Home Page", () => {
     it("should have responsive typography on h1", async () => {
       jest
         .spyOn(contentful, "getEntriesByType")
-        .mockResolvedValue(mockHomePage);
+        .mockResolvedValueOnce(mockHomePage);
 
       const page = await HomePage();
       render(page);
@@ -399,26 +387,11 @@ describe("Home Page", () => {
       expect(h1.className).toContain("lg:text-7xl");
     });
 
-    it("should have responsive typography on h2", async () => {
-      jest
-        .spyOn(contentful, "getEntriesByType")
-        .mockResolvedValue(mockHomePage);
-
-      const page = await HomePage();
-      render(page);
-
-      const h2 = screen.getByRole("heading", {
-        name: /Lead QA Engineer & Travel Photographer/i,
-      });
-      expect(h2.className).toContain("text-2xl");
-      expect(h2.className).toContain("sm:text-3xl");
-      expect(h2.className).toContain("md:text-4xl");
-    });
 
     it("should have responsive grid for navigation cards", async () => {
       jest
         .spyOn(contentful, "getEntriesByType")
-        .mockResolvedValue(mockHomePage);
+        .mockResolvedValueOnce(mockHomePage);
 
       const page = await HomePage();
       const { container } = render(page);
@@ -431,15 +404,15 @@ describe("Home Page", () => {
     it("should have responsive spacing classes", async () => {
       jest
         .spyOn(contentful, "getEntriesByType")
-        .mockResolvedValue(mockHomePage);
+        .mockResolvedValueOnce(mockHomePage);
 
       const page = await HomePage();
       const { container } = render(page);
 
       const header = container.querySelector("header");
-      expect(header?.className).toContain("py-8");
-      expect(header?.className).toContain("sm:py-12");
-      expect(header?.className).toContain("lg:py-16");
+      expect(header?.className).toContain("pt-8");
+      expect(header?.className).toContain("sm:pt-12");
+      expect(header?.className).toContain("lg:pt-16");
     });
   });
 
@@ -447,7 +420,7 @@ describe("Home Page", () => {
     it("should include WebPage structured data", async () => {
       jest
         .spyOn(contentful, "getEntriesByType")
-        .mockResolvedValue(mockHomePage);
+        .mockResolvedValueOnce(mockHomePage);
 
       const page = await HomePage();
       const { container } = render(page);
@@ -469,7 +442,7 @@ describe("Home Page", () => {
     it("should include correct WebPage schema properties", async () => {
       jest
         .spyOn(contentful, "getEntriesByType")
-        .mockResolvedValue(mockHomePage);
+        .mockResolvedValueOnce(mockHomePage);
 
       const page = await HomePage();
       const { container } = render(page);
@@ -509,7 +482,7 @@ describe("Home Page", () => {
 
       jest
         .spyOn(contentful, "getEntriesByType")
-        .mockResolvedValue(maliciousPage);
+        .mockResolvedValueOnce(maliciousPage);
 
       const page = await HomePage();
       render(page);
@@ -527,7 +500,7 @@ describe("Home Page", () => {
     it("should only have JSON-LD scripts present", async () => {
       jest
         .spyOn(contentful, "getEntriesByType")
-        .mockResolvedValue(mockHomePage);
+        .mockResolvedValueOnce(mockHomePage);
 
       const page = await HomePage();
       const { container } = render(page);
@@ -543,7 +516,7 @@ describe("Home Page", () => {
     it("should generate correct metadata from Contentful", async () => {
       jest
         .spyOn(contentful, "getEntriesByType")
-        .mockResolvedValue(mockHomePage);
+        .mockResolvedValueOnce(mockHomePage);
 
       const metadata = await generateMetadata();
 
@@ -556,7 +529,7 @@ describe("Home Page", () => {
     it("should include OpenGraph metadata", async () => {
       jest
         .spyOn(contentful, "getEntriesByType")
-        .mockResolvedValue(mockHomePage);
+        .mockResolvedValueOnce(mockHomePage);
 
       const metadata = await generateMetadata();
 
@@ -573,7 +546,7 @@ describe("Home Page", () => {
     it("should include OpenGraph image from Contentful", async () => {
       jest
         .spyOn(contentful, "getEntriesByType")
-        .mockResolvedValue(mockHomePage);
+        .mockResolvedValueOnce(mockHomePage);
 
       const metadata = await generateMetadata();
 
@@ -591,7 +564,7 @@ describe("Home Page", () => {
     it("should include Twitter Card metadata", async () => {
       jest
         .spyOn(contentful, "getEntriesByType")
-        .mockResolvedValue(mockHomePage);
+        .mockResolvedValueOnce(mockHomePage);
 
       const metadata = await generateMetadata();
 
@@ -665,7 +638,7 @@ describe("Home Page", () => {
     it("should have gradient background", async () => {
       jest
         .spyOn(contentful, "getEntriesByType")
-        .mockResolvedValue(mockHomePage);
+        .mockResolvedValueOnce(mockHomePage);
 
       const page = await HomePage();
       const { container } = render(page);
@@ -679,7 +652,7 @@ describe("Home Page", () => {
     it("should center hero section text", async () => {
       jest
         .spyOn(contentful, "getEntriesByType")
-        .mockResolvedValue(mockHomePage);
+        .mockResolvedValueOnce(mockHomePage);
 
       const page = await HomePage();
       const { container } = render(page);
@@ -688,17 +661,16 @@ describe("Home Page", () => {
       expect(header?.className).toContain("text-center");
     });
 
-    it("should center introduction section text", async () => {
+    it("should center introduction text inside hero header", async () => {
       jest
         .spyOn(contentful, "getEntriesByType")
-        .mockResolvedValue(mockHomePage);
+        .mockResolvedValueOnce(mockHomePage);
 
       const page = await HomePage();
       const { container } = render(page);
 
-      const introSection = container.querySelectorAll("section")[0];
-      expect(introSection?.className).toContain("text-center");
-      expect(introSection?.className).toContain("mx-auto");
+      const header = container.querySelector("header");
+      expect(header?.className).toContain("text-center");
     });
   });
 });

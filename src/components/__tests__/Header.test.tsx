@@ -59,6 +59,9 @@ describe("Header Component", () => {
       expect(screen.getByRole("link", { name: "Home" })).toBeInTheDocument();
       expect(screen.getByRole("link", { name: "CV" })).toBeInTheDocument();
       expect(screen.getByRole("link", { name: "Travel" })).toBeInTheDocument();
+      expect(
+        screen.getByRole("link", { name: "Daily Photo" })
+      ).toBeInTheDocument();
     });
 
     it("has correct href attributes for navigation links", () => {
@@ -74,6 +77,10 @@ describe("Header Component", () => {
       expect(screen.getByRole("link", { name: "Travel" })).toHaveAttribute(
         "href",
         "/travel"
+      );
+      expect(screen.getByRole("link", { name: "Daily Photo" })).toHaveAttribute(
+        "href",
+        "/photo-of-the-day"
       );
     });
 
@@ -195,10 +202,11 @@ describe("Header Component", () => {
       expect(mobileMenu).toBeInTheDocument();
 
       const links = mobileMenu!.querySelectorAll("a");
-      expect(links).toHaveLength(3);
+      expect(links).toHaveLength(4);
       expect(links[0]).toHaveTextContent("Home");
       expect(links[1]).toHaveTextContent("CV");
       expect(links[2]).toHaveTextContent("Travel");
+      expect(links[3]).toHaveTextContent("Daily Photo");
     });
   });
 
