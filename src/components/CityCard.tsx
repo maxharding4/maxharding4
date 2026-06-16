@@ -82,7 +82,7 @@ export default function CityCard({
 
         {/* Photo count badge */}
         {!isComingSoon && (
-          <div className="absolute right-4 top-1/2 -translate-y-1/2 text-xs font-medium text-gray-500">
+          <div className="absolute right-4 top-1/2 -translate-y-1/2 rounded-full bg-blue-50 px-2.5 py-1 text-xs font-semibold text-blue-700">
             {photoCount} {photoCount === 1 ? "photo" : "photos"}
           </div>
         )}
@@ -111,7 +111,7 @@ export default function CityCard({
   return (
     <Link
       href={`/travel/${countrySlug}/${slug}`}
-      className="group block overflow-hidden rounded-lg border border-gray-200 bg-white shadow-sm transition-all duration-300 hover:shadow-xl hover:scale-105 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+      className="group block overflow-hidden rounded-lg border border-gray-200 bg-white shadow-sm transition-all duration-300 hover:shadow-xl hover:scale-105 hover:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
     >
       {cardContent}
     </Link>

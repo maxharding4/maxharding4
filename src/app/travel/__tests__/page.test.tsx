@@ -496,9 +496,8 @@ describe("Travel Page", () => {
       render(page);
 
       const heading = screen.getByRole("heading", { level: 1 });
-      expect(heading.className).toContain("text-4xl");
-      expect(heading.className).toContain("sm:text-5xl");
-      expect(heading.className).toContain("md:text-6xl");
+      // Hero titles share one scale across every page (see .heading-hero).
+      expect(heading.className).toContain("heading-hero");
     });
   });
 

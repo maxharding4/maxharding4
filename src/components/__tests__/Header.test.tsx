@@ -87,7 +87,7 @@ describe("Header Component", () => {
     it("applies sticky positioning and shadow to header", () => {
       render(<Header />);
       const header = screen.getByRole("banner", { hidden: true });
-      expect(header).toHaveClass("sticky", "top-0", "shadow-sm");
+      expect(header).toHaveClass("sticky", "top-0", "shadow-lg");
     });
   });
 
@@ -367,7 +367,7 @@ describe("Header Component", () => {
     it("has hover effects on navigation links", () => {
       render(<Header />);
       const homeLink = screen.getByRole("link", { name: "Home" });
-      expect(homeLink).toHaveClass("hover:text-gray-900");
+      expect(homeLink).toHaveClass("hover:text-white");
     });
 
     it("has transition effects for smooth interactions", () => {
@@ -382,10 +382,10 @@ describe("Header Component", () => {
       expect(menuButton).toHaveClass("focus:ring-2");
     });
 
-    it("applies dark mode classes", () => {
+    it("uses the bold ink surface", () => {
       render(<Header />);
       const header = screen.getByRole("banner", { hidden: true });
-      expect(header).toHaveClass("dark:bg-gray-900");
+      expect(header).toHaveClass("bg-ink", "text-white");
     });
   });
 

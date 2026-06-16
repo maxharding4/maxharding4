@@ -36,10 +36,10 @@ export default function TravelPageClient({
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white">
-      <div className="container mx-auto px-4 py-12 sm:px-6 lg:px-8">
+      <div className="container mx-auto px-4 pt-12 sm:pt-16 pb-12 sm:px-6 lg:px-8">
         {/* Page Header */}
         <header className="mb-12 text-center">
-          <h1 className="text-4xl font-bold tracking-tight text-gray-900 sm:text-5xl md:text-6xl">
+          <h1 className="heading-hero text-gray-900">
             Travel Gallery
           </h1>
           <p className="mt-4 text-lg text-gray-600 max-w-2xl mx-auto">

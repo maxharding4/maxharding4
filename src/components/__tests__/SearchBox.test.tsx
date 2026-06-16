@@ -385,7 +385,7 @@ describe("SearchBox", () => {
     it("should have transition classes", () => {
       render(<SearchBox onSearch={mockOnSearch} />);
       const input = screen.getByRole("textbox");
-      expect(input.className).toContain("transition-shadow");
+      expect(input.className).toContain("transition");
       expect(input.className).toContain("duration-200");
     });
 
@@ -404,15 +404,15 @@ describe("SearchBox", () => {
     it("should have proper padding on input", () => {
       render(<SearchBox onSearch={mockOnSearch} />);
       const input = screen.getByRole("textbox");
-      expect(input.className).toContain("pl-10");
-      expect(input.className).toContain("pr-10");
-      expect(input.className).toContain("py-3");
+      expect(input.className).toContain("pl-11");
+      expect(input.className).toContain("pr-11");
+      expect(input.className).toContain("py-4");
     });
 
     it("should have rounded corners", () => {
       render(<SearchBox onSearch={mockOnSearch} />);
       const input = screen.getByRole("textbox");
-      expect(input.className).toContain("rounded-lg");
+      expect(input.className).toContain("rounded-xl");
     });
 
     it("should have hover effect on clear button", async () => {

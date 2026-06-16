@@ -57,7 +57,7 @@ export default function Header() {
   };
 
   return (
-    <header className="sticky top-0 z-50 bg-white shadow-sm dark:bg-gray-900">
+    <header className="sticky top-0 z-50 bg-ink text-white shadow-lg">
       <nav
         className="container mx-auto px-4 sm:px-6 lg:px-8"
         aria-label="Main navigation"
@@ -66,7 +66,7 @@ export default function Header() {
           {/* Logo/Name */}
           <Link
             href="/"
-            className="text-xl font-bold text-gray-900 dark:text-white hover:text-gray-700 dark:hover:text-gray-300 transition-colors"
+            className="text-xl font-bold tracking-tight text-white hover:text-white/80 transition-colors"
           >
             Max Harding
           </Link>
@@ -77,10 +77,10 @@ export default function Header() {
               <li key={link.href}>
                 <Link
                   href={link.href}
-                  className={`text-base font-medium transition-colors hover:text-gray-900 dark:hover:text-white ${
+                  className={`text-base font-medium transition-colors hover:text-white ${
                     isActive(link.href)
-                      ? "text-gray-900 dark:text-white border-b-2 border-gray-900 dark:border-white pb-1"
-                      : "text-gray-600 dark:text-gray-300"
+                      ? "text-white border-b-2 border-blue-500 pb-1"
+                      : "text-white/60"
                   }`}
                   aria-current={isActive(link.href) ? "page" : undefined}
                 >
@@ -93,7 +93,7 @@ export default function Header() {
           {/* Mobile Menu Button */}
           <button
             type="button"
-            className="inline-flex items-center justify-center rounded-md p-2 text-gray-700 hover:bg-gray-100 hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-gray-900 md:hidden dark:text-gray-300 dark:hover:bg-gray-800 dark:hover:text-white"
+            className="inline-flex items-center justify-center rounded-md p-2 text-white hover:bg-white/10 hover:text-white focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white md:hidden"
             aria-expanded={mobileMenuOpen}
             aria-controls="mobile-menu"
             onClick={toggleMenu}
@@ -148,7 +148,7 @@ export default function Header() {
             {/* Menu Panel */}
             <div
               id="mobile-menu"
-              className="fixed inset-x-0 top-16 bg-white shadow-lg md:hidden dark:bg-gray-900"
+              className="fixed inset-x-0 top-16 bg-ink shadow-lg md:hidden"
             >
               <ul className="space-y-1 px-4 pb-4 pt-2">
                 {navLinks.map((link) => (
@@ -157,8 +157,8 @@ export default function Header() {
                       href={link.href}
                       className={`block rounded-md px-3 py-2 text-base font-medium transition-colors ${
                         isActive(link.href)
-                          ? "bg-gray-100 text-gray-900 dark:bg-gray-800 dark:text-white"
-                          : "text-gray-700 hover:bg-gray-50 hover:text-gray-900 dark:text-gray-300 dark:hover:bg-gray-800 dark:hover:text-white"
+                          ? "bg-white/10 text-white border-l-2 border-blue-500"
+                          : "text-white/70 hover:bg-white/10 hover:text-white"
                       }`}
                       aria-current={isActive(link.href) ? "page" : undefined}
                     >

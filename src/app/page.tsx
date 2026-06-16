@@ -108,7 +108,7 @@ export default async function HomePage() {
       title: "Travel Gallery",
       description: "Explore photos and stories from my adventures around the world",
       href: "/travel",
-      gradient: "from-green-50 to-green-100",
+      gradient: "from-amber-50 to-orange-100",
     },
   ];
 
@@ -120,12 +120,15 @@ export default async function HomePage() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(webPageSchema) }}
       />
 
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 pt-12 sm:pt-16">
         {/* Hero Section */}
-        <header className="pt-8 pb-6 sm:pt-12 sm:pb-8 lg:pt-16 lg:pb-10 text-center">
-          <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold tracking-tight text-gray-900 mb-4">
-            Max Harding
-          </h1>
+        <header className="pb-6 sm:pb-8 text-center">
+          {/* Name is already in the nav, so it lives here only for SEO /
+              screen readers; the eyebrow carries the visible hero. */}
+          <h1 className="sr-only">Max Harding</h1>
+          <p className="mb-4 text-xs sm:text-sm font-semibold uppercase tracking-[0.2em] text-blue-600">
+            Lead QA Engineer · Travel Photographer
+          </p>
           <p className="text-base sm:text-lg text-gray-600 leading-relaxed max-w-2xl mx-auto">
             {introContent}
           </p>

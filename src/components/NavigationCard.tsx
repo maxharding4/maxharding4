@@ -16,11 +16,16 @@ export default function NavigationCard({
   return (
     <Link
       href={href}
-      className="group block overflow-hidden rounded-lg border border-gray-200 shadow-sm transition-all duration-200 hover:shadow-md hover:scale-105 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+      className="group block overflow-hidden rounded-lg border border-gray-200 shadow-sm transition-all duration-200 hover:shadow-md hover:scale-105 hover:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
     >
       <article
         className={`relative p-6 bg-gradient-to-br ${gradient} h-full flex flex-col justify-between min-h-[160px]`}
       >
+        {/* Bold accent stripe — scales up on hover for a confident lift. */}
+        <div
+          className="absolute inset-x-0 top-0 h-1.5 bg-blue-500 origin-left scale-x-100 transition-transform duration-200"
+          aria-hidden="true"
+        />
         <div>
           <h3 className="text-xl sm:text-2xl font-semibold text-gray-900 mb-3 group-hover:text-blue-600 transition-colors">
             {title}

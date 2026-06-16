@@ -172,7 +172,7 @@ export default async function CountryPage({ params }: CountryPageProps) {
             )}
 
             <div>
-              <h1 className="text-4xl font-bold tracking-tight text-gray-900 sm:text-5xl">
+              <h1 className="heading-hero text-gray-900">
                 {name}
               </h1>
               {description && (

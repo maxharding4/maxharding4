@@ -302,7 +302,8 @@ describe("CityCard", () => {
       const badge = screen.getByText("15 photos");
       expect(badge.className).toContain("absolute");
       expect(badge.className).toContain("right-4");
-      expect(badge.className).toContain("text-gray-500");
+      // Bold-modern: count is now a cobalt pill rather than muted gray text.
+      expect(badge.className).toContain("text-blue-700");
     });
   });
 

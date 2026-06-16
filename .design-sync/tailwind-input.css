@@ -1,4 +1,8 @@
-@import "tailwindcss";
+/* Pull in the app's design tokens (cobalt accent remap, ink/paper surfaces,
+   display font, .heading-* classes) so the compiled bundle reflects the real
+   styling instead of stock Tailwind defaults. globals.css imports tailwindcss
+   itself. */
+@import "../src/app/globals.css";
 
 /* Compile the utility classes used by the synced components and their preview
    cards into a static stylesheet (Tailwind v4 is JIT, so globals.css ships no

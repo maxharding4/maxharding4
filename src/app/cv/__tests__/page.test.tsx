@@ -562,8 +562,10 @@ describe("CV Page", () => {
       const page = await CVPage();
       const { container } = render(page);
 
-      const header = container.querySelector("header");
-      expect(header).toHaveClass("py-8", "sm:py-12", "lg:py-16");
+      // Top spacing is standardized on the content container so the hero
+      // lands at the same height on every non-breadcrumb page.
+      const contentContainer = container.querySelector(".container");
+      expect(contentContainer).toHaveClass("pt-12", "sm:pt-16");
     });
 
     it("should have responsive typography for name", async () => {
@@ -573,12 +575,8 @@ describe("CV Page", () => {
       const { container } = render(page);
 
       const h1 = container.querySelector("h1");
-      expect(h1).toHaveClass(
-        "text-4xl",
-        "sm:text-5xl",
-        "md:text-6xl",
-        "lg:text-7xl"
-      );
+      // Hero titles share one scale across every page (see .heading-hero).
+      expect(h1).toHaveClass("heading-hero");
     });
 
     it("should have centered layout for header", async () => {

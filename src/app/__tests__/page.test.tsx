@@ -372,7 +372,7 @@ describe("Home Page", () => {
       expect(mainContainer?.className).toContain("lg:px-8");
     });
 
-    it("should have responsive typography on h1", async () => {
+    it("keeps the name as an sr-only h1 and shows the eyebrow as the visible hero", async () => {
       jest
         .spyOn(contentful, "getEntriesByType")
         .mockResolvedValueOnce(mockHomePage);
@@ -380,11 +380,13 @@ describe("Home Page", () => {
       const page = await HomePage();
       render(page);
 
+      // The name lives in the nav, so on the homepage the h1 is sr-only and
+      // the eyebrow carries the visible hero.
       const h1 = screen.getByRole("heading", { level: 1 });
-      expect(h1.className).toContain("text-4xl");
-      expect(h1.className).toContain("sm:text-5xl");
-      expect(h1.className).toContain("md:text-6xl");
-      expect(h1.className).toContain("lg:text-7xl");
+      expect(h1.className).toContain("sr-only");
+      expect(
+        screen.getByText("Lead QA Engineer · Travel Photographer")
+      ).toBeInTheDocument();
     });
 
 
@@ -409,10 +411,11 @@ describe("Home Page", () => {
       const page = await HomePage();
       const { container } = render(page);
 
-      const header = container.querySelector("header");
-      expect(header?.className).toContain("pt-8");
-      expect(header?.className).toContain("sm:pt-12");
-      expect(header?.className).toContain("lg:pt-16");
+      // Top spacing is standardized on the content container so the hero
+      // lands at the same height on every non-breadcrumb page.
+      const contentContainer = container.querySelector(".container");
+      expect(contentContainer?.className).toContain("pt-12");
+      expect(contentContainer?.className).toContain("sm:pt-16");
     });
   });
 
