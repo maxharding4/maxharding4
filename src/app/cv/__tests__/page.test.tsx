@@ -700,7 +700,7 @@ describe("CV Page", () => {
       const { container } = render(page);
 
       const mainDiv = container.querySelector(".min-h-screen");
-      expect(mainDiv).toHaveClass("bg-gradient-to-b", "from-gray-50", "to-white");
+      expect(mainDiv).toHaveClass("page-canvas");
     });
 
     it("should have proper section margins", async () => {

@@ -647,9 +647,7 @@ describe("Home Page", () => {
       const { container } = render(page);
 
       const mainDiv = container.querySelector(".min-h-screen");
-      expect(mainDiv?.className).toContain("bg-gradient-to-b");
-      expect(mainDiv?.className).toContain("from-gray-50");
-      expect(mainDiv?.className).toContain("to-white");
+      expect(mainDiv?.className).toContain("page-canvas");
     });
 
     it("should center hero section text", async () => {

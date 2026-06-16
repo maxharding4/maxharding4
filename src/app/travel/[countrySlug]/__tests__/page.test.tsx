@@ -889,11 +889,11 @@ describe("Country Page", () => {
         });
     });
 
-    it("should have gradient background", async () => {
+    it("should have the page-canvas background", async () => {
       const page = await CountryPage({ params: mockParams });
       const { container } = render(page);
 
-      const mainDiv = container.querySelector(".bg-gradient-to-b");
+      const mainDiv = container.querySelector(".page-canvas");
       expect(mainDiv).toBeInTheDocument();
     });
 
