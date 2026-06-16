@@ -106,6 +106,18 @@ h4 {
   .heading-section {
     @apply text-3xl font-bold tracking-tight sm:text-4xl;
   }
+
+  /* Page canvas — a soft off-white base with a faint ink dot-grid for a bit
+     of studio texture behind the content, instead of a flat white. White
+     cards lift gently off it. Replaces the old gray-50→white gradient. */
+  .page-canvas {
+    background-color: #f8f8f6;
+    background-image: radial-gradient(
+      rgb(10 10 10 / 0.05) 1px,
+      transparent 1.5px
+    );
+    background-size: 22px 22px;
+  }
 }
 
 /* Print Styles for CV Page */
@@ -116,6 +128,12 @@ h4 {
   button,
   .no-print {
     display: none !important;
+  }
+
+  /* Drop the dot-grid texture for clean printed pages. */
+  .page-canvas {
+    background-image: none !important;
+    background-color: white !important;
   }
 
   /* Optimize for A4 portrait */

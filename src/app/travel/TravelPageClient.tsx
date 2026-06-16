@@ -35,7 +35,7 @@ export default function TravelPageClient({
     : countriesWithCityCounts;
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white">
+    <div className="min-h-screen page-canvas">
       <div className="container mx-auto px-4 pt-12 sm:pt-16 pb-12 sm:px-6 lg:px-8">
         {/* Page Header */}
         <header className="mb-12 text-center">

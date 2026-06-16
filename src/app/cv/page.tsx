@@ -194,7 +194,7 @@ export default async function CVPage() {
     : null;
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white">
+    <div className="min-h-screen page-canvas">
       {/* Person Structured Data */}
       <script
         type="application/ld+json"

@@ -770,10 +770,8 @@ describe("CityPage", () => {
 
       const { container } = render(page as React.ReactElement);
 
-      const mainDiv = container.querySelector(".bg-gradient-to-b");
+      const mainDiv = container.querySelector(".page-canvas");
       expect(mainDiv).toBeInTheDocument();
-      expect(mainDiv).toHaveClass("from-gray-50");
-      expect(mainDiv).toHaveClass("to-white");
     });
 
     it("should apply responsive container classes", async () => {
