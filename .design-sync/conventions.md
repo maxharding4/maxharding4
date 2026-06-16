@@ -37,7 +37,11 @@ interactive/active states; neutrals are the **gray** scale.
 `Breadcrumb` and `NavigationCard` take plain string `href` props and render
 standard `<a>` elements (the original `next/link` is swapped for a plain anchor
 in this bundle). There is no router — wire navigation however your app does.
-Image-bearing components are not part of this set.
+
+`CityCard` and `CountryCard` are image-bearing: they take Contentful
+`Entry<…>` objects and render their preview/flag image via `next/image`
+(swapped for a plain `<img>` in this bundle). Pass the asset URL through the
+entry's `fields.file.url`; the previews mock this with public CDN images.
 
 ## One idiomatic example
 

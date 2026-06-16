@@ -8,6 +8,8 @@
    cards into a static stylesheet (Tailwind v4 is JIT, so globals.css ships no
    utilities). cssEntry in config.json points at the compiled output. */
 @source "../src/components/Breadcrumb.tsx";
+@source "../src/components/CityCard.tsx";
+@source "../src/components/CountryCard.tsx";
 @source "../src/components/ContactInfo.tsx";
 @source "../src/components/ExperienceCard.tsx";
 @source "../src/components/NavigationCard.tsx";
