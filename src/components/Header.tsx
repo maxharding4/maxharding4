@@ -79,10 +79,11 @@ export default function Header() {
                   href={link.href}
                   className={`text-base font-medium transition-colors hover:text-white ${
                     isActive(link.href)
-                      ? "text-white border-b-2 border-blue-500 pb-1"
+                      ? "text-white border-b-2 border-blue-500 pb-1 pointer-events-none"
                       : "text-white/60"
                   }`}
                   aria-current={isActive(link.href) ? "page" : undefined}
+                  tabIndex={isActive(link.href) ? -1 : undefined}
                 >
                   {link.label}
                 </Link>
@@ -157,10 +158,11 @@ export default function Header() {
                       href={link.href}
                       className={`block rounded-md px-3 py-2 text-base font-medium transition-colors ${
                         isActive(link.href)
-                          ? "bg-white/10 text-white border-l-2 border-blue-500"
+                          ? "bg-white/10 text-white border-l-2 border-blue-500 pointer-events-none"
                           : "text-white/70 hover:bg-white/10 hover:text-white"
                       }`}
                       aria-current={isActive(link.href) ? "page" : undefined}
+                      tabIndex={isActive(link.href) ? -1 : undefined}
                     >
                       {link.label}
                     </Link>
