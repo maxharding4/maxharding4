@@ -4,6 +4,19 @@ Implement the feature described in the implementation plan for ticket `$ARGUMENT
 
 ---
 
+## Resuming a Previous Run
+
+Before doing anything else, check whether `.claude/plans/$ARGUMENTS-state.md` exists.
+
+If it does, read it and tell the user:
+> Found a saved state for `$ARGUMENTS`. Resuming from **[step name]** (fix cycle [N] of 3).
+
+Then skip directly to the step indicated by `current_step` in the state file, using the values already stored there (branch name, fix cycle count, etc.). Do not redo completed steps.
+
+If no state file exists, start from Step 1 below.
+
+---
+
 ## Step 1: Load the Plan
 
 Find the implementation plan at `.claude/plans/$ARGUMENTS-implementation.md`.
@@ -32,6 +45,18 @@ git checkout main && git pull origin main && git checkout -b <branch-name>
 
 - If the branch already exists, check it out with `git checkout <branch-name>` and confirm with the user before continuing — they may have already started work on it.
 - Tell the user the branch name before proceeding.
+
+**Write state file** after the branch is confirmed:
+
+```
+ticket: $ARGUMENTS
+current_step: step-3-implement
+branch: <branch-name>
+fix_cycle: 0
+last_review: none
+```
+
+Save to `.claude/plans/$ARGUMENTS-state.md`.
 
 ---
 
@@ -62,6 +87,17 @@ Wait for the agent to complete. Capture:
 
 If the agent reports that tests are failing and it cannot fix them, stop the cycle and report the failure to the user with details of what broke.
 
+**Update state file** once the engineer reports success:
+
+```
+ticket: $ARGUMENTS
+current_step: step-4-verify
+branch: <branch-name>
+fix_cycle: 0
+last_review: none
+files_changed: [comma-separated list]
+```
+
 ---
 
 ## Step 4: Verify
@@ -74,8 +110,19 @@ npm run type-check && npm run lint && npm test
 
 (Substitute `pnpm` if the project uses pnpm.)
 
-- If any command fails, go back to Step 2 — launch the engineer agent again, passing it the failure output and asking it to fix the failures. Treat this as iteration 1 of the fix cycle.
-- Only proceed to Step 4 once all three commands exit 0.
+- If any command fails, update the state file (`current_step: step-3-implement`) and go back to Step 3 — launch the engineer agent again, passing it the failure output and asking it to fix the failures. Treat this as iteration 1 of the fix cycle.
+- Only proceed to Step 5 once all three commands exit 0.
+
+**Update state file** once verification passes:
+
+```
+ticket: $ARGUMENTS
+current_step: step-5-review
+branch: <branch-name>
+fix_cycle: 0
+last_review: none
+files_changed: [comma-separated list]
+```
 
 ---
 
@@ -115,11 +162,22 @@ Parse the reviewer's output:
 
 ### Step 6a: Fix Cycle
 
-**Maximum fix cycles: 3.** Track how many times you have been through this loop. If you reach 3 cycles without approval, stop and report to the user:
+**Maximum fix cycles: 3.** Track how many times you have been through this loop. If you reach 3 cycles without approval, update the state file (`current_step: step-6a-fix-cycle-3-failed`) and stop, reporting to the user:
 
 > The implementation did not pass code review after 3 fix cycles. Manual intervention is required. The last review findings are shown above.
 
-If within the limit, launch the `principal-frontend-engineer` agent again with:
+If within the limit, **update state file** before launching the fix:
+
+```
+ticket: $ARGUMENTS
+current_step: step-6a-fix-cycle-N
+branch: <branch-name>
+fix_cycle: N
+last_review_summary: [one-line summary of the critical/important issues]
+files_changed: [comma-separated list]
+```
+
+Then launch the `principal-frontend-engineer` agent again with:
 
 ```
 The code review for [TICKET-ID] found issues that must be addressed. Apply ALL 🔴 Critical and 🟡 Important fixes from the review below. Do not change anything unrelated to the review findings.
@@ -138,13 +196,19 @@ Fix any failures before finishing. Report back only when all three pass.
 [paste the full plan]
 ```
 
-After the engineer completes fixes, re-run verification (Step 4), then return to Step 5 for another review pass.
+After the engineer completes fixes, update the state file (`current_step: step-4-verify`), re-run verification (Step 4), then return to Step 5 for another review pass.
 
 ---
 
 ## Step 7: Done
 
-When the reviewer outputs `REVIEW_RESULT: APPROVED`, output a final summary to the user:
+When the reviewer outputs `REVIEW_RESULT: APPROVED`, delete the state file:
+
+```bash
+rm .claude/plans/$ARGUMENTS-state.md
+```
+
+Then output a final summary to the user:
 
 ```
 ## Implementation Complete: [TICKET-ID]

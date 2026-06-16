@@ -9,6 +9,12 @@ interface PhotoGalleryProps {
   cityName: string;
 }
 
+// Photos wider than this ratio (e.g. 4464×1024 ≈ 4.36) are treated as
+// panoramas: they break out of the grid onto their own full-width row
+// rather than being cropped into a 4:3 thumbnail. 2.0 sits above a 16:9
+// (1.78) landscape so ordinary wide shots stay in the grid.
+const PANORAMIC_RATIO_THRESHOLD = 2;
+
 export default function PhotoGallery({ photos, cityName }: PhotoGalleryProps) {
   const [selectedPhoto, setSelectedPhoto] = useState<Asset | null>(null);
 
@@ -20,6 +26,20 @@ export default function PhotoGallery({ photos, cityName }: PhotoGalleryProps) {
   const getImageTitle = (photo: Asset): string => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     return ((photo.fields as any)?.title as string) || cityName;
+  };
+
+  const getImageDimensions = (photo: Asset): { width: number; height: number } => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const image = (photo.fields as any)?.file?.details?.image;
+    if (typeof image?.width === "number" && typeof image?.height === "number") {
+      return { width: image.width, height: image.height };
+    }
+    return { width: 1920, height: 1440 };
+  };
+
+  const isPanoramic = (photo: Asset): boolean => {
+    const { width, height } = getImageDimensions(photo);
+    return height > 0 && width / height >= PANORAMIC_RATIO_THRESHOLD;
   };
 
   const openLightbox = (photo: Asset) => {
@@ -61,18 +81,28 @@ export default function PhotoGallery({ photos, cityName }: PhotoGalleryProps) {
 
           if (!imageUrl) return null;
 
+          const panoramic = isPanoramic(photo);
+          const { width, height } = getImageDimensions(photo);
+
           return (
             <button
               key={photo.sys.id}
               onClick={() => openLightbox(photo)}
-              className="group relative aspect-[4/3] overflow-hidden rounded-lg bg-gray-100 transition-all duration-300 hover:shadow-xl hover:scale-105 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+              style={panoramic ? { aspectRatio: `${width} / ${height}` } : undefined}
+              className={`group relative overflow-hidden rounded-lg bg-gray-100 transition-all duration-300 hover:shadow-xl hover:scale-105 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 ${
+                panoramic ? "col-span-full" : "aspect-[4/3]"
+              }`}
               aria-label={`View photo ${index + 1} - ${imageTitle}`}
             >
               <Image
                 src={`https:${imageUrl}`}
                 alt={imageTitle}
                 fill
-                sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, (max-width: 1280px) 33vw, 25vw"
+                sizes={
+                  panoramic
+                    ? "100vw"
+                    : "(max-width: 640px) 100vw, (max-width: 1024px) 50vw, (max-width: 1280px) 33vw, 25vw"
+                }
                 className="object-cover transition-transform duration-300 group-hover:scale-110"
                 loading="lazy"
               />
@@ -193,14 +223,19 @@ export default function PhotoGallery({ photos, cityName }: PhotoGalleryProps) {
             className="relative max-h-[90vh] max-w-[90vw]"
             onClick={(e) => e.stopPropagation()}
           >
-            <Image
-              src={`https:${getImageUrl(selectedPhoto)}`}
-              alt={getImageTitle(selectedPhoto)}
-              width={1920}
-              height={1440}
-              className="h-auto w-auto max-h-[90vh] max-w-[90vw] object-contain"
-              priority
-            />
+            {(() => {
+              const { width, height } = getImageDimensions(selectedPhoto);
+              return (
+                <Image
+                  src={`https:${getImageUrl(selectedPhoto)}`}
+                  alt={getImageTitle(selectedPhoto)}
+                  width={width}
+                  height={height}
+                  className="h-auto w-auto max-h-[90vh] max-w-[90vw] object-contain"
+                  priority
+                />
+              );
+            })()}
           </div>
 
           {/* Photo counter */}

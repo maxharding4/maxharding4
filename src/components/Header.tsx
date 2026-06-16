@@ -46,6 +46,7 @@ export default function Header() {
     { href: "/", label: "Home" },
     { href: "/cv", label: "CV" },
     { href: "/travel", label: "Travel" },
+    { href: "/photo-of-the-day", label: "Daily Photo" },
   ];
 
   const isActive = (href: string) => {

@@ -17,6 +17,9 @@ const eslintConfig = defineConfig([
     // Allow require in config files
     "*.config.js",
     "*.config.mjs",
+    // Generated / vendored design-sync bundles — not our source to lint.
+    "ds-bundle/**",
+    ".ds-sync/**",
   ]),
 ]);
 
