@@ -1,28 +1,111 @@
 @import "tailwindcss";
 
+/* ───────────────────────────────────────────────────────────────────────────
+   Design tokens — "Bold modern": off-black ink, electric-cobalt accent,
+   grotesk display headings, crisp (not fuzzy) shadows.
+
+   These live in @theme so Tailwind generates utilities from them:
+   `bg-accent-500`, `text-ink`, `font-display`, `rounded-xl`, `shadow-md`, …
+   Overriding the built-in `--radius-*` / `--shadow-*` names re-skins every
+   existing `rounded-lg` / `shadow-md` in the app at once — the whole point of
+   doing tokens first.
+   ─────────────────────────────────────────────────────────────────────────── */
+@theme {
+  /* Typography */
+  --font-display: var(--font-space-grotesk), ui-sans-serif, system-ui, sans-serif;
+  --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-geist-mono), ui-monospace, monospace;
+
+  /* Brand accent — electric cobalt */
+  --color-accent-50: #edf0ff;
+  --color-accent-100: #dbe0ff;
+  --color-accent-200: #b8c2ff;
+  --color-accent-300: #8e9cff;
+  --color-accent-400: #5f6dff;
+  --color-accent-500: #2d4dff;
+  --color-accent-600: #1e38e0;
+  --color-accent-700: #182cb4;
+  --color-accent-800: #162a8c;
+  --color-accent-900: #16276e;
+
+  /* Re-skin Tailwind's built-in `blue` scale to the same electric cobalt.
+     The whole app (and its tests) already references `blue-*` for every
+     interactive accent — links, focus rings, active nav, timeline dots,
+     skill pills, buttons. Remapping the palette here turns all of that
+     cobalt at once, with no churn across components or their assertions.
+     `accent-*` above is the forward-looking name; both resolve to cobalt. */
+  --color-blue-50: #edf0ff;
+  --color-blue-100: #dbe0ff;
+  --color-blue-200: #b8c2ff;
+  --color-blue-300: #8e9cff;
+  --color-blue-400: #5f6dff;
+  --color-blue-500: #2d4dff;
+  --color-blue-600: #1e38e0;
+  --color-blue-700: #182cb4;
+  --color-blue-800: #162a8c;
+  --color-blue-900: #16276e;
+
+  /* Surfaces */
+  --color-ink: #0a0a0a;
+  --color-paper: #ffffff;
+
+  /* Radii — a touch larger and more deliberate */
+  --radius-lg: 0.875rem;
+  --radius-xl: 1.25rem;
+  --radius-2xl: 1.75rem;
+
+  /* Shadows — tight and crisp, keyed off ink rather than pure black */
+  --shadow-sm: 0 1px 2px 0 rgb(10 10 10 / 0.06);
+  --shadow-md: 0 4px 16px -2px rgb(10 10 10 / 0.08);
+  --shadow-lg: 0 12px 40px -8px rgb(10 10 10 / 0.14);
+  --shadow-xl: 0 24px 64px -12px rgb(10 10 10 / 0.18);
+}
+
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --background: var(--color-paper);
+  --foreground: var(--color-ink);
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+/* Headings default to the display grotesk with tight tracking. Element-level
+   so it applies site-wide without touching every component; any explicit
+   `font-*` / `tracking-*` utility on a heading still wins. */
+h1,
+h2,
+h3,
+h4 {
+  font-family: var(--font-display);
+  letter-spacing: -0.02em;
+}
+
+/* Electric selection — small detail, very on-brand. */
+::selection {
+  background: var(--color-accent-500);
+  color: #fff;
+}
+
+/* ───────────────────────────────────────────────────────────────────────────
+   Shared heading scale. One source of truth for type sizing so every page's
+   hero and section titles match instead of each picking its own size. Pages
+   add only colour / spacing utilities (text-gray-900, mb-4), which sit in the
+   utilities layer and still win over these.
+   ─────────────────────────────────────────────────────────────────────────── */
+@layer components {
+  /* Page title — the single biggest heading on any page. */
+  .heading-hero {
+    @apply text-4xl font-bold tracking-tight sm:text-5xl md:text-6xl;
+  }
+  /* Section title within a page. */
+  .heading-section {
+    @apply text-3xl font-bold tracking-tight sm:text-4xl;
+  }
 }
 
 /* Print Styles for CV Page */

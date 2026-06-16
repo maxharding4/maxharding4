@@ -74,8 +74,8 @@ export default function PhotoOfTheDay({ cities }: PhotoOfTheDayProps) {
   const altText = photo.title ?? `Photo of ${cityName}`;
 
   return (
-    <section className="py-3 sm:py-4">
-      <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 text-center mb-6">
+    <section className="pb-4">
+      <h2 className="heading-hero text-gray-900 text-center mb-6">
         Photo of the Day
       </h2>
       <div className="max-w-3xl mx-auto">

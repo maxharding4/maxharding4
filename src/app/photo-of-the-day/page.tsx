@@ -76,7 +76,7 @@ export default async function PhotoOfTheDayPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white">
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 lg:py-16">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 pt-12 sm:pt-16 pb-16">
         {/* Visible title lives in the PhotoOfTheDay component (its "Photo of
             the Day" h2); this sr-only h1 gives the page a valid heading root. */}
         <h1 className="sr-only">Daily Photo</h1>

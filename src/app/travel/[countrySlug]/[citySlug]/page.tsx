@@ -187,7 +187,7 @@ export default async function CityPage({ params }: CityPageProps) {
 
         {/* City Header */}
         <header className="mb-12">
-          <h1 className="text-4xl font-bold tracking-tight text-gray-900 sm:text-5xl">
+          <h1 className="heading-hero text-gray-900">
             {name}
           </h1>
           <p className="mt-2 text-lg text-gray-600">{countryName}</p>

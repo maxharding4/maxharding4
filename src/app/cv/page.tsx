@@ -201,9 +201,9 @@ export default async function CVPage() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(personSchema) }}
       />
 
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 pt-12 sm:pt-16">
         {/* Header Section - matches homepage styling */}
-        <header className="py-8 sm:py-12 lg:py-16 text-center">
+        <header className="pb-8 sm:pb-10 text-center">
           {/* Profile Photo (centered above name if available) */}
           {profilePhotoUrl && (
             <div className="mb-6">
@@ -220,7 +220,7 @@ export default async function CVPage() {
           )}
 
           {/* Name and Title - matches homepage exactly */}
-          <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold tracking-tight text-gray-900 mb-4">
+          <h1 className="heading-hero text-gray-900 mb-4">
             {fullName}
           </h1>
           <h2 className="text-2xl sm:text-3xl md:text-4xl text-gray-600 font-light">
@@ -238,7 +238,7 @@ export default async function CVPage() {
 
         {/* Contact Information */}
         <section className="mb-12">
-          <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-6">
+          <h2 className="heading-section text-gray-900 mb-6">
             Contact
           </h2>
           <ContactInfo {...contactInfo} />
@@ -246,7 +246,7 @@ export default async function CVPage() {
 
         {/* Work Experience & Education Timeline */}
         <section className="mb-12">
-          <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-6">
+          <h2 className="heading-section text-gray-900 mb-6">
             Experience & Education
           </h2>
           <Timeline items={allItems} />
@@ -255,7 +255,7 @@ export default async function CVPage() {
         {/* Skills */}
         {skills.length > 0 && (
           <section className="mb-12">
-            <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-6">
+            <h2 className="heading-section text-gray-900 mb-6">
               Skills
             </h2>
             <SkillsSection skills={skills} />
