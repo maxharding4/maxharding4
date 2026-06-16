@@ -100,6 +100,22 @@ describe("Header Component", () => {
       expect(homeLink).toHaveClass("border-b-2");
     });
 
+    it("makes the active link non-interactive (not clickable or tabbable)", () => {
+      (usePathname as jest.Mock).mockReturnValue("/");
+      render(<Header />);
+      const homeLink = screen.getByRole("link", { name: "Home" });
+      expect(homeLink).toHaveClass("pointer-events-none");
+      expect(homeLink).toHaveAttribute("tabindex", "-1");
+    });
+
+    it("keeps inactive links interactive", () => {
+      (usePathname as jest.Mock).mockReturnValue("/");
+      render(<Header />);
+      const cvLink = screen.getByRole("link", { name: "CV" });
+      expect(cvLink).not.toHaveClass("pointer-events-none");
+      expect(cvLink).not.toHaveAttribute("tabindex");
+    });
+
     it("highlights the CV link when on CV page", () => {
       (usePathname as jest.Mock).mockReturnValue("/cv");
       render(<Header />);
