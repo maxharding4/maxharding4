@@ -56,6 +56,10 @@ const nextConfig: NextConfig = {
   // Static HTML export to S3. See CONTENTFUL.md / SECURITY.md — content is
   // fetched at build time and there are no server/runtime features.
   output: "export",
+  // Emit each route as <route>/index.html (not <route>.html) so the S3 website
+  // endpoint resolves clean URLs like /travel/ -> travel/index.html. Without
+  // this, sub-routes 404 on S3 (it doesn't map /travel to travel.html).
+  trailingSlash: true,
   images: {
     // Next's default image optimizer needs a running server, which a static
     // export doesn't have. Serve the Contentful-hosted images as-is (they're
