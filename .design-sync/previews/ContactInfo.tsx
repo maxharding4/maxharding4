@@ -1,4 +1,4 @@
-import { ContactInfo } from "new-site";
+import { ContactInfo } from "maxharding4";
 
 export const FullContact = () => (
   <ContactInfo

@@ -1,4 +1,4 @@
-import { CountryCard } from "new-site";
+import { CountryCard } from "maxharding4";
 
 // CountryCard takes a Contentful `Entry<CountrySkeleton>`. For previews we mock
 // the minimal shape it actually reads (name, slug, flagImage.fields.file.url)

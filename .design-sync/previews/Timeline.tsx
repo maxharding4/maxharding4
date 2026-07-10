@@ -1,4 +1,4 @@
-import { Timeline } from "new-site";
+import { Timeline } from "maxharding4";
 
 export const CareerTimeline = () => (
   <Timeline

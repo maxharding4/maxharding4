@@ -1,4 +1,4 @@
-import { ExperienceCard } from "new-site";
+import { ExperienceCard } from "maxharding4";
 
 export const CurrentRole = () => (
   <ExperienceCard

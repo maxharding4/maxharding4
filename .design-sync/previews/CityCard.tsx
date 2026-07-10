@@ -1,4 +1,4 @@
-import { CityCard } from "new-site";
+import { CityCard } from "maxharding4";
 
 // CityCard takes a Contentful `Entry<CitySkeleton>` plus an optional preview
 // `Asset`. We mock the minimal shapes it reads (city.fields.name/slug and
