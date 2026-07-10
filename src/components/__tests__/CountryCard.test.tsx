@@ -106,10 +106,10 @@ describe("CountryCard", () => {
       render(<CountryCard country={mockCountry} />);
       const image = screen.getByAltText("Spain flag");
       expect(image).toBeInTheDocument();
-      expect(image).toHaveAttribute(
-        "src",
-        "https://images.ctfassets.net/space/flag.jpg"
-      );
+      // src carries the Images-API transform params (see IMAGE_TRANSFORMS.flag).
+      const src = image.getAttribute("src") ?? "";
+      expect(src).toContain("https://images.ctfassets.net/space/flag.jpg");
+      expect(src).toContain("fm=webp");
     });
 
     it("should render link to country page", () => {

@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { CountrySkeleton } from "@/types/contentful";
+import { getContentfulImageSrc, IMAGE_TRANSFORMS } from "@/lib/images";
 import { Entry } from "contentful";
 
 interface CountryCardProps {
@@ -26,7 +27,7 @@ export default function CountryCard({ country, cityCount }: CountryCardProps) {
         <div className="relative aspect-[3/2] w-full overflow-hidden bg-gray-100">
           {imageUrl && (
             <Image
-              src={`https:${imageUrl}`}
+              src={getContentfulImageSrc(imageUrl, IMAGE_TRANSFORMS.flag)}
               alt={`${name} flag`}
               fill
               sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"

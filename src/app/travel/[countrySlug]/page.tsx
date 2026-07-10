@@ -4,6 +4,7 @@ import { getEntriesByType } from "@/lib/contentful";
 import { CountrySkeleton, CitySkeleton } from "@/types/contentful";
 import CityCard from "@/components/CityCard";
 import Breadcrumb from "@/components/Breadcrumb";
+import { getContentfulImageSrc, IMAGE_TRANSFORMS } from "@/lib/images";
 import { Asset, Entry } from "contentful";
 
 interface CountryPageProps {
@@ -162,7 +163,7 @@ export default async function CountryPage({ params }: CountryPageProps) {
             {flagImageUrl && (
               <div className="relative h-24 w-36 flex-shrink-0 overflow-hidden rounded-lg border border-gray-200 shadow-sm">
                 <Image
-                  src={`https:${flagImageUrl}`}
+                  src={getContentfulImageSrc(flagImageUrl, IMAGE_TRANSFORMS.flag)}
                   alt={`${name} flag`}
                   fill
                   className="object-cover"

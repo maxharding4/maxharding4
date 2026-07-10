@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { CitySkeleton } from "@/types/contentful";
+import { getContentfulImageSrc, IMAGE_TRANSFORMS } from "@/lib/images";
 import { Asset, Entry } from "contentful";
 
 interface CityCardProps {
@@ -32,7 +33,7 @@ export default function CityCard({
       <div className="relative aspect-[4/3] w-full overflow-hidden bg-gray-100">
         {previewImageUrl ? (
           <Image
-            src={`https:${previewImageUrl}`}
+            src={getContentfulImageSrc(previewImageUrl, IMAGE_TRANSFORMS.cardThumb)}
             alt={`Preview of ${name}`}
             fill
             sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"

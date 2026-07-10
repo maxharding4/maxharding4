@@ -252,10 +252,12 @@ describe("Country Page", () => {
 
       const flagImage = screen.getByAltText("Spain flag");
       expect(flagImage).toBeInTheDocument();
-      expect(flagImage).toHaveAttribute(
-        "src",
+      // src carries the Images-API transform params (see IMAGE_TRANSFORMS.flag).
+      const flagSrc = flagImage.getAttribute("src") ?? "";
+      expect(flagSrc).toContain(
         "https://images.ctfassets.net/space/spain-flag.jpg"
       );
+      expect(flagSrc).toContain("fm=webp");
     });
 
     it("should render breadcrumb navigation", async () => {
