@@ -106,10 +106,10 @@ describe("CityCard", () => {
       render(<CityCard {...defaultProps} />);
       const image = screen.getByAltText("Preview of Barcelona");
       expect(image).toBeInTheDocument();
-      expect(image).toHaveAttribute(
-        "src",
-        "https://images.ctfassets.net/space/beach.jpg"
-      );
+      // src carries the Images-API transform params (see IMAGE_TRANSFORMS.cardThumb).
+      const src = image.getAttribute("src") ?? "";
+      expect(src).toContain("https://images.ctfassets.net/space/beach.jpg");
+      expect(src).toContain("fm=webp");
     });
 
     it("should render link to city page with correct path", () => {

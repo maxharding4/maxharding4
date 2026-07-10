@@ -10,6 +10,7 @@ import SkillsSection from "@/components/SkillsSection";
 import ContactInfo from "@/components/ContactInfo";
 import PrintButton from "@/components/PrintButton";
 import Image from "next/image";
+import { getContentfulImageSrc, IMAGE_TRANSFORMS } from "@/lib/images";
 import { Metadata } from "next";
 
 // Generate metadata for SEO
@@ -189,8 +190,11 @@ export default async function CVPage() {
 
   // Profile photo URL
   const profilePhotoUrl = profilePhoto
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    ? `https:${(profilePhoto as any)?.fields?.file?.url}`
+    ? getContentfulImageSrc(
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        (profilePhoto as any)?.fields?.file?.url as string | undefined,
+        IMAGE_TRANSFORMS.avatar
+      )
     : null;
 
   return (

@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Image from "next/image";
 import { Asset } from "contentful";
+import { getContentfulImageSrc, IMAGE_TRANSFORMS } from "@/lib/images";
 
 interface PhotoGalleryProps {
   photos: Asset[];
@@ -95,7 +96,7 @@ export default function PhotoGallery({ photos, cityName }: PhotoGalleryProps) {
               aria-label={`View photo ${index + 1} - ${imageTitle}`}
             >
               <Image
-                src={`https:${imageUrl}`}
+                src={getContentfulImageSrc(imageUrl, IMAGE_TRANSFORMS.galleryThumb)}
                 alt={imageTitle}
                 fill
                 sizes={
@@ -227,7 +228,7 @@ export default function PhotoGallery({ photos, cityName }: PhotoGalleryProps) {
               const { width, height } = getImageDimensions(selectedPhoto);
               return (
                 <Image
-                  src={`https:${getImageUrl(selectedPhoto)}`}
+                  src={getContentfulImageSrc(getImageUrl(selectedPhoto), IMAGE_TRANSFORMS.galleryFull)}
                   alt={getImageTitle(selectedPhoto)}
                   width={width}
                   height={height}

@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="400" height="300" viewBox="0 0 400 300" role="img" aria-label="Image placeholder">
+  <rect width="400" height="300" fill="#e5e7eb"/>
+  <g fill="none" stroke="#9ca3af" stroke-width="6" stroke-linejoin="round" stroke-linecap="round">
+    <rect x="120" y="95" width="160" height="110" rx="8"/>
+    <circle cx="162" cy="132" r="12" fill="#9ca3af" stroke="none"/>
+    <path d="M132 195 L182 150 L212 178 L246 140 L268 195 Z" fill="#9ca3af" stroke="none"/>
+  </g>
+  <text x="200" y="240" text-anchor="middle" font-family="system-ui, sans-serif" font-size="16" fill="#6b7280">Preview</text>
+</svg>
