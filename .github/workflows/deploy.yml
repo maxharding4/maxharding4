@@ -1,16 +1,11 @@
 name: Build and deploy
 
-# Content is fetched from Contentful at build time, so a rebuild is how new
-# content goes live. Triggers:
-#   - push to main        -> deploy on code changes
-#   - workflow_dispatch   -> one-click "Run workflow" rebuild (e.g. after
-#                            publishing in Contentful), no commit required
-# Future option: add `repository_dispatch` + a Contentful publish webhook for
-# fully automatic rebuilds on content changes.
+# Manual-only by design: merges never auto-deploy. Publishing is always a
+# deliberate action — run this workflow with target=production to deploy. That
+# covers both code changes and picking up new content from Contentful (which is
+# fetched at build time). Optional future automation: repository_dispatch + a
+# Contentful publish webhook.
 on:
-  # Auto-deploy on push to main is enabled AFTER cutover (migration step 5).
-  # During migration the pipeline is manual-only, so nothing deploys until the
-  # "Run workflow" button is pressed deliberately.
   workflow_dispatch:
     inputs:
       target:
@@ -21,7 +16,7 @@ on:
           - staging      # -> s3://maxharding4.com/_staging/ (safe dry-run, no invalidation)
           - production   # -> s3://maxharding4.com/ (LIVE)
       prune:
-        description: "Delete bucket files not in this build (--delete). Leave OFF for the first production cutover."
+        description: "Delete bucket files not in this build (--delete). Leave OFF for normal deploys; turn ON to clean up orphaned files."
         type: boolean
         default: false
 
