@@ -3,6 +3,9 @@ import { getEntriesByType } from "@/lib/contentful";
 import { CountrySkeleton, CitySkeleton } from "@/types/contentful";
 import { Entry } from "contentful";
 
+// Emit as a static file at build time (required under `output: 'export'`).
+export const dynamic = "force-static";
+
 /**
  * Generate dynamic sitemap for the website
  * Includes static pages and dynamic country/city pages from Contentful

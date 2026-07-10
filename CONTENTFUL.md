@@ -40,7 +40,7 @@ This project uses these Contentful content types:
 |-------|------|----------|-------------|
 | name | Text | Yes | Country/region name (e.g., "Italy", "Scotland") |
 | countryCode | Text | No* | ISO 3166-1 or 3166-2 code (e.g., "IT", "GB-SCT") |
-| flagImage | Asset | No | Flag image |
+| flagImage | Asset | **Yes (to publish)** | 512×512 flag PNG; rendered on country cards. Required to publish the entry |
 | description | Long text | No | Country description |
 | slug | Text | Yes | URL identifier (e.g., "italy") |
 
@@ -131,10 +131,15 @@ node --env-file=.env.local scripts/create-locations.mjs ./photos/pre-processed
 ```
 
 Behaviour:
-- **Drafts, not published.** Auto-created entries are minimal (just `name`
-  + `slug`, plus the country reference on cities). Open each one in
-  Contentful to fill in optional fields like `countryCode` (needed for the
-  flag image on country cards) and `description`, then publish.
+- **Drafts, not published.** Auto-created entries are minimal. Open each
+  one in Contentful to fill in optional fields like `countryCode`,
+  `description` (countries) or `visitDate` (cities), then publish.
+- **Flags auto-attached.** For each new country the script looks for
+  `assets/flags/<slug>.png` (a committed 512×512 flag pack), uploads it as
+  an Asset, and links it to the required `flagImage` field — so the draft
+  is publish-ready. If no matching flag file exists the country is created
+  without a flag and prints a warning (it can't be published until a flag
+  is added).
 - **`name` derived from slug.** `cair-paravel` → "Cair Paravel". Rename
   in the UI if you want something different.
 - **Idempotent.** Re-running reports existing slugs as `(exists)` and only

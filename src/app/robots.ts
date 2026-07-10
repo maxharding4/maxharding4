@@ -1,5 +1,8 @@
 import { MetadataRoute } from "next";
 
+// Emit as a static file at build time (required under `output: 'export'`).
+export const dynamic = "force-static";
+
 /**
  * Generate robots.txt for search engine crawling rules
  * Allows all search engines to crawl all pages
