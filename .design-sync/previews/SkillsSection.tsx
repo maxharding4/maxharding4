@@ -1,4 +1,4 @@
-import { SkillsSection } from "new-site";
+import { SkillsSection } from "maxharding4";
 
 export const MixedStack = () => (
   <SkillsSection

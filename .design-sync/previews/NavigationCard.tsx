@@ -1,4 +1,4 @@
-import { NavigationCard } from "new-site";
+import { NavigationCard } from "maxharding4";
 
 export const Travel = () => (
   <NavigationCard

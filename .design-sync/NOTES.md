@@ -9,7 +9,7 @@ Project: **Personal Site** (`aa387dca-a9c0-4a77-b870-6a5673f0d3f8`) — https://
   `globals.css` → `@import "tailwindcss"` that esbuild can't resolve, plus all the
   Contentful/server code). Instead `cfg.entry = .design-sync/ds-entry.tsx` re-exports ONLY the
   scoped reusable components as named exports. With `--entry` set, `PKG_DIR` resolves to the repo
-  root — no `node_modules/new-site` self-symlink is needed (an early attempt used one; removed).
+  root — no `node_modules/maxharding4` self-symlink is needed (an early attempt used one; removed).
 - **`next/link` / `next/image` are aliased to render-safe shims** (`.design-sync/shims/`) via
   `.design-sync/tsconfig.bundle.json` (`cfg.tsconfig`). That tsconfig is bundle-only — it is NOT
   the real Next build config. The shims render `<a>` / `<img>` so cards render without a Next router.

@@ -1,4 +1,4 @@
-import { Breadcrumb } from "new-site";
+import { Breadcrumb } from "maxharding4";
 
 export const TravelTrail = () => (
   <Breadcrumb
