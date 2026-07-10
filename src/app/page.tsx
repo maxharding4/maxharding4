@@ -160,15 +160,15 @@ export default async function HomePage() {
   const webPageSchema = {
     "@context": "https://schema.org",
     "@type": "WebPage",
-    "@id": "https://www.maxharding4.com/#webpage",
-    url: "https://www.maxharding4.com",
+    "@id": "https://maxharding4.com/#webpage",
+    url: "https://maxharding4.com",
     name: "Max Harding - Personal Website",
     description: introContent,
     isPartOf: {
-      "@id": "https://www.maxharding4.com/#website",
+      "@id": "https://maxharding4.com/#website",
     },
     about: {
-      "@id": "https://www.maxharding4.com/#person",
+      "@id": "https://maxharding4.com/#person",
     },
   };
 

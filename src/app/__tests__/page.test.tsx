@@ -519,8 +519,8 @@ describe("Home Page", () => {
         const jsonLd = JSON.parse(script.textContent);
         expect(jsonLd["@context"]).toBe("https://schema.org");
         expect(jsonLd["@type"]).toBe("WebPage");
-        expect(jsonLd["@id"]).toBe("https://www.maxharding4.com/#webpage");
-        expect(jsonLd.url).toBe("https://www.maxharding4.com");
+        expect(jsonLd["@id"]).toBe("https://maxharding4.com/#webpage");
+        expect(jsonLd.url).toBe("https://maxharding4.com");
       }
     });
   });

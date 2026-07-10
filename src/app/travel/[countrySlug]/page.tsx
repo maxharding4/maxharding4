@@ -134,13 +134,13 @@ export default async function CountryPage({ params }: CountryPageProps) {
         "@type": "ListItem",
         position: 1,
         name: "Travel",
-        item: "https://www.maxharding4.com/travel",
+        item: "https://maxharding4.com/travel",
       },
       {
         "@type": "ListItem",
         position: 2,
         name: name,
-        item: `https://www.maxharding4.com/travel/${countrySlug}`,
+        item: `https://maxharding4.com/travel/${countrySlug}`,
       },
     ],
   };

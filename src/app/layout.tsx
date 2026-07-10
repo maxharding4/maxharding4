@@ -24,7 +24,7 @@ const spaceGrotesk = Space_Grotesk({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://www.maxharding4.com"),
+  metadataBase: new URL("https://maxharding4.com"),
   title: {
     default: "Max Harding - Personal Website",
     template: "%s | Max Harding",
@@ -33,7 +33,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Max Harding - Personal Website",
     description: "Personal website and travel photography by Max Harding",
-    url: "https://www.maxharding4.com",
+    url: "https://maxharding4.com",
     siteName: "Max Harding",
     locale: "en_GB",
     type: "website",
@@ -75,7 +75,7 @@ export default function RootLayout({
     "@context": "https://schema.org",
     "@type": "Person",
     name: "Max Harding",
-    url: "https://www.maxharding4.com",
+    url: "https://maxharding4.com",
     description: "Personal website and travel photography by Max Harding",
     jobTitle: "Lead QA Engineer & Travel Photographer",
     sameAs: [

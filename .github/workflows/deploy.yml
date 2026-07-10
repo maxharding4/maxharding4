@@ -1,0 +1,66 @@
+name: Build and deploy
+
+# Content is fetched from Contentful at build time, so a rebuild is how new
+# content goes live. Triggers:
+#   - push to main        -> deploy on code changes
+#   - workflow_dispatch   -> one-click "Run workflow" rebuild (e.g. after
+#                            publishing in Contentful), no commit required
+# Future option: add `repository_dispatch` + a Contentful publish webhook for
+# fully automatic rebuilds on content changes.
+on:
+  push:
+    branches: [main]
+  workflow_dispatch: {}
+
+# Never run two production deploys at once; a newer run supersedes an older one.
+concurrency:
+  group: deploy-production
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  deploy:
+    # Only ever deploy from the live repo — guards against this workflow running
+    # in the placeholder/source repo or a fork.
+    if: github.repository == 'maxharding4/maxharding4'
+    runs-on: ubuntu-latest
+    environment:
+      name: production
+      url: https://maxharding4.com
+    env:
+      S3_BUCKET: maxharding4.com
+      CLOUDFRONT_DISTRIBUTION_ID: E18D7W5LICE64E
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build static export
+        run: npm run build
+        env:
+          CONTENTFUL_SPACE_ID: ${{ secrets.CONTENTFUL_SPACE_ID }}
+          CONTENTFUL_ACCESS_TOKEN: ${{ secrets.CONTENTFUL_ACCESS_TOKEN }}
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ vars.AWS_REGION }}
+
+      - name: Sync static export to S3
+        run: aws s3 sync ./out "s3://${S3_BUCKET}" --delete
+
+      - name: Invalidate CloudFront cache
+        run: |
+          aws cloudfront create-invalidation \
+            --distribution-id "${CLOUDFRONT_DISTRIBUTION_ID}" \
+            --paths "/*"

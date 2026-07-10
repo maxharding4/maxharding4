@@ -153,19 +153,19 @@ export default async function CityPage({ params }: CityPageProps) {
         "@type": "ListItem",
         position: 1,
         name: "Travel",
-        item: "https://www.maxharding4.com/travel",
+        item: "https://maxharding4.com/travel",
       },
       {
         "@type": "ListItem",
         position: 2,
         name: countryName,
-        item: `https://www.maxharding4.com/travel/${countrySlug}`,
+        item: `https://maxharding4.com/travel/${countrySlug}`,
       },
       {
         "@type": "ListItem",
         position: 3,
         name: name,
-        item: `https://www.maxharding4.com/travel/${countrySlug}/${citySlug}`,
+        item: `https://maxharding4.com/travel/${countrySlug}/${citySlug}`,
       },
     ],
   };
