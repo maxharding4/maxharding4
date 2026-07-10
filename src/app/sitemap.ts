@@ -11,7 +11,7 @@ export const dynamic = "force-static";
  * Includes static pages and dynamic country/city pages from Contentful
  */
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const baseUrl = "https://www.maxharding4.com";
+  const baseUrl = "https://maxharding4.com";
 
   // Fetch all countries and cities from Contentful
   const [countriesResponse, citiesResponse] = await Promise.all([

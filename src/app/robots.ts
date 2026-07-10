@@ -14,6 +14,6 @@ export default function robots(): MetadataRoute.Robots {
       userAgent: "*",
       allow: "/",
     },
-    sitemap: "https://www.maxharding4.com/sitemap.xml",
+    sitemap: "https://maxharding4.com/sitemap.xml",
   };
 }
