@@ -53,7 +53,14 @@ export const securityHeaders = [
 ];
 
 const nextConfig: NextConfig = {
+  // Static HTML export to S3. See CONTENTFUL.md / SECURITY.md — content is
+  // fetched at build time and there are no server/runtime features.
+  output: "export",
   images: {
+    // Next's default image optimizer needs a running server, which a static
+    // export doesn't have. Serve the Contentful-hosted images as-is (they're
+    // already resized on upload) instead of optimizing at request time.
+    unoptimized: true,
     remotePatterns: [
       {
         protocol: "https",

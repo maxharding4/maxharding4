@@ -5,14 +5,21 @@
 // doesn't already exist as an entry, creates one with the minimum
 // required fields:
 //
-//   Country: slug, name (title-cased from slug)
+//   Country: slug, name (title-cased from slug), flagImage (see below)
 //   City:    slug, name (title-cased from slug), country reference
 //
+// Flags: the `country` content type REQUIRES a flagImage asset to
+// publish. For each new country we look for assets/flags/<slug>.png
+// (a 512×512 pack committed to the repo), upload it as an Asset, and
+// attach it — so the draft is publish-ready. If the slug has no matching
+// flag file, the country is still created but WITHOUT a flag; you'll need
+// to add one before it can be published (a warning is printed).
+//
 // Entries are LEFT AS DRAFTS so you can fill in optional fields
-// (countryCode, flagImage, description, visitDate) in the Contentful UI
-// before publishing. Drafts can be referenced by other entries — so a
-// City draft can point to a Country draft — but neither will be visible
-// to the site (which uses the Content Delivery API) until published.
+// (countryCode, description, visitDate) in the Contentful UI before
+// publishing. Drafts can be referenced by other entries — so a City
+// draft can point to a Country draft — but neither will be visible to
+// the site (which uses the Content Delivery API) until published.
 //
 // Usage:
 //   node --env-file=.env.local scripts/create-locations.mjs <input-dir> [--dry-run]
@@ -25,8 +32,18 @@
 import contentfulManagement from "contentful-management";
 const { createClient } = contentfulManagement;
 import { existsSync } from "node:fs";
-import { readdir } from "node:fs/promises";
-import { join, resolve } from "node:path";
+import { readdir, readFile } from "node:fs/promises";
+import { dirname, join, resolve } from "node:path";
+import { fileURLToPath } from "node:url";
+
+// Flag pack lives at <repo>/assets/flags/<slug>.png — resolve relative to
+// this script so it works regardless of the caller's working directory.
+const FLAGS_DIR = join(
+  dirname(fileURLToPath(import.meta.url)),
+  "..",
+  "assets",
+  "flags",
+);
 
 function parseArgs() {
   const args = process.argv.slice(2);
@@ -45,6 +62,47 @@ function titleFromSlug(slug) {
     .split("-")
     .map((p) => (p ? p[0].toUpperCase() + p.slice(1) : p))
     .join(" ");
+}
+
+// Upload assets/flags/<slug>.png and attach it to a freshly-created country
+// so the draft satisfies the required flagImage field and is publish-ready.
+// Returns true if a flag was attached (or would be, in dry-run), false if no
+// matching flag file exists (country is left flag-less with a warning).
+async function attachCountryFlag(env, countryEntry, countrySlug, locale, dryRun) {
+  const flagPath = join(FLAGS_DIR, `${countrySlug}.png`);
+  if (!existsSync(flagPath)) {
+    console.log(
+      `   🏳️  ⚠️  no flag file (assets/flags/${countrySlug}.png) — country has no flag and can't be published until one is added`,
+    );
+    return false;
+  }
+  if (dryRun) {
+    console.log(`   🏳️  [dry-run] would upload & attach flag ${countrySlug}.png`);
+    return true;
+  }
+  let asset = await env.createAssetFromFiles({
+    fields: {
+      title: { [locale]: `${titleFromSlug(countrySlug)} flag` },
+      file: {
+        [locale]: {
+          contentType: "image/png",
+          fileName: `${countrySlug}.png`,
+          file: await readFile(flagPath),
+        },
+      },
+    },
+  });
+  asset = await asset.processForAllLocales();
+  asset = await asset.publish();
+
+  // Re-fetch the country for its latest version before linking the flag.
+  const fresh = await env.getEntry(countryEntry.sys.id);
+  fresh.fields.flagImage = {
+    [locale]: { sys: { type: "Link", linkType: "Asset", id: asset.sys.id } },
+  };
+  await fresh.update();
+  console.log(`   🏳️  attached flag ${countrySlug}.png → ${asset.sys.id}`);
+  return true;
 }
 
 async function listSubdirs(dir) {
@@ -159,6 +217,7 @@ async function main() {
         );
         // Synthesise a placeholder so the city loop can still process subfolders.
         countryEntry = { sys: { id: `__dryrun__${countrySlug}` } };
+        await attachCountryFlag(env, countryEntry, countrySlug, locale, true);
       } else {
         try {
           countryEntry = await env.createEntry("country", {
@@ -173,6 +232,7 @@ async function main() {
             `🌍 ✅ Created Country: "${name}" (slug=${countrySlug}) → ${countryEntry.sys.id} (draft)`,
           );
           countriesCreated++;
+          await attachCountryFlag(env, countryEntry, countrySlug, locale, false);
         } catch (e) {
           console.error(
             `🌍 ❌ Failed to create Country ${countrySlug}: ${e.message.split("\n")[0]}`,
@@ -237,8 +297,9 @@ async function main() {
   console.log(`Cities created:    ${citiesCreated}`);
   console.log(`Errors:            ${errors}`);
   if (countriesCreated + citiesCreated > 0 && !dryRun) {
-    console.log("\n💡 New entries are saved as DRAFTS. Open them in Contentful");
-    console.log("   to add countryCode / flagImage / description, then publish.");
+    console.log("\n💡 New entries are saved as DRAFTS. Flags are attached");
+    console.log("   automatically; open them in Contentful to add optional");
+    console.log("   countryCode / description / visitDate, then publish.");
   }
   if (errors > 0) process.exit(1);
 }
