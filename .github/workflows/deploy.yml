@@ -8,8 +8,9 @@ name: Build and deploy
 # Future option: add `repository_dispatch` + a Contentful publish webhook for
 # fully automatic rebuilds on content changes.
 on:
-  push:
-    branches: [main]
+  # Auto-deploy on push to main is enabled AFTER cutover (migration step 5).
+  # During migration the pipeline is manual-only, so nothing deploys until the
+  # "Run workflow" button is pressed deliberately.
   workflow_dispatch: {}
 
 # Never run two production deploys at once; a newer run supersedes an older one.
