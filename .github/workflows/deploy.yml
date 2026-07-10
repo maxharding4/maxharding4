@@ -11,7 +11,19 @@ on:
   # Auto-deploy on push to main is enabled AFTER cutover (migration step 5).
   # During migration the pipeline is manual-only, so nothing deploys until the
   # "Run workflow" button is pressed deliberately.
-  workflow_dispatch: {}
+  workflow_dispatch:
+    inputs:
+      target:
+        description: "Where to deploy"
+        type: choice
+        default: staging
+        options:
+          - staging      # -> s3://maxharding4.com/_staging/ (safe dry-run, no invalidation)
+          - production   # -> s3://maxharding4.com/ (LIVE)
+      prune:
+        description: "Delete bucket files not in this build (--delete). Leave OFF for the first production cutover."
+        type: boolean
+        default: false
 
 # Never run two production deploys at once; a newer run supersedes an older one.
 concurrency:
@@ -57,10 +69,29 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ vars.AWS_REGION }}
 
+      - name: Resolve deploy target
+        id: target
+        run: |
+          if [ "${{ inputs.target }}" = "production" ]; then
+            echo "dest=s3://${S3_BUCKET}" >> "$GITHUB_OUTPUT"
+            echo "invalidate=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "dest=s3://${S3_BUCKET}/_staging" >> "$GITHUB_OUTPUT"
+            echo "invalidate=false" >> "$GITHUB_OUTPUT"
+          fi
+          if [ "${{ inputs.prune }}" = "true" ]; then
+            echo "delete=--delete" >> "$GITHUB_OUTPUT"
+          else
+            echo "delete=" >> "$GITHUB_OUTPUT"
+          fi
+
       - name: Sync static export to S3
-        run: aws s3 sync ./out "s3://${S3_BUCKET}" --delete
+        run: |
+          echo "Syncing ./out -> ${{ steps.target.outputs.dest }} ${{ steps.target.outputs.delete }}"
+          aws s3 sync ./out "${{ steps.target.outputs.dest }}" ${{ steps.target.outputs.delete }}
 
       - name: Invalidate CloudFront cache
+        if: steps.target.outputs.invalidate == 'true'
         run: |
           aws cloudfront create-invalidation \
             --distribution-id "${CLOUDFRONT_DISTRIBUTION_ID}" \
