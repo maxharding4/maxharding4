@@ -46,6 +46,7 @@ export default function Header() {
     { href: "/", label: "Home" },
     { href: "/cv", label: "CV" },
     { href: "/travel", label: "Travel" },
+    { href: "/cookbook", label: "Cookbook" },
     { href: "/photo-of-the-day", label: "Daily Photo" },
   ];
 

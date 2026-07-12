@@ -44,6 +44,28 @@ export interface PhotoFields {
 
 export type PhotoSkeleton = EntrySkeletonType<PhotoFields, "photo">;
 
+// Recipe Content Type
+// Categories are a fixed dropdown on the entry (validated in Contentful);
+// category pages are defined in code — see src/lib/cookbook.ts.
+export type RecipeCategory = "mains" | "sides" | "snacks" | "desserts";
+
+export interface RecipeFields {
+  title: string;
+  slug: string;
+  category: RecipeCategory;
+  description?: string;
+  image?: Asset;
+  /** One ingredient per line */
+  ingredients: string;
+  /** One step per paragraph (blank-line separated) */
+  method: string;
+  servings?: number;
+  prepTimeMinutes?: number;
+  cookTimeMinutes?: number;
+}
+
+export type RecipeSkeleton = EntrySkeletonType<RecipeFields, "recipe">;
+
 // Page Content Type
 export interface PageFields {
   title: string;

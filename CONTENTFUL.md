@@ -68,6 +68,34 @@ California: US-CA
 | slug | Text | Yes | URL identifier |
 | visitDate | Date | No | Visit date |
 
+### Recipe (`recipe`)
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| title | Text | Yes | Recipe name (display field) |
+| slug | Text | Yes | Unique, kebab-case; drives the static route |
+| category | Text | Yes | Dropdown, exactly: `mains`, `sides`, `snacks`, `desserts` |
+| description | Long text | No | Teaser shown on cards and the detail page |
+| image | Asset | No | Hero photo — landscape 3:2 (e.g. 1536×1024); cards render it uncropped |
+| ingredients | Long text | Yes | One ingredient per line |
+| method | Long text | Yes | One step per paragraph (blank-line separated) |
+| servings | Integer | No | |
+| prepTimeMinutes | Integer | No | Minutes |
+| cookTimeMinutes | Integer | No | Minutes |
+
+**Categories are not entries.** The four category values are fixed by a dropdown
+validation on `recipe`; the category pages (labels, blurbs, order) are defined in
+code at `src/lib/cookbook.ts`. A recipe with an unrecognised category value is
+skipped at build time with a warning.
+
+The content type was created programmatically — see
+`scripts/create-recipe-content-type.mjs` (idempotent, `--dry-run` supported).
+
+**Recipe photos:** keep originals in `photos/pre-processed/cookbook/<slug>.png`
+(gitignored, flat — no subfolders, or the processor's country/city renaming kicks
+in), run `scripts/process-photos-mixed.sh`, and attach the processed JPEG to the
+entry's `image` field.
+
 ### Photo (`photo`)
 
 | Field | Type | Required | Description |

@@ -218,11 +218,12 @@ describe("Header Component", () => {
       expect(mobileMenu).toBeInTheDocument();
 
       const links = mobileMenu!.querySelectorAll("a");
-      expect(links).toHaveLength(4);
+      expect(links).toHaveLength(5);
       expect(links[0]).toHaveTextContent("Home");
       expect(links[1]).toHaveTextContent("CV");
       expect(links[2]).toHaveTextContent("Travel");
-      expect(links[3]).toHaveTextContent("Daily Photo");
+      expect(links[3]).toHaveTextContent("Cookbook");
+      expect(links[4]).toHaveTextContent("Daily Photo");
     });
   });
 

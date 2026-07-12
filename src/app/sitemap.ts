@@ -1,5 +1,6 @@
 import { MetadataRoute } from "next";
 import { getEntriesByType } from "@/lib/contentful";
+import { CATEGORIES, getAllRecipes } from "@/lib/cookbook";
 import { CountrySkeleton, CitySkeleton } from "@/types/contentful";
 import { Entry } from "contentful";
 
@@ -13,10 +14,11 @@ export const dynamic = "force-static";
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseUrl = "https://maxharding4.com";
 
-  // Fetch all countries and cities from Contentful
-  const [countriesResponse, citiesResponse] = await Promise.all([
+  // Fetch all countries, cities and recipes from Contentful
+  const [countriesResponse, citiesResponse, recipes] = await Promise.all([
     getEntriesByType<CountrySkeleton>("country"),
     getEntriesByType<CitySkeleton>("city"),
+    getAllRecipes(),
   ]);
 
   const countries = countriesResponse.items;
@@ -42,7 +44,31 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       changeFrequency: "daily",
       priority: 0.6,
     },
+    {
+      url: `${baseUrl}/cookbook`,
+      lastModified: new Date(),
+      changeFrequency: "weekly",
+      priority: 0.8,
+    },
   ];
+
+  // Cookbook category pages (code-defined, always present)
+  const categoryPages: MetadataRoute.Sitemap = CATEGORIES.map((category) => ({
+    url: `${baseUrl}/cookbook/${category.slug}`,
+    lastModified: new Date(),
+    changeFrequency: "weekly" as const,
+    priority: 0.7,
+  }));
+
+  // Recipe pages
+  const recipePages: MetadataRoute.Sitemap = recipes.map((recipe) => ({
+    url: `${baseUrl}/cookbook/${recipe.fields.category as unknown as string}/${
+      recipe.fields.slug as unknown as string
+    }`,
+    lastModified: new Date(recipe.sys.updatedAt),
+    changeFrequency: "monthly" as const,
+    priority: 0.6,
+  }));
 
   // Dynamic country pages
   const countryPages: MetadataRoute.Sitemap = countries.map((country) => ({
@@ -70,5 +96,5 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       };
     });
 
-  return [...staticPages, ...countryPages, ...cityPages];
+  return [...staticPages, ...countryPages, ...cityPages, ...categoryPages, ...recipePages];
 }
