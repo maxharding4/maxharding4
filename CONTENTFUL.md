@@ -96,6 +96,36 @@ The content type was created programmatically — see
 in), run `scripts/process-photos-mixed.sh`, and attach the processed JPEG to the
 entry's `image` field.
 
+## Adding Recipes
+
+`scripts/create-recipe.mjs` creates and publishes a recipe entry (photo included)
+from a source file:
+
+```bash
+# Personal markdown recipe (title, ## Ingredients, ## Steps, ## Notes)
+node --env-file=.env.local scripts/create-recipe.mjs \
+  ~/repos/personal/assistant/recipes/turkey-chilli.md --category mains --dry-run
+
+# Saved recipe web page (parses the schema.org JSON-LD most sites embed)
+node --env-file=.env.local scripts/create-recipe.mjs \
+  ~/Downloads/cookbook/some-recipe.html --category desserts --slug my-slug
+```
+
+Behaviour:
+- **`--dry-run` first.** Prints the fully parsed entry (description, every
+  ingredient and step) without writing — review before the real run.
+- **Photo required.** Looks for `photos/processed/cookbook/<slug>.jpg`, runs the
+  photo processor if only the pre-processed original exists, and refuses to
+  publish an imageless recipe. The slug must match the photo filename
+  (`--slug` overrides the title-derived default). Warns when a photo isn't the
+  3:2 card ratio.
+- **Idempotent** — an existing slug is reported and skipped, never overwritten.
+- **Markdown `## Notes` are printed, not uploaded** (that's where personal
+  context lives); fold anything worth keeping into the entry manually.
+- **`--servings` sets the field only** — it never rescales ingredient
+  quantities; scale the source text yourself first.
+- Third-party HTML sources print a reminder that the text is the site's copy.
+
 ### Photo (`photo`)
 
 | Field | Type | Required | Description |
