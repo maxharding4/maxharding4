@@ -31,8 +31,7 @@
 //   - Appends to `photos`; never replaces.
 //   - `--dry-run` prints actions without writing anything.
 
-import contentfulManagement from "contentful-management";
-const { createClient } = contentfulManagement;
+import { createClient } from "contentful-management";
 import { existsSync } from "node:fs";
 import { readFile, readdir } from "node:fs/promises";
 import { extname, join, resolve } from "node:path";
@@ -80,7 +79,7 @@ async function listImages(dir) {
     .sort();
 }
 
-async function ensureTag(env, id, name, cache, dryRun) {
+async function ensureTag(cma, id, name, cache, dryRun) {
   if (cache.has(id)) return;
   if (dryRun) {
     console.log(`   🏷️  [dry-run] would ensure tag: ${id}`);
@@ -88,12 +87,15 @@ async function ensureTag(env, id, name, cache, dryRun) {
     return;
   }
   try {
-    await env.createTag(id, name, "public");
+    await cma.tag.createWithId(
+      { tagId: id },
+      { name, sys: { visibility: "public" } },
+    );
     console.log(`   🏷️  created tag: ${id}`);
   } catch (err) {
     // Tag already exists is the common case on re-runs — verify by GET.
     try {
-      await env.getTag(id);
+      await cma.tag.get({ tagId: id });
     } catch {
       throw new Error(`Could not create or fetch tag "${id}": ${err.message}`);
     }
@@ -101,12 +103,12 @@ async function ensureTag(env, id, name, cache, dryRun) {
   cache.add(id);
 }
 
-async function paginatedEntries(env, query) {
+async function paginatedEntries(cma, query) {
   const limit = 1000;
   const all = [];
   let skip = 0;
   while (true) {
-    const batch = await env.getEntries({ ...query, skip, limit });
+    const batch = await cma.entry.getMany({ query: { ...query, skip, limit } });
     all.push(...batch.items);
     if (batch.items.length < limit) break;
     skip += limit;
@@ -127,10 +129,10 @@ function titleFromSlug(slug) {
     .join(" ");
 }
 
-async function buildCityIndex(env, locale) {
+async function buildCityIndex(cma, locale) {
   const [cities, countries] = await Promise.all([
-    paginatedEntries(env, { content_type: "city" }),
-    paginatedEntries(env, { content_type: "country" }),
+    paginatedEntries(cma, { content_type: "city" }),
+    paginatedEntries(cma, { content_type: "country" }),
   ]);
 
   const countryInfoById = new Map();
@@ -165,14 +167,16 @@ async function buildCityIndex(env, locale) {
   return index;
 }
 
-async function getCityPhotoFilenames(env, city, locale) {
+async function getCityPhotoFilenames(cma, city, locale) {
   const refs = city.fields?.photos?.[locale] ?? [];
   if (refs.length === 0) return new Set();
   const ids = refs.map((r) => r.sys.id);
   const filenames = new Set();
   for (let i = 0; i < ids.length; i += 100) {
     const chunk = ids.slice(i, i + 100);
-    const assets = await env.getAssets({ "sys.id[in]": chunk.join(",") });
+    const assets = await cma.asset.getMany({
+      query: { "sys.id[in]": chunk.join(",") },
+    });
     for (const a of assets.items) {
       const fn = a.fields?.file?.[locale]?.fileName;
       if (fn) filenames.add(fn);
@@ -182,7 +186,7 @@ async function getCityPhotoFilenames(env, city, locale) {
 }
 
 async function uploadOne(
-  env,
+  cma,
   filePath,
   fileName,
   countrySlug,
@@ -211,43 +215,48 @@ async function uploadOne(
   }
 
   const buffer = await readFile(filePath);
-  let asset = await env.createAssetFromFiles({
-    fields: {
-      title: { [locale]: title },
-      file: {
-        [locale]: {
-          contentType: contentTypeFor(fileName),
-          fileName,
-          file: buffer,
+  let asset = await cma.asset.createFromFiles(
+    {},
+    {
+      fields: {
+        title: { [locale]: title },
+        file: {
+          [locale]: {
+            contentType: contentTypeFor(fileName),
+            fileName,
+            file: buffer,
+          },
         },
       },
     },
-  });
+  );
 
   // Set tags before processing so they're attached on the first published version.
   asset.metadata = { tags: tagLinks };
-  asset = await asset.update();
+  asset = await cma.asset.update({ assetId: asset.sys.id }, asset);
 
-  asset = await asset.processForAllLocales();
-  asset = await asset.publish();
+  asset = await cma.asset.processForAllLocales({}, asset);
+  asset = await cma.asset.publish({ assetId: asset.sys.id }, asset);
   return asset;
 }
 
-async function resolvableAssetIds(env, ids) {
+async function resolvableAssetIds(cma, ids) {
   // Bulk-check which asset IDs still exist. Anything missing is a stale
   // link that will fail Contentful's "notResolvable" validation on write.
   const found = new Set();
   for (let i = 0; i < ids.length; i += 100) {
     const chunk = ids.slice(i, i + 100);
-    const assets = await env.getAssets({ "sys.id[in]": chunk.join(",") });
+    const assets = await cma.asset.getMany({
+      query: { "sys.id[in]": chunk.join(",") },
+    });
     for (const a of assets.items) found.add(a.sys.id);
   }
   return found;
 }
 
-async function appendPhotosToCity(env, cityId, newAssetIds, locale) {
+async function appendPhotosToCity(cma, cityId, newAssetIds, locale) {
   // Re-fetch to get the latest version before mutating.
-  const fresh = await env.getEntry(cityId);
+  const fresh = await cma.entry.get({ entryId: cityId });
   const existing = fresh.fields?.photos?.[locale] ?? [];
 
   // Filter out unresolvable links — Contentful rejects updates that
@@ -255,7 +264,7 @@ async function appendPhotosToCity(env, cityId, newAssetIds, locale) {
   let cleanExisting = existing;
   if (existing.length > 0) {
     const resolvable = await resolvableAssetIds(
-      env,
+      cma,
       existing.map((l) => l.sys.id),
     );
     cleanExisting = existing.filter((l) => resolvable.has(l.sys.id));
@@ -268,11 +277,11 @@ async function appendPhotosToCity(env, cityId, newAssetIds, locale) {
     ...(fresh.fields.photos ?? {}),
     [locale]: [...cleanExisting, ...links],
   };
-  const updated = await fresh.update();
-  await updated.publish();
+  const updated = await cma.entry.update({ entryId: cityId }, fresh);
+  await cma.entry.publish({ entryId: cityId }, updated);
 }
 
-async function relinkCity(env, cityInfo, citySlug, locale, dryRun) {
+async function relinkCity(cma, cityInfo, citySlug, locale, dryRun) {
   // Find every published asset tagged with city-<slug>, sort by fileName
   // (which equals the upload order thanks to our naming scheme), and
   // overwrite the city's photos array. Replacing — not appending — so
@@ -282,10 +291,8 @@ async function relinkCity(env, cityInfo, citySlug, locale, dryRun) {
   let skip = 0;
   const limit = 1000;
   while (true) {
-    const batch = await env.getAssets({
-      "metadata.tags.sys.id[in]": tagId,
-      skip,
-      limit,
+    const batch = await cma.asset.getMany({
+      query: { "metadata.tags.sys.id[in]": tagId, skip, limit },
     });
     allTagged.push(...batch.items);
     if (batch.items.length < limit) break;
@@ -309,7 +316,7 @@ async function relinkCity(env, cityInfo, citySlug, locale, dryRun) {
     return { linked: validAssets.length, dryRun: true, validAssets };
   }
 
-  const fresh = await env.getEntry(cityInfo.entry.sys.id);
+  const fresh = await cma.entry.get({ entryId: cityInfo.entry.sys.id });
   const links = validAssets.map((a) => ({
     sys: { type: "Link", linkType: "Asset", id: a.sys.id },
   }));
@@ -317,8 +324,8 @@ async function relinkCity(env, cityInfo, citySlug, locale, dryRun) {
     ...(fresh.fields.photos ?? {}),
     [locale]: links,
   };
-  const updated = await fresh.update();
-  await updated.publish();
+  const updated = await cma.entry.update({ entryId: fresh.sys.id }, fresh);
+  await cma.entry.publish({ entryId: fresh.sys.id }, updated);
   return { linked: validAssets.length };
 }
 
@@ -327,7 +334,7 @@ async function relinkCity(env, cityInfo, citySlug, locale, dryRun) {
 // "photo.jpg") are never picked up.
 const NAMING_PATTERN = /^[a-z]+(-[a-z]+)+-\d{3}\.jpg$/;
 
-async function cleanupDrafts(env, locale, dryRun) {
+async function cleanupDrafts(cma, locale, dryRun) {
   console.log(
     "🧹 Scanning for unpublished draft assets matching <country>-<city>-NNN.jpg...",
   );
@@ -336,7 +343,7 @@ async function cleanupDrafts(env, locale, dryRun) {
   let skip = 0;
   const limit = 1000;
   while (true) {
-    const batch = await env.getAssets({ skip, limit });
+    const batch = await cma.asset.getMany({ query: { skip, limit } });
     for (const a of batch.items) {
       if (a.sys.publishedVersion) continue; // Skip anything already published.
       const fileEntry = a.fields?.file?.[locale];
@@ -366,7 +373,7 @@ async function cleanupDrafts(env, locale, dryRun) {
     const { asset, fileName } = drafts[i];
     const progress = `[${i + 1}/${drafts.length}]`;
     try {
-      await asset.delete();
+      await cma.asset.delete({ assetId: asset.sys.id });
       console.log(`   ${progress} 🗑️  ${fileName}`);
       deleted++;
     } catch (e) {
@@ -425,16 +432,23 @@ async function main() {
   console.log(`   Space:       ${CONTENTFUL_SPACE_ID}`);
   console.log(`   Environment: ${CONTENTFUL_ENVIRONMENT}`);
 
-  const client = createClient({ accessToken: CONTENTFUL_PHOTO_UPLOADER_TOKEN });
-  const space = await client.getSpace(CONTENTFUL_SPACE_ID);
-  const env = await space.getEnvironment(CONTENTFUL_ENVIRONMENT);
+  const cma = createClient(
+    { accessToken: CONTENTFUL_PHOTO_UPLOADER_TOKEN },
+    {
+      type: "plain",
+      defaults: {
+        spaceId: CONTENTFUL_SPACE_ID,
+        environmentId: CONTENTFUL_ENVIRONMENT,
+      },
+    },
+  );
 
-  const locales = await env.getLocales();
+  const locales = await cma.locale.getMany({});
   const locale = locales.items.find((l) => l.default)?.code ?? "en-US";
   console.log(`   Locale:      ${locale}\n`);
 
   if (cleanupMode) {
-    const { deleted, errors } = await cleanupDrafts(env, locale, dryRun);
+    const { deleted, errors } = await cleanupDrafts(cma, locale, dryRun);
     console.log("\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
     console.log(`Cleanup done.${dryRun ? " (dry run, no writes)" : ""}`);
     console.log(`Deleted: ${deleted}`);
@@ -443,7 +457,7 @@ async function main() {
   }
 
   console.log("📚 Indexing existing countries and cities...");
-  const cityIndex = await buildCityIndex(env, locale);
+  const cityIndex = await buildCityIndex(cma, locale);
   console.log(`   ${cityIndex.size} city entr${cityIndex.size === 1 ? "y" : "ies"} mapped.\n`);
 
   if (relinkMode) {
@@ -463,7 +477,7 @@ async function main() {
           continue;
         }
         try {
-          const result = await relinkCity(env, cityInfo, citySlug, locale, dryRun);
+          const result = await relinkCity(cma, cityInfo, citySlug, locale, dryRun);
           if (result.skipped) {
             console.log(
               `📍 ${key} — ⚠️  no published assets tagged city-${citySlug}, skipping (refusing to clear existing photos)`,
@@ -503,7 +517,7 @@ async function main() {
     const countryPath = join(absInput, countrySlug);
     const citySlugs = await listSubdirs(countryPath);
     try {
-      await ensureTag(env, `country-${countrySlug}`, countrySlug, tagCache, dryRun);
+      await ensureTag(cma, `country-${countrySlug}`, countrySlug, tagCache, dryRun);
     } catch (e) {
       console.error(`⚠️  ${countrySlug}: ${e.message}`);
     }
@@ -523,14 +537,14 @@ async function main() {
       const { entry: cityEntry, cityName, countryName } = cityInfo;
 
       try {
-        await ensureTag(env, `city-${citySlug}`, citySlug, tagCache, dryRun);
+        await ensureTag(cma, `city-${citySlug}`, citySlug, tagCache, dryRun);
       } catch (e) {
         console.error(`   ⚠️  ${e.message}`);
       }
 
       const existing = dryRun
         ? new Set()
-        : await getCityPhotoFilenames(env, cityEntry, locale);
+        : await getCityPhotoFilenames(cma, cityEntry, locale);
 
       const newAssetIds = [];
       for (let i = 0; i < files.length; i++) {
@@ -544,7 +558,7 @@ async function main() {
         }
         try {
           const asset = await uploadOne(
-            env,
+            cma,
             filePath,
             fileName,
             countrySlug,
@@ -567,7 +581,7 @@ async function main() {
 
       if (newAssetIds.length > 0 && !dryRun) {
         try {
-          await appendPhotosToCity(env, cityEntry.sys.id, newAssetIds, locale);
+          await appendPhotosToCity(cma, cityEntry.sys.id, newAssetIds, locale);
           console.log(
             `   📎 Linked ${newAssetIds.length} asset(s) to city entry & republished.\n`,
           );

@@ -47,6 +47,8 @@ export const IMAGE_TRANSFORMS = {
   galleryThumb: { width: 800, quality: 60, format: "webp" },
   galleryFull: { quality: 82, format: "webp" },
   avatar: { width: 400, format: "webp" },
+  // Recipe detail hero: displayed at max-w-3xl (768px), so 1536 = 2× retina.
+  recipeHero: { width: 1536, quality: 75, format: "webp" },
 } as const satisfies Record<string, ImageTransform>;
 
 function withTransform(url: string, transform?: ImageTransform): string {

@@ -29,8 +29,7 @@
 //   CONTENTFUL_PHOTO_UPLOADER_TOKEN   Personal Access Token (CMA)
 //   CONTENTFUL_ENVIRONMENT            Optional, default "master"
 
-import contentfulManagement from "contentful-management";
-const { createClient } = contentfulManagement;
+import { createClient } from "contentful-management";
 import { existsSync } from "node:fs";
 import { readdir, readFile } from "node:fs/promises";
 import { dirname, join, resolve } from "node:path";
@@ -68,7 +67,7 @@ function titleFromSlug(slug) {
 // so the draft satisfies the required flagImage field and is publish-ready.
 // Returns true if a flag was attached (or would be, in dry-run), false if no
 // matching flag file exists (country is left flag-less with a warning).
-async function attachCountryFlag(env, countryEntry, countrySlug, locale, dryRun) {
+async function attachCountryFlag(cma, countryEntry, countrySlug, locale, dryRun) {
   const flagPath = join(FLAGS_DIR, `${countrySlug}.png`);
   if (!existsSync(flagPath)) {
     console.log(
@@ -80,27 +79,30 @@ async function attachCountryFlag(env, countryEntry, countrySlug, locale, dryRun)
     console.log(`   🏳️  [dry-run] would upload & attach flag ${countrySlug}.png`);
     return true;
   }
-  let asset = await env.createAssetFromFiles({
-    fields: {
-      title: { [locale]: `${titleFromSlug(countrySlug)} flag` },
-      file: {
-        [locale]: {
-          contentType: "image/png",
-          fileName: `${countrySlug}.png`,
-          file: await readFile(flagPath),
+  let asset = await cma.asset.createFromFiles(
+    {},
+    {
+      fields: {
+        title: { [locale]: `${titleFromSlug(countrySlug)} flag` },
+        file: {
+          [locale]: {
+            contentType: "image/png",
+            fileName: `${countrySlug}.png`,
+            file: await readFile(flagPath),
+          },
         },
       },
     },
-  });
-  asset = await asset.processForAllLocales();
-  asset = await asset.publish();
+  );
+  asset = await cma.asset.processForAllLocales({}, asset);
+  asset = await cma.asset.publish({ assetId: asset.sys.id }, asset);
 
   // Re-fetch the country for its latest version before linking the flag.
-  const fresh = await env.getEntry(countryEntry.sys.id);
+  const fresh = await cma.entry.get({ entryId: countryEntry.sys.id });
   fresh.fields.flagImage = {
     [locale]: { sys: { type: "Link", linkType: "Asset", id: asset.sys.id } },
   };
-  await fresh.update();
+  await cma.entry.update({ entryId: fresh.sys.id }, fresh);
   console.log(`   🏳️  attached flag ${countrySlug}.png → ${asset.sys.id}`);
   return true;
 }
@@ -119,12 +121,12 @@ function fieldValue(entry, fieldName, locale) {
   return f?.[locale] ?? f;
 }
 
-async function paginatedEntries(env, query) {
+async function paginatedEntries(cma, query) {
   const limit = 1000;
   const all = [];
   let skip = 0;
   while (true) {
-    const batch = await env.getEntries({ ...query, skip, limit });
+    const batch = await cma.entry.getMany({ query: { ...query, skip, limit } });
     all.push(...batch.items);
     if (batch.items.length < limit) break;
     skip += limit;
@@ -163,18 +165,25 @@ async function main() {
   console.log(`   Space:       ${CONTENTFUL_SPACE_ID}`);
   console.log(`   Environment: ${CONTENTFUL_ENVIRONMENT}`);
 
-  const client = createClient({ accessToken: CONTENTFUL_PHOTO_UPLOADER_TOKEN });
-  const space = await client.getSpace(CONTENTFUL_SPACE_ID);
-  const env = await space.getEnvironment(CONTENTFUL_ENVIRONMENT);
+  const cma = createClient(
+    { accessToken: CONTENTFUL_PHOTO_UPLOADER_TOKEN },
+    {
+      type: "plain",
+      defaults: {
+        spaceId: CONTENTFUL_SPACE_ID,
+        environmentId: CONTENTFUL_ENVIRONMENT,
+      },
+    },
+  );
 
-  const locales = await env.getLocales();
+  const locales = await cma.locale.getMany({});
   const locale = locales.items.find((l) => l.default)?.code ?? "en-US";
   console.log(`   Locale:      ${locale}\n`);
 
   console.log("📚 Indexing existing countries and cities...");
   const [existingCountries, existingCities] = await Promise.all([
-    paginatedEntries(env, { content_type: "country" }),
-    paginatedEntries(env, { content_type: "city" }),
+    paginatedEntries(cma, { content_type: "country" }),
+    paginatedEntries(cma, { content_type: "city" }),
   ]);
 
   const countryBySlug = new Map();
@@ -217,22 +226,25 @@ async function main() {
         );
         // Synthesise a placeholder so the city loop can still process subfolders.
         countryEntry = { sys: { id: `__dryrun__${countrySlug}` } };
-        await attachCountryFlag(env, countryEntry, countrySlug, locale, true);
+        await attachCountryFlag(cma, countryEntry, countrySlug, locale, true);
       } else {
         try {
-          countryEntry = await env.createEntry("country", {
-            fields: {
-              name: { [locale]: name },
-              slug: { [locale]: countrySlug },
+          countryEntry = await cma.entry.create(
+            { contentTypeId: "country" },
+            {
+              fields: {
+                name: { [locale]: name },
+                slug: { [locale]: countrySlug },
+              },
             },
-          });
+          );
           countryBySlug.set(countrySlug, countryEntry);
           countryById.set(countryEntry.sys.id, countryEntry);
           console.log(
             `🌍 ✅ Created Country: "${name}" (slug=${countrySlug}) → ${countryEntry.sys.id} (draft)`,
           );
           countriesCreated++;
-          await attachCountryFlag(env, countryEntry, countrySlug, locale, false);
+          await attachCountryFlag(cma, countryEntry, countrySlug, locale, false);
         } catch (e) {
           console.error(
             `🌍 ❌ Failed to create Country ${countrySlug}: ${e.message.split("\n")[0]}`,
@@ -262,21 +274,24 @@ async function main() {
         continue;
       }
       try {
-        const city = await env.createEntry("city", {
-          fields: {
-            name: { [locale]: name },
-            slug: { [locale]: citySlug },
-            country: {
-              [locale]: {
-                sys: {
-                  type: "Link",
-                  linkType: "Entry",
-                  id: countryEntry.sys.id,
+        const city = await cma.entry.create(
+          { contentTypeId: "city" },
+          {
+            fields: {
+              name: { [locale]: name },
+              slug: { [locale]: citySlug },
+              country: {
+                [locale]: {
+                  sys: {
+                    type: "Link",
+                    linkType: "Entry",
+                    id: countryEntry.sys.id,
+                  },
                 },
               },
             },
           },
-        });
+        );
         cityKeys.add(key);
         console.log(
           `   📍 ✅ Created City: "${name}" (slug=${citySlug}) → ${city.sys.id} (draft)`,
