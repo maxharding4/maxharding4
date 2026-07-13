@@ -20,6 +20,22 @@ You can start editing the page by modifying `app/page.tsx`. The page auto-update
 
 This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
 
+## Testing
+
+```bash
+npm test          # Jest unit/component tests
+npm run test:e2e  # Playwright E2E — builds the static export and runs against it
+```
+
+- **Unit tests** (Jest + Testing Library) live next to the code in `__tests__/`.
+- **E2E tests** (Playwright) live in `e2e/` and run against the **static export**
+  (`out/`) served locally — the same artifact that ships to S3, so routing and output
+  match production. `test:e2e` builds with `NEXT_PUBLIC_USE_PLACEHOLDER_IMAGES=true`
+  and no analytics id, so the pages make no external requests (Contentful asset
+  bandwidth stays untouched). Use `npm run test:e2e:ui` for the interactive runner.
+
+Both run in CI on every PR (`.github/workflows/pr-checks.yml`).
+
 ## Learn More
 
 To learn more about Next.js, take a look at the following resources:
