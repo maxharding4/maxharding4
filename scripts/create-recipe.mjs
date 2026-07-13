@@ -356,4 +356,29 @@ if (recipe.cookTimeMinutes) fields.cookTimeMinutes = { [LOCALE]: recipe.cookTime
 const entry = await cma.entry.create({ contentTypeId: "recipe" }, { fields });
 await cma.entry.publish({ entryId: entry.sys.id }, entry);
 console.log(`✔ Recipe entry published → ${entry.sys.id} (slug: ${slug}, category: ${opts.category})`);
+
+// Pre-warm the Contentful Images API derivatives the site will request, so the
+// first visitor after a deploy doesn't hit the on-the-fly generation lag (which
+// can briefly render a broken image). Params mirror the cardThumb and recipeHero
+// presets in src/lib/images.ts — keep them in sync. Best-effort: a warm failure
+// is non-fatal (the derivative just generates on first real request instead).
+const fileUrl = asset.fields?.file?.[LOCALE]?.url;
+if (fileUrl) {
+  const base = fileUrl.startsWith("http") ? fileUrl : `https:${fileUrl}`;
+  const derivatives = [
+    `${base}?w=600&q=55&fm=webp`, // cardThumb — recipe + category cards
+    `${base}?w=1536&q=75&fm=webp`, // recipeHero — detail page
+  ];
+  const results = await Promise.allSettled(derivatives.map((u) => fetch(u)));
+  const warmed = results.filter(
+    (r) => r.status === "fulfilled" && r.value.ok
+  ).length;
+  console.log(`🔥 Pre-warmed ${warmed}/${derivatives.length} image derivatives.`);
+}
+
 console.log(`\n💡 The site is static — run the deploy workflow to publish it.`);
+
+// Exit explicitly: the image pre-warm uses fetch (undici), whose keepalive
+// connection pool would otherwise keep the event loop alive after all the
+// awaited work is done. Everything above is complete at this point.
+process.exit(0);
