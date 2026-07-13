@@ -18,6 +18,22 @@ public access to the bucket and makes CloudFront the only way to reach the conte
 This is a standard, secure-enough setup for a public static site — but not the
 gold standard. This ticket is the hardening step, not urgent.
 
+### Confirmed by external assessment (2026-07-13)
+
+A passive external review confirmed two live consequences of the public bucket,
+both of which this ticket closes when the bucket goes private behind OAC:
+
+- **Anonymous object listing is enabled.** `https://s3.eu-west-2.amazonaws.com/maxharding4.com/?list-type=2`
+  returns a full object-key listing to unauthenticated callers — the public policy
+  grants `s3:ListBucket`, not just `s3:GetObject`. This lets anyone enumerate every
+  path/file, including anything not linked from the site. Even before the full OAC
+  migration, the public policy should drop `s3:ListBucket` (a static site needs only
+  `GetObject`); the OAC-scoped policy in this ticket removes public access entirely.
+- **Direct HTTP-only access.** Content is fetchable at
+  `http://maxharding4.com.s3-website.eu-west-2.amazonaws.com/` (plain HTTP, no TLS),
+  bypassing CloudFront and any protections added there (headers, WAF). Making the
+  bucket private is what forces all traffic through CloudFront/HTTPS.
+
 ## Target state
 
 - Bucket is **fully private** (Block Public Access fully on, public bucket policy removed).
@@ -51,10 +67,32 @@ gold standard. This ticket is the hardening step, not urgent.
 
 ## Acceptance Criteria
 
-- [ ] Direct S3 object URLs return `AccessDenied`; the site is reachable only via CloudFront.
-- [ ] `maxharding4.com`, `/travel/`, city pages, `/cv/` all still return 200.
-- [ ] Block Public Access is fully enabled on the bucket.
-- [ ] Deploy pipeline (`aws s3 sync`) still works unchanged (it writes objects; OAC only affects reads).
+- [x] Direct S3 object URLs return `AccessDenied`; the site is reachable only via
+      CloudFront. (Verified 2026-07-13: anonymous listing, path-style GetObject, and
+      the S3 website endpoint all denied.)
+- [x] `maxharding4.com`, `/travel/`, city pages, `/cv/` all still return 200.
+- [x] Block Public Access is fully enabled on the bucket.
+- [ ] Deploy pipeline (`aws s3 sync`) still works unchanged (it writes objects; OAC only
+      affects reads). **Expected to work** — OAC/BPA only gate anonymous reads, not the
+      IAM-authenticated GitHub Actions writer — but **confirm on the next deploy**.
+
+**Status: Done** (2026-07-13), pending the next deploy to confirm the write path.
+
+## Implementation notes (as executed)
+
+Done live via the console in staged order, each stage verified externally before the next:
+
+1. **CloudFront Function** `directory-index-rewrite` (viewer-request) — rewrites `/x/` →
+   `/x/index.html` so the trailingSlash export resolves on the REST endpoint. Associated
+   on the Default (*) behaviour.
+2. **Origin → REST endpoint + OAC** — switched origin to
+   `maxharding4.com.s3.eu-west-2.amazonaws.com`, created OAC `maxharding4-oac` (sign
+   requests). Verified with the bucket still public (safe intermediate).
+3. **Custom error responses** — 403→`/404.html` and 404→`/404.html` (both return 404),
+   added *before* lock-down so private-bucket 403s surface the styled 404 page.
+4. **Lock-down** — replaced the public bucket policy with the OAC-scoped one above, then
+   enabled Block Public Access (all four). The public *listing* survived the policy swap
+   (it came from a public ACL, not the policy) and was closed by BPA's IgnorePublicAcls.
 
 ## Notes
 
