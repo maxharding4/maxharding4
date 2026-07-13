@@ -120,6 +120,11 @@ Behaviour:
   (`--slug` overrides the title-derived default). Warns when a photo isn't the
   3:2 card ratio.
 - **Idempotent** — an existing slug is reported and skipped, never overwritten.
+- **Pre-warms the image** — after publishing, it requests the card and hero
+  Images-API derivatives once so Contentful generates+caches them ahead of the
+  first real visitor (otherwise the first view after a deploy can briefly show a
+  broken image while the derivative is generated on demand). The warmed params
+  mirror `cardThumb`/`recipeHero` in `src/lib/images.ts`.
 - **Markdown `## Notes` are printed, not uploaded** (that's where personal
   context lives); fold anything worth keeping into the entry manually.
 - **`--servings` sets the field only** — it never rescales ingredient
