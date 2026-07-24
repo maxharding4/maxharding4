@@ -1,6 +1,7 @@
 import { getEntriesByType } from "@/lib/contentful";
 import { CitySkeleton, PageSkeleton } from "@/types/contentful";
 import CityCard from "@/components/CityCard";
+import NextUpRow from "@/components/NextUpRow";
 import { Asset } from "contentful";
 import Link from "next/link";
 import { Metadata } from "next";
@@ -15,6 +16,8 @@ const LATEST_COLS = 3;
 interface HomeCity {
   city: import("contentful").Entry<CitySkeleton>;
   countrySlug: string;
+  countryName: string;
+  flagUrl: string | null;
   previewPhoto: Asset | null;
   photoCount: number;
   visitTime: number | null;
@@ -37,7 +40,13 @@ async function getHomeCities(): Promise<{ nextUp: HomeCity[]; latest: HomeCity[]
       .map((city) => {
         const photos = (city.fields.photos as unknown as Asset[]) || [];
         const country = city.fields.country as unknown as
-          | { fields?: { slug?: string } }
+          | {
+              fields?: {
+                slug?: string;
+                name?: string;
+                flagImage?: { fields?: { file?: { url?: string } } };
+              };
+            }
           | undefined;
         const countrySlug = country?.fields?.slug;
         const visitDate = city.fields.visitDate as unknown as string | undefined;
@@ -46,6 +55,8 @@ async function getHomeCities(): Promise<{ nextUp: HomeCity[]; latest: HomeCity[]
         return {
           city,
           countrySlug: countrySlug ?? "",
+          countryName: country?.fields?.name ?? "",
+          flagUrl: country?.fields?.flagImage?.fields?.file?.url ?? null,
           previewPhoto: photos[0] || null,
           photoCount: photos.length,
           visitTime: Number.isNaN(parsed) ? null : parsed,
@@ -197,7 +208,9 @@ export default async function HomePage() {
           </p>
         </header>
 
-        {/* Next Up: upcoming, not-yet-photographed cities. Hidden when empty. */}
+        {/* Next Up: upcoming, not-yet-photographed cities. Hidden when empty.
+            These have no photos to show, so instead of full CityCards they get
+            slim rows — flag, name, visit month, "Coming soon" badge. */}
         {nextUp.length > 0 && (
           <section
             aria-labelledby="next-up-heading"
@@ -209,17 +222,17 @@ export default async function HomePage() {
             >
               Next up
             </h2>
-            <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
-              {nextUp.map(({ city, countrySlug, previewPhoto, photoCount }) => (
-                <CityCard
+            <ul className="divide-y divide-gray-200 overflow-hidden rounded-lg border border-gray-200 bg-white shadow-sm">
+              {nextUp.map(({ city, countryName, flagUrl, visitTime }) => (
+                <NextUpRow
                   key={city.sys.id}
-                  city={city}
-                  countrySlug={countrySlug}
-                  previewPhoto={previewPhoto}
-                  photoCount={photoCount}
+                  cityName={city.fields.name as unknown as string}
+                  countryName={countryName}
+                  flagUrl={flagUrl}
+                  visitTime={visitTime as number}
                 />
               ))}
-            </div>
+            </ul>
           </section>
         )}
 

@@ -245,6 +245,10 @@ describe("Home Page", () => {
 
       expect(screen.getByText("Next up")).toBeInTheDocument();
       expect(screen.getByText("Tokyo")).toBeInTheDocument();
+      expect(screen.getByText("Coming soon")).toBeInTheDocument();
+      // Visit month/year from FUTURE (2999-01-01); rendered twice for the
+      // mobile/desktop layout split.
+      expect(screen.getAllByText("January 2999").length).toBeGreaterThan(0);
     });
 
     it("is hidden entirely when nothing qualifies", async () => {
@@ -281,10 +285,12 @@ describe("Home Page", () => {
       expect(screen.queryByText("ThirdCity")).not.toBeInTheDocument();
 
       const nextUp = screen.getByRole("region", { name: /next up/i });
-      const names = Array.from(nextUp.querySelectorAll("h2"))
-        .map((h) => h.textContent)
-        .filter((n) => ["SoonCity", "FarCity", "ThirdCity"].includes(n ?? ""));
-      expect(names).toEqual(["SoonCity", "FarCity"]);
+      const rows = Array.from(nextUp.querySelectorAll("li")).map(
+        (li) => li.textContent ?? ""
+      );
+      expect(rows).toHaveLength(2);
+      expect(rows[0]).toContain("SoonCity");
+      expect(rows[1]).toContain("FarCity");
     });
   });
 
