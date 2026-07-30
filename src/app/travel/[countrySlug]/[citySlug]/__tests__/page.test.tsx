@@ -195,7 +195,7 @@ describe("CityPage", () => {
 
       render(page as React.ReactElement);
 
-      expect(screen.getByText(/Visited:/)).toBeInTheDocument();
+      expect(screen.getByText("Visited: 15/03/2024")).toBeInTheDocument();
     });
 
     it("should render photo count", async () => {

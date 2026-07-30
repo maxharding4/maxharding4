@@ -200,7 +200,7 @@ export default async function CityPage({ params }: CityPageProps) {
           )}
           {visitDate && (
             <p className="mt-2 text-sm text-gray-500">
-              Visited: {new Date(visitDate).toLocaleDateString()}
+              Visited: {new Date(visitDate).toLocaleDateString("en-GB")}
             </p>
           )}
           <p className="mt-2 text-sm text-gray-500">
