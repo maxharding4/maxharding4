@@ -25,6 +25,8 @@ export interface CityFields {
   description?: string;
   visitDate?: string;
   photos?: Asset[];
+  /** Preview photo for cards/link previews; falls back to photos[0] when unset */
+  thumbnail?: Asset;
 }
 
 export type CitySkeleton = EntrySkeletonType<CityFields, "city">;

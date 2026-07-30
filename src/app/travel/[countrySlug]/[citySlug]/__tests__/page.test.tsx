@@ -479,6 +479,47 @@ describe("CityPage", () => {
       });
     });
 
+    it("should use the thumbnail for the OpenGraph image when set", async () => {
+      const thumbnailAsset = {
+        ...mockPhotos[0],
+        sys: { ...mockPhotos[0].sys, id: "thumb-1" },
+        fields: {
+          ...mockPhotos[0].fields,
+          file: {
+            ...(mockPhotos[0].fields as { file: object }).file,
+            url: "//images.ctfassets.net/space/chosen-thumb.jpg",
+          },
+        },
+      } as unknown as Asset;
+      const cityWithThumbnail = {
+        ...mockCity,
+        fields: {
+          ...mockCity.fields,
+          thumbnail: thumbnailAsset,
+        },
+      } as unknown as Entry<CitySkeleton>;
+
+      mockGetEntriesByType.mockResolvedValue({
+        items: [cityWithThumbnail],
+        total: 1,
+        skip: 0,
+        limit: 1,
+      } as never);
+
+      const params = Promise.resolve({ countrySlug: "spain", citySlug: "barcelona" });
+      const metadata = await generateMetadata({ params });
+
+      expect(metadata.openGraph?.images).toEqual([
+        {
+          url: "https://images.ctfassets.net/space/chosen-thumb.jpg",
+          alt: "Photo from Barcelona, Spain",
+        },
+      ]);
+      expect(metadata.twitter?.images).toEqual([
+        "https://images.ctfassets.net/space/chosen-thumb.jpg",
+      ]);
+    });
+
     it("should return 'City Not Found' metadata when city does not exist", async () => {
       mockGetEntriesByType.mockResolvedValue({
         items: [],

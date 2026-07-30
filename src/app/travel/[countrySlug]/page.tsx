@@ -5,6 +5,7 @@ import { CountrySkeleton, CitySkeleton } from "@/types/contentful";
 import CityCard from "@/components/CityCard";
 import Breadcrumb from "@/components/Breadcrumb";
 import { getContentfulImageSrc, IMAGE_TRANSFORMS } from "@/lib/images";
+import { getCityPreviewPhoto } from "@/lib/city";
 import { Asset, Entry } from "contentful";
 
 interface CountryPageProps {
@@ -115,7 +116,7 @@ export default async function CountryPage({ params }: CountryPageProps) {
 
     return {
       city,
-      previewPhoto: photos[0] || null,
+      previewPhoto: getCityPreviewPhoto(city),
       photoCount: photos.length,
     };
   });

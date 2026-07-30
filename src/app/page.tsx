@@ -1,4 +1,5 @@
 import { getEntriesByType } from "@/lib/contentful";
+import { getCityPreviewPhoto } from "@/lib/city";
 import { CitySkeleton, PageSkeleton } from "@/types/contentful";
 import CityCard from "@/components/CityCard";
 import NextUpRow from "@/components/NextUpRow";
@@ -57,7 +58,7 @@ async function getHomeCities(): Promise<{ nextUp: HomeCity[]; latest: HomeCity[]
           countrySlug: countrySlug ?? "",
           countryName: country?.fields?.name ?? "",
           flagUrl: country?.fields?.flagImage?.fields?.file?.url ?? null,
-          previewPhoto: photos[0] || null,
+          previewPhoto: getCityPreviewPhoto(city),
           photoCount: photos.length,
           visitTime: Number.isNaN(parsed) ? null : parsed,
         };
