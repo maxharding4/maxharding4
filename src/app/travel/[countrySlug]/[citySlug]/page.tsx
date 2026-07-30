@@ -4,6 +4,7 @@ import { CountrySkeleton, CitySkeleton } from "@/types/contentful";
 import { Asset, Entry } from "contentful";
 import Breadcrumb from "@/components/Breadcrumb";
 import PhotoGallery from "@/components/PhotoGallery";
+import { getCityPreviewPhoto } from "@/lib/city";
 
 interface CityPageProps {
   params: Promise<{
@@ -52,9 +53,10 @@ export async function generateMetadata({ params }: CityPageProps) {
   const description = city.fields.description as unknown as string | undefined;
   const photos = (city.fields.photos as unknown as Asset[]) || [];
 
-  // Get first photo for Open Graph image
+  // Preview photo (thumbnail or first gallery photo) for the Open Graph image
+  const previewPhoto = getCityPreviewPhoto(city);
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const firstPhotoUrl = (photos[0] as any)?.fields?.file?.url as string | undefined;
+  const previewPhotoUrl = (previewPhoto as any)?.fields?.file?.url as string | undefined;
 
   const metaDescription =
     description || `Explore ${photos.length} photos from ${name}, ${countryName}`;
@@ -67,10 +69,10 @@ export async function generateMetadata({ params }: CityPageProps) {
       description: metaDescription,
       url: `/travel/${countrySlug}/${citySlug}`,
       type: "website",
-      ...(firstPhotoUrl && {
+      ...(previewPhotoUrl && {
         images: [
           {
-            url: `https:${firstPhotoUrl}`,
+            url: `https:${previewPhotoUrl}`,
             alt: `Photo from ${name}, ${countryName}`,
           },
         ],
@@ -80,8 +82,8 @@ export async function generateMetadata({ params }: CityPageProps) {
       card: "summary_large_image",
       title: `${name}, ${countryName} - Travel Gallery`,
       description: metaDescription,
-      ...(firstPhotoUrl && {
-        images: [`https:${firstPhotoUrl}`],
+      ...(previewPhotoUrl && {
+        images: [`https:${previewPhotoUrl}`],
       }),
     },
   };

@@ -110,6 +110,7 @@ interface MakeCityOpts {
   countrySlug: string | null;
   visitDate?: string;
   photoCount: number;
+  thumbnailUrl?: string;
 }
 
 function makeCity(opts: MakeCityOpts): Entry<CitySkeleton> {
@@ -145,6 +146,15 @@ function makeCity(opts: MakeCityOpts): Entry<CitySkeleton> {
       country,
       visitDate: opts.visitDate,
       photos,
+      thumbnail: opts.thumbnailUrl
+        ? {
+            sys: { id: `${opts.id}-thumbnail`, type: "Asset" },
+            fields: {
+              title: `${opts.name} thumbnail`,
+              file: { url: opts.thumbnailUrl },
+            },
+          }
+        : undefined,
     },
     metadata: { tags: [] },
   } as unknown as Entry<CitySkeleton>;
@@ -309,6 +319,38 @@ describe("Home Page", () => {
       const viewAll = container.querySelector('a[href="/travel"]');
       expect(viewAll).toBeInTheDocument();
       expect(viewAll).toHaveTextContent(/view all/i);
+    });
+
+    it("uses the city thumbnail as the card preview when set", async () => {
+      mockContentful({
+        cities: [
+          makeCity({
+            id: "porto",
+            name: "Porto",
+            slug: "porto",
+            countrySlug: "portugal",
+            visitDate: "2023-05-01",
+            photoCount: 4,
+            thumbnailUrl: "//images.ctfassets.net/chosen-thumb.jpg",
+          }),
+        ],
+      });
+      render(await HomePage());
+
+      const preview = screen.getByAltText("Preview of Porto");
+      expect(preview.getAttribute("src")).toContain("chosen-thumb.jpg");
+    });
+
+    it("falls back to the first gallery photo when no thumbnail is set", async () => {
+      mockContentful({
+        cities: [
+          makeCity({ id: "porto", name: "Porto", slug: "porto", countrySlug: "portugal", visitDate: "2023-05-01", photoCount: 4 }),
+        ],
+      });
+      render(await HomePage());
+
+      const preview = screen.getByAltText("Preview of Porto");
+      expect(preview.getAttribute("src")).toContain("porto-0.jpg");
     });
 
     it("orders cities most recently visited first", async () => {

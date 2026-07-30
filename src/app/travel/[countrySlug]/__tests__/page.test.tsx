@@ -847,6 +847,62 @@ describe("Country Page", () => {
       expect(screen.getByText(/0 photos across 1 city/i)).toBeInTheDocument();
     });
 
+    it("should use the city thumbnail as the card preview when set", async () => {
+      const thumbnailAsset = {
+        ...mockPhotoAsset,
+        sys: { ...mockPhotoAsset.sys, id: "thumb-id" },
+        fields: {
+          ...mockPhotoAsset.fields,
+          file: {
+            ...(mockPhotoAsset.fields as { file: object }).file,
+            url: "//images.ctfassets.net/space/chosen-thumb.jpg",
+          },
+        },
+      } as unknown as Asset;
+      const cityWithThumbnail = {
+        ...mockCity,
+        fields: { ...mockCity.fields, thumbnail: thumbnailAsset },
+      } as unknown as Entry<CitySkeleton>;
+
+      jest
+        .spyOn(contentful, "getEntriesByType")
+        .mockImplementation((contentType: string) => {
+          if (contentType === "country") {
+            return Promise.resolve(createCountryCollection([mockCountry]));
+          }
+          if (contentType === "city") {
+            return Promise.resolve(createCityCollection([cityWithThumbnail]));
+          }
+          return Promise.resolve(createCountryCollection([]));
+        });
+
+      const page = await CountryPage({ params: mockParams });
+      render(page);
+
+      const preview = screen.getByAltText("Preview of Barcelona");
+      expect(preview.getAttribute("src")).toContain("chosen-thumb.jpg");
+    });
+
+    it("should fall back to the first photo when no thumbnail is set", async () => {
+      jest
+        .spyOn(contentful, "getEntriesByType")
+        .mockImplementation((contentType: string) => {
+          if (contentType === "country") {
+            return Promise.resolve(createCountryCollection([mockCountry]));
+          }
+          if (contentType === "city") {
+            return Promise.resolve(createCityCollection([mockCity]));
+          }
+          return Promise.resolve(createCountryCollection([]));
+        });
+
+      const page = await CountryPage({ params: mockParams });
+      render(page);
+
+      const preview = screen.getByAltText("Preview of Barcelona");
+      expect(preview.getAttribute("src")).toContain("beach.jpg");
+    });
+
     it("should handle unicode characters in country name", async () => {
       const unicodeCountry = {
         ...mockCountry,
