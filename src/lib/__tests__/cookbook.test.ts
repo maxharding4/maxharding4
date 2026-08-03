@@ -1,9 +1,11 @@
 import { Entry, EntryCollection } from "contentful";
 import {
   CATEGORIES,
+  deriveTagPills,
   getAllRecipes,
   getCategory,
   recipesInCategory,
+  recipeTags,
   splitIngredients,
   splitMethodSteps,
 } from "../cookbook";
@@ -16,7 +18,11 @@ const mockGetEntriesByType = contentful.getEntriesByType as jest.MockedFunction<
   typeof contentful.getEntriesByType
 >;
 
-function mockRecipe(slug: string, category: string): Entry<RecipeSkeleton> {
+function mockRecipe(
+  slug: string,
+  category: string,
+  tags?: string[]
+): Entry<RecipeSkeleton> {
   return {
     sys: { id: `id-${slug}` },
     fields: {
@@ -25,6 +31,7 @@ function mockRecipe(slug: string, category: string): Entry<RecipeSkeleton> {
       category,
       ingredients: "a\nb",
       method: "step one\n\nstep two",
+      ...(tags ? { tags } : {}),
     },
   } as unknown as Entry<RecipeSkeleton>;
 }
@@ -130,5 +137,48 @@ describe("splitMethodSteps", () => {
       "Boil the pasta.",
       "Fry the pancetta.",
     ]);
+  });
+});
+
+describe("recipeTags", () => {
+  it("returns the tags when present", () => {
+    expect(recipeTags(mockRecipe("a", "mains", ["chicken", "rice"]))).toEqual([
+      "chicken",
+      "rice",
+    ]);
+  });
+
+  it("returns an empty list when the field is absent", () => {
+    expect(recipeTags(mockRecipe("a", "mains"))).toEqual([]);
+  });
+});
+
+describe("deriveTagPills", () => {
+  it("orders pills by descending count, ties alphabetical", () => {
+    const pills = deriveTagPills([
+      mockRecipe("a", "mains", ["pasta", "sausage"]),
+      mockRecipe("b", "mains", ["pasta", "chicken"]),
+      mockRecipe("c", "mains", ["sausage"]),
+      mockRecipe("d", "mains", ["beef"]),
+    ]);
+    expect(pills).toEqual([
+      { tag: "pasta", count: 2 },
+      { tag: "sausage", count: 2 },
+      { tag: "beef", count: 1 },
+      { tag: "chicken", count: 1 },
+    ]);
+  });
+
+  it("ignores untagged recipes and dedupes tags within a recipe", () => {
+    const pills = deriveTagPills([
+      mockRecipe("a", "mains", ["pasta", "pasta"]),
+      mockRecipe("b", "mains"),
+    ]);
+    expect(pills).toEqual([{ tag: "pasta", count: 1 }]);
+  });
+
+  it("yields no pills for a fully untagged list", () => {
+    expect(deriveTagPills([mockRecipe("a", "mains")])).toEqual([]);
+    expect(deriveTagPills([])).toEqual([]);
   });
 });

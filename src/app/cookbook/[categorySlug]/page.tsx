@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
 import Breadcrumb from "@/components/Breadcrumb";
-import RecipeCard from "@/components/RecipeCard";
+import CategoryRecipeGrid from "@/components/CategoryRecipeGrid";
 import { CATEGORIES, getAllRecipes, getCategory, recipesInCategory } from "@/lib/cookbook";
 
 interface CategoryPageProps {
@@ -62,29 +62,14 @@ export default async function CategoryPage({ params }: CategoryPageProps) {
       <div className="container mx-auto px-4 py-12 sm:px-6 lg:px-8">
         <Breadcrumb items={breadcrumbItems} />
 
-        <header className="mb-12">
+        <header className="mb-4">
           <h1 className="heading-hero text-gray-900">{category.label}</h1>
           <p className="mt-4 text-lg text-gray-600 max-w-2xl">{category.blurb}</p>
-          <p className="mt-2 text-sm text-gray-500">
-            {recipes.length} {recipes.length === 1 ? "recipe" : "recipes"}
-          </p>
         </header>
 
-        {recipes.length > 0 ? (
-          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {recipes.map((recipe) => (
-              <RecipeCard
-                key={recipe.sys.id}
-                recipe={recipe}
-                categorySlug={category.slug}
-              />
-            ))}
-          </div>
-        ) : (
-          <div className="text-center py-12">
-            <p className="text-gray-500 text-lg">Recipes coming soon</p>
-          </div>
-        )}
+        {/* Count, tag filter pills, and grid live in a client component so
+            the pills can filter; all cards are still in the static HTML. */}
+        <CategoryRecipeGrid recipes={recipes} categorySlug={category.slug} />
       </div>
     </div>
   );

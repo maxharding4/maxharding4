@@ -79,6 +79,11 @@ export function recipesInCategory(
   );
 }
 
+// Tag helpers live in @/lib/recipe-tags (client-safe, no contentful import);
+// re-exported here so server code can keep importing everything from one place.
+export { deriveTagPills, recipeTags } from "@/lib/recipe-tags";
+export type { TagPill } from "@/lib/recipe-tags";
+
 /** One ingredient per line → list items. */
 export function splitIngredients(text: string): string[] {
   return text
