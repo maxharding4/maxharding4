@@ -26,6 +26,12 @@
 //   --title <title>     Override the title (e.g. to re-case an HTML title).
 //   --servings <n>      Override servings. Sets the field only — never
 //                       rescales ingredient quantities.
+//   --tags <a,b>        Comma-separated filter tags (e.g. chicken,pasta).
+//                       Must be from the vocabulary validated in Contentful
+//                       (mirrored in TAG_SLUGS below — keep in sync).
+//   --draft             Create the entry unpublished and without an image
+//                       (for when the photo isn't ready yet). Attach the
+//                       image and publish manually later.
 //   --dry-run           Print the parsed entry and exit without writing.
 //
 // Idempotent: if a recipe with the slug already exists, reports and exits.
@@ -46,6 +52,12 @@ const REPO_ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const PROCESSED_DIR = join(REPO_ROOT, "photos", "processed", "cookbook");
 const PRE_PROCESSED_DIR = join(REPO_ROOT, "photos", "pre-processed", "cookbook");
 const CATEGORY_SLUGS = ["mains", "sides", "snacks", "desserts"];
+// Mirrors the accepted-values validation on the recipe `tags` field in
+// Contentful — the field's validation is the source of truth.
+const TAG_SLUGS = [
+  "chicken", "beef", "pork", "lamb", "sausage",
+  "seafood", "pasta", "curry", "rice", "veggie",
+];
 const LOCALE = "en-US";
 
 function die(msg) {
@@ -57,15 +69,21 @@ function die(msg) {
 
 function parseArgs() {
   const args = process.argv.slice(2);
-  const opts = { dryRun: false };
+  const opts = { dryRun: false, draft: false };
   const positional = [];
   for (let i = 0; i < args.length; i++) {
     const a = args[i];
     if (a === "--dry-run") opts.dryRun = true;
+    else if (a === "--draft") opts.draft = true;
     else if (a === "--category") opts.category = args[++i];
     else if (a === "--slug") opts.slug = args[++i];
     else if (a === "--title") opts.title = args[++i];
     else if (a === "--servings") opts.servings = Number(args[++i]);
+    else if (a === "--tags")
+      opts.tags = (args[++i] ?? "")
+        .split(",")
+        .map((t) => t.trim().toLowerCase())
+        .filter(Boolean);
     else if (a.startsWith("--")) die(`Unknown option: ${a}`);
     else positional.push(a);
   }
@@ -175,7 +193,13 @@ function parseHtml(src) {
   }
   if (!node) die("No schema.org Recipe JSON-LD found in the HTML.");
 
-  const cleanText = (t) => t.replace(/\s*[\r\n]+\s*/g, " ").replace(/ {2,}/g, " ").trim();
+  const ENTITIES = { amp: "&", lt: "<", gt: ">", quot: '"', apos: "'", nbsp: " ", "#39": "'", "#34": '"' };
+  const cleanText = (t) =>
+    t
+      .replace(/&(amp|lt|gt|quot|apos|nbsp|#39|#34);/g, (_, e) => ENTITIES[e])
+      .replace(/\s*[\r\n]+\s*/g, " ")
+      .replace(/ {2,}/g, " ")
+      .trim();
   const yieldValue = Array.isArray(node.recipeYield)
     ? node.recipeYield[0]
     : node.recipeYield;
@@ -253,6 +277,11 @@ if (!opts.source) {
 if (!CATEGORY_SLUGS.includes(opts.category)) {
   die(`--category is required and must be one of: ${CATEGORY_SLUGS.join(", ")}`);
 }
+for (const tag of opts.tags ?? []) {
+  if (!TAG_SLUGS.includes(tag)) {
+    die(`Unknown tag "${tag}" — tags must be from: ${TAG_SLUGS.join(", ")}`);
+  }
+}
 
 const sourcePath = resolve(opts.source);
 if (!existsSync(sourcePath)) die(`Source not found: ${sourcePath}`);
@@ -274,6 +303,7 @@ console.log(`   Category: ${opts.category}`);
 console.log(
   `   Servings: ${recipe.servings ?? "—"} · Prep: ${recipe.prepTimeMinutes ?? "—"} min · Cook: ${recipe.cookTimeMinutes ?? "—"} min`
 );
+console.log(`   Tags:     ${opts.tags?.length ? opts.tags.join(", ") : "—"}`);
 console.log(`   Description: ${recipe.description ?? "—"}`);
 console.log(`   Ingredients (${recipe.ingredients.length}):`);
 for (const i of recipe.ingredients) console.log(`     - ${i}`);
@@ -318,51 +348,65 @@ if (existing.items.length > 0) {
   process.exit(0);
 }
 
-const photoPath = ensurePhoto(slug);
-warnIfNotThreeByTwo(photoPath);
+let asset = null;
+if (!opts.draft) {
+  const photoPath = ensurePhoto(slug);
+  warnIfNotThreeByTwo(photoPath);
 
-let asset = await cma.asset.createFromFiles(
-  {},
-  {
-    fields: {
-      title: { [LOCALE]: recipe.title },
-      file: {
-        [LOCALE]: {
-          contentType: "image/jpeg",
-          fileName: `${slug}.jpg`,
-          file: await readFile(photoPath),
+  asset = await cma.asset.createFromFiles(
+    {},
+    {
+      fields: {
+        title: { [LOCALE]: recipe.title },
+        file: {
+          [LOCALE]: {
+            contentType: "image/jpeg",
+            fileName: `${slug}.jpg`,
+            file: await readFile(photoPath),
+          },
         },
       },
-    },
-  }
-);
-asset = await cma.asset.processForAllLocales({}, asset);
-asset = await cma.asset.publish({ assetId: asset.sys.id }, asset);
-console.log(`\n✔ Photo asset published → ${asset.sys.id}`);
+    }
+  );
+  asset = await cma.asset.processForAllLocales({}, asset);
+  asset = await cma.asset.publish({ assetId: asset.sys.id }, asset);
+  console.log(`\n✔ Photo asset published → ${asset.sys.id}`);
+}
 
 const fields = {
   title: { [LOCALE]: recipe.title },
   slug: { [LOCALE]: slug },
   category: { [LOCALE]: opts.category },
-  image: { [LOCALE]: { sys: { type: "Link", linkType: "Asset", id: asset.sys.id } } },
   ingredients: { [LOCALE]: recipe.ingredients.join("\n") },
   method: { [LOCALE]: recipe.steps.join("\n\n") },
 };
+if (asset) {
+  fields.image = {
+    [LOCALE]: { sys: { type: "Link", linkType: "Asset", id: asset.sys.id } },
+  };
+}
 if (recipe.description) fields.description = { [LOCALE]: recipe.description };
+if (opts.tags?.length) fields.tags = { [LOCALE]: opts.tags };
 if (recipe.servings) fields.servings = { [LOCALE]: recipe.servings };
 if (recipe.prepTimeMinutes) fields.prepTimeMinutes = { [LOCALE]: recipe.prepTimeMinutes };
 if (recipe.cookTimeMinutes) fields.cookTimeMinutes = { [LOCALE]: recipe.cookTimeMinutes };
 
 const entry = await cma.entry.create({ contentTypeId: "recipe" }, { fields });
-await cma.entry.publish({ entryId: entry.sys.id }, entry);
-console.log(`✔ Recipe entry published → ${entry.sys.id} (slug: ${slug}, category: ${opts.category})`);
+if (opts.draft) {
+  console.log(
+    `✔ Recipe entry saved as DRAFT → ${entry.sys.id} (slug: ${slug}, category: ${opts.category}) — attach an image and publish when ready.`
+  );
+} else {
+  await cma.entry.publish({ entryId: entry.sys.id }, entry);
+  console.log(`✔ Recipe entry published → ${entry.sys.id} (slug: ${slug}, category: ${opts.category})`);
+}
 
 // Pre-warm the Contentful Images API derivatives the site will request, so the
 // first visitor after a deploy doesn't hit the on-the-fly generation lag (which
 // can briefly render a broken image). Params mirror the cardThumb and recipeHero
 // presets in src/lib/images.ts — keep them in sync. Best-effort: a warm failure
 // is non-fatal (the derivative just generates on first real request instead).
-const fileUrl = asset.fields?.file?.[LOCALE]?.url;
+const fileUrl = asset?.fields?.file?.[LOCALE]?.url;
 if (fileUrl) {
   const base = fileUrl.startsWith("http") ? fileUrl : `https:${fileUrl}`;
   const derivatives = [

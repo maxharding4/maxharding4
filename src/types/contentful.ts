@@ -64,6 +64,12 @@ export interface RecipeFields {
   servings?: number;
   prepTimeMinutes?: number;
   cookTimeMinutes?: number;
+  /**
+   * Filter tags (e.g. "chicken", "pasta"). Optional; the accepted values are
+   * validated in Contentful, not here — the UI derives pills from whatever
+   * tags are present, so no code list needs to stay in sync.
+   */
+  tags?: string[];
 }
 
 export type RecipeSkeleton = EntrySkeletonType<RecipeFields, "recipe">;
