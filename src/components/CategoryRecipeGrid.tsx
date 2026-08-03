@@ -12,8 +12,11 @@ interface CategoryRecipeGridProps {
 }
 
 function pillClasses(selected: boolean): string {
+  // focus-visible (not focus): the ring is for keyboard navigation only —
+  // after a tap/click the button keeps focus and a `focus:` ring would
+  // linger on the selected pill.
   const base =
-    "shrink-0 whitespace-nowrap rounded-full border px-4 py-1.5 text-sm font-medium capitalize transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2";
+    "shrink-0 whitespace-nowrap rounded-full border px-4 py-1.5 text-sm font-medium capitalize transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2";
   return selected
     ? `${base} border-gray-900 bg-gray-900 text-white`
     : `${base} border-gray-300 bg-white text-gray-700 hover:border-gray-400 hover:text-gray-900`;
@@ -48,12 +51,14 @@ export default function CategoryRecipeGrid({
         /* Below sm this row bleeds to the viewport edge (negative margin
            mirrors the page container's px-4) and scrolls horizontally; the
            gradient is the "more off-screen" affordance. From sm up it wraps
-           and the fade/bleed are disabled. */
+           and the fade/bleed are disabled. The row keeps py-1 while
+           scrollable: overflow-x-auto also clips vertically, and the
+           keyboard focus ring extends 4px beyond the buttons. */
         <div className="relative -mx-4 mb-8 sm:mx-0">
           <div
             role="group"
             aria-label="Filter recipes by tag"
-            className="flex gap-2 overflow-x-auto px-4 pb-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden sm:flex-wrap sm:overflow-visible sm:px-0 sm:pb-0"
+            className="flex gap-2 overflow-x-auto px-4 py-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden sm:flex-wrap sm:overflow-visible sm:px-0 sm:py-0"
           >
             <button
               type="button"
