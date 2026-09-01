@@ -108,12 +108,10 @@ export type CVResumeSkeleton = EntrySkeletonType<CVResumeFields, "cvResume">;
 
 // Work Experience Content Type
 export interface WorkExperienceFields {
-  jobTitle: string;
+  position: string;
   company: string;
-  location?: string;
   startDate: string;
   endDate?: string;
-  currentRole?: boolean;
   description?: string;
   achievements?: string[];
   technologies?: string[];
