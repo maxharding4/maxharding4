@@ -36,12 +36,23 @@ jobs:
           CONTENTFUL_ACCESS_TOKEN: ${{ secrets.CONTENTFUL_ACCESS_TOKEN }}
           NEXT_PUBLIC_GA_MEASUREMENT_ID: ${{ secrets.NEXT_PUBLIC_GA_MEASUREMENT_ID }}
 
-      - name: Run build
+      # The only build in this workflow (~400 CDA calls): the E2E job tests
+      # this exact output rather than building again. Placeholder images and
+      # no GA id make the pages hermetic for E2E (no external requests) and
+      # keep Contentful asset bandwidth untouched.
+      - name: Run build (placeholder images, no analytics)
         run: npm run build
         env:
           CONTENTFUL_SPACE_ID: ${{ secrets.CONTENTFUL_SPACE_ID }}
           CONTENTFUL_ACCESS_TOKEN: ${{ secrets.CONTENTFUL_ACCESS_TOKEN }}
-          NEXT_PUBLIC_GA_MEASUREMENT_ID: ${{ secrets.NEXT_PUBLIC_GA_MEASUREMENT_ID }}
+          NEXT_PUBLIC_USE_PLACEHOLDER_IMAGES: 'true'
+
+      - name: Upload static export for E2E
+        uses: actions/upload-artifact@v4
+        with:
+          name: static-export
+          path: out/
+          retention-days: 1
 
       - name: Run security audit
         run: npm audit --audit-level=moderate
@@ -49,6 +60,7 @@ jobs:
 
   e2e:
     name: E2E Tests
+    needs: quality-checks
     runs-on: ubuntu-latest
 
     steps:
@@ -82,16 +94,13 @@ jobs:
         if: steps.playwright-cache.outputs.cache-hit == 'true'
         run: npx playwright install-deps chromium
 
-      # Build the static export with placeholder images and no GA id, so the
-      # E2E pages make no external requests: this keeps Contentful asset
-      # bandwidth untouched and makes console-error assertions reliable.
-      # (Content data is still fetched via the CDA — cheap read calls.)
-      - name: Build (placeholder images, no analytics)
-        run: npm run build
-        env:
-          CONTENTFUL_SPACE_ID: ${{ secrets.CONTENTFUL_SPACE_ID }}
-          CONTENTFUL_ACCESS_TOKEN: ${{ secrets.CONTENTFUL_ACCESS_TOKEN }}
-          NEXT_PUBLIC_USE_PLACEHOLDER_IMAGES: 'true'
+      # Reuse the Quality Checks build instead of building again, so each
+      # PR run hits Contentful once, not twice.
+      - name: Download static export
+        uses: actions/download-artifact@v4
+        with:
+          name: static-export
+          path: out/
 
       - name: Run E2E tests
         run: npx playwright test
