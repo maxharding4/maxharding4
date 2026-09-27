@@ -146,9 +146,16 @@ describe("CountryCard", () => {
       expect(image).toBeInTheDocument();
     });
 
+    it("should give the link an accessible name from the country", () => {
+      render(<CountryCard country={mockCountry} />);
+      expect(
+        screen.getByRole("link", { name: "Spain" })
+      ).toHaveAttribute("href", "/travel/spain");
+    });
+
     it("should use heading for country name", () => {
       render(<CountryCard country={mockCountry} />);
-      const heading = screen.getByRole("heading", { level: 3 });
+      const heading = screen.getByRole("heading", { level: 2 });
       expect(heading).toHaveTextContent("Spain");
     });
 

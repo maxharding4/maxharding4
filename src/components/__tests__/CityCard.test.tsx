@@ -160,6 +160,13 @@ describe("CityCard", () => {
       expect(article).toBeInTheDocument();
     });
 
+    it("should give the link an accessible name from the city", () => {
+      render(<CityCard {...defaultProps} />);
+      expect(
+        screen.getByRole("link", { name: "Barcelona" })
+      ).toHaveAttribute("href", "/travel/spain/barcelona");
+    });
+
     it("should have accessible link with proper href", () => {
       render(<CityCard {...defaultProps} />);
       const link = screen.getByRole("link");

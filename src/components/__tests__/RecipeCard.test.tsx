@@ -68,6 +68,13 @@ describe("RecipeCard", () => {
     );
   });
 
+  it("names the link with the recipe title", () => {
+    render(<RecipeCard recipe={mockRecipe()} categorySlug="mains" />);
+    expect(
+      screen.getByRole("link", { name: "Asparagus, Pea & Pancetta Pasta" })
+    ).toBeInTheDocument();
+  });
+
   it("renders title, description teaser and meta line", () => {
     render(<RecipeCard recipe={mockRecipe()} categorySlug="mains" />);
     expect(

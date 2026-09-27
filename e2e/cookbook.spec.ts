@@ -16,8 +16,11 @@ test.describe("cookbook", () => {
   test("drills from index to a recipe detail page", async ({ page }) => {
     await page.goto("/cookbook/");
 
-    // Mains has recipes, so its card is a link into the category.
-    await page.locator('a[href^="/cookbook/mains"]').first().click();
+    // Mains has recipes, so its card is a link (named after the category).
+    await page
+      .getByRole("main")
+      .getByRole("link", { name: "Mains", exact: true })
+      .click();
     await expect(page).toHaveURL(/\/cookbook\/mains\/?$/);
     await expect(
       page.getByRole("heading", { level: 1, name: "Mains" })
@@ -27,7 +30,10 @@ test.describe("cookbook", () => {
     // the current page, not a link, so this only matches recipe cards).
     const firstRecipe = page.locator('a[href^="/cookbook/mains/"]').first();
     await expect(firstRecipe).toBeVisible();
-    await firstRecipe.click();
+    // Recipe cards are links named after the recipe title.
+    const recipeTitle = await firstRecipe.getAttribute("aria-label");
+    expect(recipeTitle, "recipe card link should be named").toBeTruthy();
+    await page.getByRole("link", { name: recipeTitle!, exact: true }).click();
 
     await expect(page).toHaveURL(/\/cookbook\/mains\/[^/]+\/$/);
     await expect(
