@@ -1,6 +1,6 @@
 # Design a custom, on-brand 404 page
 
-**Type:** Task · **Status:** To Do · **Area:** Frontend (`src/app/`) · **Priority:** Low
+**Type:** Task · **Status:** In Review (PR #90) · **Area:** Frontend (`src/app/`) · **Priority:** Low
 
 ## Objective
 
@@ -28,13 +28,20 @@ helps a lost visitor get back into the site.
 
 ## Acceptance Criteria
 
-- [ ] `src/app/not-found.tsx` renders a custom 404 with navigation back into the site.
-- [ ] `/404.html` in the static export shows the new content (still wrapped in site chrome).
+- [x] `src/app/not-found.tsx` renders a custom 404 with navigation back into the site.
+- [x] `/404.html` in the static export shows the new content (still wrapped in site chrome).
 - [ ] A missing URL on the live site (e.g. `/nope/`) shows the styled page and returns
       HTTP 404 (CloudFront error responses already map 403/404 → `/404.html`).
-- [ ] `npm run lint`, type-check, and tests pass.
+- [x] `npm run lint`, type-check, and tests pass.
 
 ## Notes
 
 - Small, self-contained frontend change — needs a rebuild + manual deploy to go live.
 - No infra changes required; the CloudFront custom error responses are already in place.
+
+## Outcome
+
+"Off the map" page with `NavigationCard` links to Travel / Cookbook / CV and a
+home link. Unit tests (`src/app/__tests__/not-found.test.tsx`) and E2E
+(`e2e/not-found.spec.ts`: 404 status, title, chrome, no console errors; recovery
+links). Remaining box: verify on the live site after deploy.

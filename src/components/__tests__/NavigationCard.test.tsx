@@ -50,6 +50,13 @@ describe("NavigationCard", () => {
       expect(link).toHaveAttribute("href", "/cv");
     });
 
+    it("should give the link an accessible name from the title", () => {
+      render(<NavigationCard {...defaultProps} />);
+      expect(
+        screen.getByRole("link", { name: defaultProps.title })
+      ).toBeInTheDocument();
+    });
+
     it("should render Explore call-to-action", () => {
       render(<NavigationCard {...defaultProps} />);
       expect(screen.getByText("Explore")).toBeInTheDocument();

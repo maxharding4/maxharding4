@@ -32,10 +32,3 @@ test.describe("core pages render cleanly", () => {
     });
   }
 });
-
-test("an unknown route serves the site-styled 404 page", async ({ page }) => {
-  await page.goto("/definitely-not-a-real-page/");
-  await expect(page.getByText(/could not be found/i)).toBeVisible();
-  // Site chrome (nav) is still present on the 404.
-  await expect(page.getByRole("navigation", { name: /main/i })).toBeVisible();
-});
