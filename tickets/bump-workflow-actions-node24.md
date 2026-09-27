@@ -1,6 +1,6 @@
 # Bump GitHub Actions to current majors (Node 20 runtime deprecated)
 
-**Type:** Task · **Status:** In Progress · **Area:** CI / workflows · **Priority:** Low
+**Type:** Task · **Status:** Done (2026-09-27, PR #85) · **Area:** CI / workflows · **Priority:** Low
 
 ## Objective
 
@@ -61,7 +61,7 @@ blocker found**; all five can go straight to latest:
 
 ## Acceptance Criteria
 
-- [ ] All six actions on their current major in both workflows
-- [ ] PR checks green (incl. a Playwright-cache hit on a second run)
-- [ ] Staging deploy run green
-- [ ] No "Node.js 20 is deprecated" annotations on the run
+- [x] All six actions on their current major in both workflows
+- [x] PR checks green (incl. a Playwright-cache hit on a second run)
+- [x] Staging deploy run green
+- [x] No "Node.js 20 is deprecated" annotations on the run

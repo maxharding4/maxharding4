@@ -1,6 +1,6 @@
 # Migrate the Next.js site into the live maxharding4/maxharding4 repo
 
-**Type:** Epic / Migration · **Status:** Planning · **Risk:** High (live production cutover)
+**Type:** Epic / Migration · **Status:** Done (cut over 2026-07-10) · **Risk:** High (live production cutover)
 
 ## Objective
 
