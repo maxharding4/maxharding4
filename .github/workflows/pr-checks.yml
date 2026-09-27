@@ -6,8 +6,58 @@ on:
     types: [opened, synchronize, reopened]
 
 jobs:
+  # Skip the build/test jobs when a PR only touches files that can't affect
+  # the site: tickets, Markdown docs, and the flag pack (read only by
+  # scripts/create-locations.mjs). Saves a build (~400 Contentful calls).
+  #
+  # This is a job-level `if:` rather than `paths-ignore` on the workflow
+  # because "Quality Checks" is a required status check: a workflow that
+  # never runs never reports it, blocking the merge, whereas a job skipped
+  # by `if:` counts as passing.
+  #
+  # The list below is an allowlist of *skippable* paths, so anything new
+  # runs the full checks by default. Detection fails safe: if the file list
+  # can't be fetched, the checks run.
+  changes:
+    name: Detect changes
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: read
+    outputs:
+      code: ${{ steps.filter.outputs.code }}
+
+    steps:
+      - name: Classify changed files
+        id: filter
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+          PR: ${{ github.event.pull_request.number }}
+        run: |
+          if ! files=$(gh api "repos/$REPO/pulls/$PR/files" --paginate --jq '.[].filename'); then
+            echo "Couldn't list changed files; running full checks."
+            echo "code=true" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          code=false
+          while IFS= read -r f; do
+            case "$f" in
+              tickets/*|assets/flags/*|*.md) ;;
+              *) code=true; echo "Code change: $f"; break ;;
+            esac
+          done <<< "$files"
+
+          [ "$code" = false ] && echo "Docs/tickets/flags only; skipping build and tests."
+          echo "code=$code" >> "$GITHUB_OUTPUT"
+
   quality-checks:
     name: Quality Checks
+    needs: changes
+    # Skip only on an explicit "false", so a failed `changes` job still runs
+    # the checks (a skipped required check would count as passing).
+    if: ${{ !cancelled() && needs.changes.outputs.code != 'false' }}
     runs-on: ubuntu-latest
 
     steps:
