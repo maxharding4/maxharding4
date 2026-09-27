@@ -1,6 +1,6 @@
 # Harden hosting: private S3 bucket + CloudFront Origin Access Control (OAC)
 
-**Type:** Task · **Status:** To Do · **Area:** Hosting / infra · **Priority:** Low
+**Type:** Task · **Status:** Done (2026-07-13) · **Area:** Hosting / infra · **Priority:** Low
 
 ## Objective
 
@@ -72,11 +72,11 @@ both of which this ticket closes when the bucket goes private behind OAC:
       the S3 website endpoint all denied.)
 - [x] `maxharding4.com`, `/travel/`, city pages, `/cv/` all still return 200.
 - [x] Block Public Access is fully enabled on the bucket.
-- [ ] Deploy pipeline (`aws s3 sync`) still works unchanged (it writes objects; OAC only
+- [x] Deploy pipeline (`aws s3 sync`) still works unchanged (it writes objects; OAC only
       affects reads). **Expected to work** — OAC/BPA only gate anonymous reads, not the
       IAM-authenticated GitHub Actions writer — but **confirm on the next deploy**.
 
-**Status: Done** (2026-07-13), pending the next deploy to confirm the write path.
+**Status: Done** (2026-07-13). Write path confirmed by every production deploy since (latest 2026-09-27).
 
 ## Implementation notes (as executed)
 

@@ -1,6 +1,6 @@
 # Cookbook: add /cookbook routes and UI
 
-**Type:** Task · **Status:** To Do · **Area:** `src/app/cookbook` · **Depends on:** `cookbook-recipe-content-model.md`
+**Type:** Task · **Status:** Done (2026-07-12, PRs #61/#62) · **Area:** `src/app/cookbook` · **Depends on:** `cookbook-recipe-content-model.md`
 
 ## Objective
 
