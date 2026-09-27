@@ -20,6 +20,9 @@ export default function CountryCard({ country, cityCount }: CountryCardProps) {
   return (
     <Link
       href={`/travel/${slug}`}
+      // Content inside <article> doesn't contribute to a link's accessible
+      // name, so name it explicitly or screen readers announce just "link".
+      aria-label={name || "Unknown"}
       className="group block overflow-hidden rounded-lg border border-gray-200 bg-white shadow-sm transition-all duration-300 hover:shadow-xl hover:scale-105 hover:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
     >
       <article className="relative">
@@ -39,9 +42,9 @@ export default function CountryCard({ country, cityCount }: CountryCardProps) {
 
         {/* Country Name */}
         <div className="relative p-4 bg-white">
-          <h3 className="text-lg font-semibold text-gray-900 group-hover:text-blue-600 transition-colors">
+          <h2 className="text-lg font-semibold text-gray-900 group-hover:text-blue-600 transition-colors">
             {name || "Unknown"}
-          </h3>
+          </h2>
 
           {/* Album Count Badge */}
           {cityCount !== undefined && (

@@ -1,6 +1,6 @@
 # Give card links an accessible name (screen readers announce just "link")
 
-**Type:** Bug · **Status:** To Do · **Area:** `src/components` (cards) · **Priority:** Medium
+**Type:** Bug · **Status:** In Review · **Area:** `src/components` (cards) · **Priority:** Medium
 
 ## Problem
 
@@ -45,16 +45,26 @@ The existing E2E tests locate these links by `href`
 
 ## Acceptance Criteria
 
-- [ ] All four card components' links have an accessible name containing the
+- [x] All four card components' links have an accessible name containing the
       visible title.
-- [ ] Re-running the audit above reports 0 nameless card links on each page.
-- [ ] Unit tests cover the name for each card.
-- [ ] At least one E2E test per section (travel, cookbook) locates a card link by
+- [x] Re-running the audit above reports 0 nameless card links on each page.
+- [x] Unit tests cover the name for each card.
+- [x] At least one E2E test per section (travel, cookbook) locates a card link by
       role + name.
-- [ ] `npm run lint`, type-check, and tests pass.
+- [x] `npm run lint`, type-check, and tests pass.
 
 ## Notes
 
 - Frontend-only; needs a deploy to go live.
 - The audit: serve the static export (`npx serve out`) and, for each card link,
   check `getByRole("link", { name: /\S/ })` matches it.
+
+## Outcome
+
+`aria-label` with the visible title on the `<Link>` in `CountryCard`, `CityCard`,
+`CategoryCard` and `RecipeCard` (same approach as `NavigationCard`). Also fixed the
+axe `heading-order` finding on `/travel/`: `CountryCard`'s title was the only card
+title using `<h3>` (directly under the page `<h1>`); now `<h2>` like the others.
+Unit tests per card (new `CategoryCard.test.tsx`); E2E travel + cookbook specs now
+locate cards by role + name, including an Austria → Graz drill-down.
+

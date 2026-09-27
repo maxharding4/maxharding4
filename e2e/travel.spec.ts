@@ -14,10 +14,10 @@ test.describe("travel search", () => {
     ).toBeVisible();
 
     // A real fragment (taken from the first country card) filters positively.
-    // Country names render as <h3> in each CountryCard.
+    // Country cards are links named after the country (aria-label).
     await search.fill("");
     const firstCountryName = (
-      await page.locator("main h3").first().textContent()
+      await page.locator('main a[href^="/travel/"]').first().getAttribute("aria-label")
     )?.trim();
     expect(firstCountryName, "expected at least one country card").toBeTruthy();
 
@@ -25,7 +25,27 @@ test.describe("travel search", () => {
     await search.fill(fragment);
     await expect(page.getByText(/showing \d+ of \d+/i)).toBeVisible();
     await expect(
-      page.locator("main h3", { hasText: firstCountryName! })
+      page.getByRole("link", { name: firstCountryName!, exact: true })
+    ).toBeVisible();
+  });
+});
+
+test.describe("travel cards", () => {
+  test("country and city cards are named links that drill down", async ({ page }) => {
+    await page.goto("/travel/");
+    await page
+      .getByRole("main")
+      .getByRole("link", { name: "Austria", exact: true })
+      .click();
+    await expect(page).toHaveURL(/\/travel\/austria\/?$/);
+
+    await page
+      .getByRole("main")
+      .getByRole("link", { name: "Graz", exact: true })
+      .click();
+    await expect(page).toHaveURL(/\/travel\/austria\/graz\/?$/);
+    await expect(
+      page.getByRole("heading", { level: 1, name: /Graz/ })
     ).toBeVisible();
   });
 });
