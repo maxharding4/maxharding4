@@ -16,6 +16,9 @@ export default function NavigationCard({
   return (
     <Link
       href={href}
+      // Content inside <article> doesn't contribute to a link's accessible
+      // name, so name it explicitly or screen readers announce just "link".
+      aria-label={title}
       className="group block overflow-hidden rounded-lg border border-gray-200 shadow-sm transition-all duration-200 hover:shadow-md hover:scale-105 hover:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
     >
       <article
