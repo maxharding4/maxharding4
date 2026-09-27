@@ -1,11 +1,13 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
 export default function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const headerRef = useRef<HTMLElement>(null);
+  const menuButtonRef = useRef<HTMLButtonElement>(null);
   const pathname = usePathname();
 
   // Close mobile menu when route changes
@@ -27,15 +29,38 @@ export default function Header() {
     };
   }, [mobileMenuOpen]);
 
-  // Close menu on escape key
+  // While the menu is open: Esc closes it and returns focus to the menu
+  // button, and Tab cycles within the header so focus can't wander into the
+  // page content hidden behind the menu's backdrop.
   useEffect(() => {
-    const handleEscape = (e: KeyboardEvent) => {
-      if (e.key === "Escape" && mobileMenuOpen) {
+    if (!mobileMenuOpen) return;
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
         setMobileMenuOpen(false);
+        menuButtonRef.current?.focus();
+        return;
+      }
+      if (e.key !== "Tab" || !headerRef.current) return;
+      const focusable = Array.from(
+        headerRef.current.querySelectorAll<HTMLElement>("a[href], button")
+      ).filter((el) => el.tabIndex >= 0 && el.getClientRects().length > 0);
+      if (!focusable.length) return;
+      const first = focusable[0];
+      const last = focusable[focusable.length - 1];
+      const active = document.activeElement;
+      if (!headerRef.current.contains(active)) {
+        e.preventDefault();
+        first.focus();
+      } else if (e.shiftKey && active === first) {
+        e.preventDefault();
+        last.focus();
+      } else if (!e.shiftKey && active === last) {
+        e.preventDefault();
+        first.focus();
       }
     };
-    document.addEventListener("keydown", handleEscape);
-    return () => document.removeEventListener("keydown", handleEscape);
+    document.addEventListener("keydown", handleKeyDown);
+    return () => document.removeEventListener("keydown", handleKeyDown);
   }, [mobileMenuOpen]);
 
   const toggleMenu = () => {
@@ -58,7 +83,7 @@ export default function Header() {
   };
 
   return (
-    <header className="sticky top-0 z-50 bg-ink text-white shadow-lg">
+    <header ref={headerRef} className="sticky top-0 z-50 bg-ink text-white shadow-lg">
       <nav
         className="container mx-auto px-4 sm:px-6 lg:px-8"
         aria-label="Main navigation"
@@ -94,6 +119,7 @@ export default function Header() {
 
           {/* Mobile Menu Button */}
           <button
+            ref={menuButtonRef}
             type="button"
             className="inline-flex items-center justify-center rounded-md p-2 text-white hover:bg-white/10 hover:text-white focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white md:hidden"
             aria-expanded={mobileMenuOpen}

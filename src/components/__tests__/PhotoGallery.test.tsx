@@ -330,6 +330,62 @@ describe("PhotoGallery", () => {
   });
 
   describe("Keyboard Navigation", () => {
+    it("moves focus into the lightbox when it opens", () => {
+      render(<PhotoGallery {...defaultProps} />);
+
+      fireEvent.click(screen.getByRole("button", { name: /View photo 1/i }));
+
+      expect(
+        screen.getByRole("button", { name: "Close photo viewer" })
+      ).toHaveFocus();
+    });
+
+    it("returns focus to the opening thumbnail when the lightbox closes", () => {
+      render(<PhotoGallery {...defaultProps} />);
+      const secondPhotoButton = screen.getByRole("button", { name: /View photo 2/i });
+
+      fireEvent.click(secondPhotoButton);
+      fireEvent.keyDown(screen.getByRole("dialog"), { key: "Escape" });
+
+      expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
+      expect(secondPhotoButton).toHaveFocus();
+    });
+
+    it("wraps Tab and Shift+Tab within the lightbox", () => {
+      render(<PhotoGallery {...defaultProps} />);
+      fireEvent.click(screen.getByRole("button", { name: /View photo 1/i }));
+      const dialog = screen.getByRole("dialog");
+      const close = screen.getByRole("button", { name: "Close photo viewer" });
+      const next = screen.getByRole("button", { name: "Next photo" });
+
+      next.focus();
+      fireEvent.keyDown(dialog, { key: "Tab" });
+      expect(close).toHaveFocus();
+
+      fireEvent.keyDown(dialog, { key: "Tab", shiftKey: true });
+      expect(next).toHaveFocus();
+    });
+
+    it("locks page scroll while open and restores it on close", () => {
+      render(<PhotoGallery {...defaultProps} />);
+
+      fireEvent.click(screen.getByRole("button", { name: /View photo 1/i }));
+      expect(document.body.style.overflow).toBe("hidden");
+
+      fireEvent.click(screen.getByRole("button", { name: "Close photo viewer" }));
+      expect(document.body.style.overflow).not.toBe("hidden");
+    });
+
+    it("announces the photo position to screen readers", () => {
+      render(<PhotoGallery {...defaultProps} />);
+      fireEvent.click(screen.getByRole("button", { name: /View photo 1/i }));
+
+      expect(screen.getByText(/1 \/ \d+/).closest("[aria-live]")).toHaveAttribute(
+        "aria-live",
+        "polite"
+      );
+    });
+
     it("should close lightbox when pressing Escape key", () => {
       render(<PhotoGallery {...defaultProps} />);
 

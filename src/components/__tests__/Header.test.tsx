@@ -239,6 +239,18 @@ describe("Header Component", () => {
       expect(menuButton).toHaveAttribute("aria-expanded", "false");
     });
 
+    it("returns focus to the menu button when Escape closes the menu", () => {
+      render(<Header />);
+      const menuButton = screen.getByRole("button", { name: /open menu/i });
+
+      fireEvent.click(menuButton);
+      screen.getAllByRole("link", { name: "Travel" }).at(-1)!.focus();
+      fireEvent.keyDown(document, { key: "Escape" });
+
+      expect(menuButton).toHaveAttribute("aria-expanded", "false");
+      expect(menuButton).toHaveFocus();
+    });
+
     it("does not close menu on other keys", () => {
       render(<Header />);
       const menuButton = screen.getByRole("button", { name: /open menu/i });
@@ -441,6 +453,8 @@ describe("Header Component", () => {
         "removeEventListener"
       );
       const { unmount } = render(<Header />);
+      // The keydown listener only exists while the menu is open.
+      fireEvent.click(screen.getByRole("button", { name: /open menu/i }));
 
       unmount();
       expect(removeEventListenerSpy).toHaveBeenCalledWith(

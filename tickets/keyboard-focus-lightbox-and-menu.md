@@ -1,6 +1,6 @@
 # Keyboard focus handling for the photo lightbox and mobile menu
 
-**Type:** Bug · **Status:** To Do · **Area:** `src/components/PhotoGallery.tsx`, `src/components/Header.tsx` · **Priority:** Medium
+**Type:** Bug · **Status:** In Review · **Area:** `src/components/PhotoGallery.tsx`, `src/components/Header.tsx` · **Priority:** Medium
 
 ## Problem
 
@@ -54,16 +54,16 @@ focus on that content instead of returning it to the menu button.
 
 ## Acceptance Criteria
 
-- [ ] Lightbox: after opening with Enter, focus is inside the dialog; ← / → change
+- [x] Lightbox: after opening with Enter, focus is inside the dialog; ← / → change
       the photo; Tab cycles only through the dialog's controls; Esc closes it.
-- [ ] Lightbox: after closing (any method), focus is back on the originating
+- [x] Lightbox: after closing (any method), focus is back on the originating
       thumbnail.
-- [ ] Lightbox: page doesn't scroll behind the open dialog.
-- [ ] Mobile menu: Tab never leaves the header while the menu is open; Esc closes
+- [x] Lightbox: page doesn't scroll behind the open dialog.
+- [x] Mobile menu: Tab never leaves the header while the menu is open; Esc closes
       it and focuses the menu button.
-- [ ] E2E tests cover both flows keyboard-only (open, navigate, close, focus
+- [x] E2E tests cover both flows keyboard-only (open, navigate, close, focus
       restored).
-- [ ] `npm run lint`, type-check, and tests pass.
+- [x] `npm run lint`, type-check, and tests pass.
 
 ## Notes
 
@@ -73,3 +73,19 @@ focus on that content instead of returning it to the menu button.
 - Minor, not in scope: the current page's nav link has `tabIndex={-1}`
   (`aria-current` already marks it); every photo's alt text is identical
   ("Photo from Graz, Austria") — a content improvement, not code.
+
+## Outcome
+
+- **Lightbox (`PhotoGallery`):** remembers the opening thumbnail, focuses the Close
+  button on open, locks body scroll, traps Tab/Shift+Tab across the dialog's
+  buttons, and on close (button, Esc, backdrop) restores scroll and focus to the
+  thumbnail. The "n / N" counter is now `aria-live="polite"`, so photo changes are
+  announced. Went with a small hand-rolled trap rather than `inert` — the dialog
+  renders inside `<main>`, so making the page inert would need a portal.
+- **Mobile menu (`Header`):** the document-level keydown listener now only runs
+  while the menu is open; Esc closes and focuses the menu button; Tab/Shift+Tab
+  wrap within the header's visible links/buttons.
+- **Tests:** unit (focus on open, focus restored on close, Tab wrap, scroll lock,
+  aria-live; Esc returns focus to the menu button); E2E `e2e/keyboard.spec.ts`
+  covers both flows keyboard-only.
+

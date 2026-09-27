@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import { Asset } from "contentful";
 import { getContentfulImageSrc, IMAGE_TRANSFORMS } from "@/lib/images";
@@ -18,6 +18,25 @@ const PANORAMIC_RATIO_THRESHOLD = 2;
 
 export default function PhotoGallery({ photos, cityName }: PhotoGalleryProps) {
   const [selectedPhoto, setSelectedPhoto] = useState<Asset | null>(null);
+  const dialogRef = useRef<HTMLDivElement>(null);
+  const closeButtonRef = useRef<HTMLButtonElement>(null);
+  // The thumbnail that opened the lightbox, so focus can return to it on close.
+  const triggerRef = useRef<HTMLElement | null>(null);
+  const isOpen = selectedPhoto !== null;
+
+  // While open: move focus into the dialog (otherwise it stays on the
+  // thumbnail behind it, and Esc/arrows/Tab never reach the dialog) and lock
+  // page scroll. On close, restore both.
+  useEffect(() => {
+    if (!isOpen) return;
+    closeButtonRef.current?.focus();
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = previousOverflow;
+      triggerRef.current?.focus();
+    };
+  }, [isOpen]);
 
   const getImageUrl = (photo: Asset): string | undefined => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -43,7 +62,8 @@ export default function PhotoGallery({ photos, cityName }: PhotoGalleryProps) {
     return height > 0 && width / height >= PANORAMIC_RATIO_THRESHOLD;
   };
 
-  const openLightbox = (photo: Asset) => {
+  const openLightbox = (photo: Asset, trigger: HTMLElement) => {
+    triggerRef.current = trigger;
     setSelectedPhoto(photo);
   };
 
@@ -70,6 +90,23 @@ export default function PhotoGallery({ photos, cityName }: PhotoGalleryProps) {
     if (e.key === "Escape") closeLightbox();
     if (e.key === "ArrowLeft") goToPrevious();
     if (e.key === "ArrowRight") goToNext();
+    if (e.key === "Tab") trapTab(e);
+  };
+
+  // Keep Tab / Shift+Tab cycling through the dialog's buttons.
+  const trapTab = (e: React.KeyboardEvent) => {
+    const buttons = dialogRef.current?.querySelectorAll<HTMLElement>("button");
+    if (!buttons?.length) return;
+    const first = buttons[0];
+    const last = buttons[buttons.length - 1];
+    const active = document.activeElement;
+    if (e.shiftKey && (active === first || active === dialogRef.current)) {
+      e.preventDefault();
+      last.focus();
+    } else if (!e.shiftKey && active === last) {
+      e.preventDefault();
+      first.focus();
+    }
   };
 
   return (
@@ -88,7 +125,7 @@ export default function PhotoGallery({ photos, cityName }: PhotoGalleryProps) {
           return (
             <button
               key={photo.sys.id}
-              onClick={() => openLightbox(photo)}
+              onClick={(e) => openLightbox(photo, e.currentTarget)}
               style={panoramic ? { aspectRatio: `${width} / ${height}` } : undefined}
               className={`group relative overflow-hidden rounded-lg bg-gray-100 transition-all duration-300 hover:shadow-xl hover:scale-105 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 ${
                 panoramic ? "col-span-full" : "aspect-[4/3]"
@@ -135,6 +172,7 @@ export default function PhotoGallery({ photos, cityName }: PhotoGalleryProps) {
       {/* Lightbox Modal */}
       {selectedPhoto && (
         <div
+          ref={dialogRef}
           className="fixed inset-0 z-50 flex items-center justify-center bg-black/95"
           onClick={closeLightbox}
           onKeyDown={handleKeyDown}
@@ -145,6 +183,7 @@ export default function PhotoGallery({ photos, cityName }: PhotoGalleryProps) {
         >
           {/* Close button */}
           <button
+            ref={closeButtonRef}
             onClick={closeLightbox}
             className="absolute top-4 right-4 z-10 rounded-full bg-white/10 p-2 text-white transition-colors hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-white"
             aria-label="Close photo viewer"
@@ -240,7 +279,10 @@ export default function PhotoGallery({ photos, cityName }: PhotoGalleryProps) {
           </div>
 
           {/* Photo counter */}
-          <div className="absolute bottom-4 left-1/2 -translate-x-1/2 rounded-full bg-white/10 px-4 py-2 text-sm text-white">
+          <div
+            className="absolute bottom-4 left-1/2 -translate-x-1/2 rounded-full bg-white/10 px-4 py-2 text-sm text-white"
+            aria-live="polite"
+          >
             {photos.findIndex((p) => p.sys.id === selectedPhoto.sys.id) + 1} /{" "}
             {photos.length}
           </div>
