@@ -1,6 +1,6 @@
 # Homepage: replace nav cards with "Next up" + "Latest" travel sections
 
-**Type:** Task · **Status:** To Do · **Area:** Homepage (`src/app/page.tsx`)
+**Type:** Task · **Status:** Done (PR #66) · **Area:** Homepage (`src/app/page.tsx`)
 
 ## Objective
 

@@ -1,6 +1,6 @@
 # Cookbook: create the `recipe` content model in Contentful
 
-**Type:** Task · **Status:** To Do · **Area:** Contentful / content model · **Blocks:** `cookbook-routes-and-ui.md`
+**Type:** Task · **Status:** Done (2026-07-12) — `snacks` still has no recipes · **Area:** Contentful / content model · **Blocks:** `cookbook-routes-and-ui.md`
 
 ## Objective
 

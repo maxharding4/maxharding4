@@ -1,6 +1,6 @@
 # Fix www.maxharding4.com — broken, possible subdomain-takeover vector
 
-**Type:** Task · **Status:** To Do · **Area:** Hosting / DNS · **Priority:** Medium
+**Type:** Task · **Status:** Done (2026-07-13) · **Area:** Hosting / DNS · **Priority:** Medium
 
 ## Problem
 
