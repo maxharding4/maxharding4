@@ -27,8 +27,9 @@
 //   --servings <n>      Override servings. Sets the field only — never
 //                       rescales ingredient quantities.
 //   --tags <a,b>        Comma-separated filter tags (e.g. chicken,pasta).
-//                       Must be from the vocabulary validated in Contentful
-//                       (mirrored in TAG_SLUGS below — keep in sync).
+//                       Must be from the accepted values on the recipe
+//                       `tags` field in Contentful (read at run time, so
+//                       adding a tag is a Contentful-only change).
 //   --draft             Create the entry unpublished and without an image
 //                       (for when the photo isn't ready yet). Attach the
 //                       image and publish manually later.
@@ -52,12 +53,6 @@ const REPO_ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const PROCESSED_DIR = join(REPO_ROOT, "photos", "processed", "cookbook");
 const PRE_PROCESSED_DIR = join(REPO_ROOT, "photos", "pre-processed", "cookbook");
 const CATEGORY_SLUGS = ["mains", "sides", "snacks", "desserts"];
-// Mirrors the accepted-values validation on the recipe `tags` field in
-// Contentful — the field's validation is the source of truth.
-const TAG_SLUGS = [
-  "chicken", "beef", "pork", "lamb", "sausage",
-  "seafood", "pasta", "curry", "rice", "veggie",
-];
 const LOCALE = "en-US";
 
 function die(msg) {
@@ -277,9 +272,34 @@ if (!opts.source) {
 if (!CATEGORY_SLUGS.includes(opts.category)) {
   die(`--category is required and must be one of: ${CATEGORY_SLUGS.join(", ")}`);
 }
-for (const tag of opts.tags ?? []) {
-  if (!TAG_SLUGS.includes(tag)) {
-    die(`Unknown tag "${tag}" — tags must be from: ${TAG_SLUGS.join(", ")}`);
+const {
+  CONTENTFUL_SPACE_ID,
+  CONTENTFUL_PHOTO_UPLOADER_TOKEN,
+  CONTENTFUL_ENVIRONMENT = "master",
+} = process.env;
+if (!CONTENTFUL_SPACE_ID) die("CONTENTFUL_SPACE_ID not set");
+if (!CONTENTFUL_PHOTO_UPLOADER_TOKEN) die("CONTENTFUL_PHOTO_UPLOADER_TOKEN not set");
+
+const cma = createClient(
+  { accessToken: CONTENTFUL_PHOTO_UPLOADER_TOKEN },
+  {
+    type: "plain",
+    defaults: { spaceId: CONTENTFUL_SPACE_ID, environmentId: CONTENTFUL_ENVIRONMENT },
+  }
+);
+
+// Validate --tags against the accepted values on the recipe `tags` field, so
+// the vocabulary lives only in Contentful (the site derives its filter pills
+// from the data too). Runs for --dry-run as well — it's a read.
+if (opts.tags?.length) {
+  const contentType = await cma.contentType.get({ contentTypeId: "recipe" });
+  const tagsField = contentType.fields.find((f) => f.id === "tags");
+  const accepted = tagsField?.items?.validations?.find((v) => v.in)?.in;
+  if (!accepted) die('Could not read the accepted values for the recipe "tags" field.');
+  for (const tag of opts.tags) {
+    if (!accepted.includes(tag)) {
+      die(`Unknown tag "${tag}" — tags must be from: ${accepted.join(", ")}`);
+    }
   }
 }
 
@@ -323,22 +343,6 @@ if (opts.dryRun) {
   console.log("\n[dry-run] Nothing written.");
   process.exit(0);
 }
-
-const {
-  CONTENTFUL_SPACE_ID,
-  CONTENTFUL_PHOTO_UPLOADER_TOKEN,
-  CONTENTFUL_ENVIRONMENT = "master",
-} = process.env;
-if (!CONTENTFUL_SPACE_ID) die("CONTENTFUL_SPACE_ID not set");
-if (!CONTENTFUL_PHOTO_UPLOADER_TOKEN) die("CONTENTFUL_PHOTO_UPLOADER_TOKEN not set");
-
-const cma = createClient(
-  { accessToken: CONTENTFUL_PHOTO_UPLOADER_TOKEN },
-  {
-    type: "plain",
-    defaults: { spaceId: CONTENTFUL_SPACE_ID, environmentId: CONTENTFUL_ENVIRONMENT },
-  }
-);
 
 const existing = await cma.entry.getMany({
   query: { content_type: "recipe", "fields.slug": slug, limit: 1 },
